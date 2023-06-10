@@ -1,4 +1,7 @@
 package com.kh.backend_finalproject.entitiy;
+import com.kh.backend_finalproject.constant.IsActive;
+import com.kh.backend_finalproject.constant.IsMembership;
+import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,22 +34,22 @@ public class UserTb {
     private String pfImg;                           // 프로필 사진
 
     @Enumerated(EnumType.STRING)
-    private RegionStatus userRegion;                    // 관심 지역
+    private RegionStatus userRegion;                // 관심 지역
 
     @Column(nullable = false)
     private LocalDateTime regDate;                  // 가입일
 
-    @Column(columnDefinition = "char(1) default 'N'")
-    private char isPushOk;                          // 알림 수신 여부
+    @Enumerated(EnumType.STRING)
+    private IsPush ispush;                          // 알림 수신 여부
 
-    @Column(columnDefinition = "char(1) default 'N'")
-    private char isMembership;                      // 멤버십 여부
+    @Enumerated(EnumType.STRING)
+    private IsMembership isMembership;              // 멤버십 여부
 
     @Column(length = 10)
     private String authKey;                         // 이메일 인증키
 
-    @Column(columnDefinition = "char(1) default 'N'")
-    private char isActive;                          // 이메일 인증 여부
+    @Enumerated(EnumType.STRING)
+    private IsActive isActive;                      // 이메일 인증 여부
 
     /* 🦄양방향 쓴 이유: 게시글의 작성자만 수정/삭제 가능하게 하기 위해
                       상세페이지에서 작성자 닉네임 노출하기 위해

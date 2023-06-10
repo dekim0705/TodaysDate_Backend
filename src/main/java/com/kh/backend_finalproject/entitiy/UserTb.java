@@ -40,7 +40,7 @@ public class UserTb {
     private LocalDateTime regDate;                  // 가입일
 
     @Enumerated(EnumType.STRING)
-    private IsPush ispush;                          // 알림 수신 여부
+    private IsPush isPush;                          // 알림 수신 여부
 
     @Enumerated(EnumType.STRING)
     private IsMembership isMembership;              // 멤버십 여부

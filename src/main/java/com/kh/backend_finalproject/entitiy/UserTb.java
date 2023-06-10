@@ -1,15 +1,20 @@
 package com.kh.backend_finalproject.entitiy;
-import com.kh.backend_finalproject.constant.CityStatus;
+import com.kh.backend_finalproject.constant.RegionStatus;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Getter @Setter @ToString
 public class UserTb {
     @Id
-    @Column(name = "user_num_pk")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int userNum;                            // 회원 번호
+    @Column(name = "user_num")
+    private Long id;                                // 회원 번호
 
     @Column(nullable = false, unique = true, length = 50)
     private String email;                           // 이메일
@@ -27,7 +32,7 @@ public class UserTb {
     private String pfImg;                           // 프로필 사진
 
     @Enumerated(EnumType.STRING)
-    private CityStatus userCity;                    // 관심 지역
+    private RegionStatus userRegion;                    // 관심 지역
 
     @Column(nullable = false)
     private LocalDateTime regDate;                  // 가입일
@@ -44,11 +49,28 @@ public class UserTb {
     @Column(columnDefinition = "char(1) default 'N'")
     private char isActive;                          // 이메일 인증 여부
 
-    // ✴️1:N(회원 한 명당 여러 개의 게시글)
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    /* 🦄양방향 쓴 이유: 게시글의 작성자만 수정/삭제 가능하게 하기 위해
+                      상세페이지에서 작성자 닉네임 노출하기 위해
+       ✅PostTb와 1:N 관계이므로 UserTb에는 @OneToMany 사용!
+         헷갈리면 PostTb 클래스 확인! */
+    @OneToMany(mappedBy = "user")
     private List<PostTb> posts;
 
-    // ✴️1:N(회원 한 명당 여러 개의 북마크)
     @OneToMany(mappedBy = "user")
-    private List<BookmarkTb> bookmarks;
+    private List<FolderTb> folders;
+
+    @OneToMany(mappedBy = "user")
+    private List<ReplyTb> replies;
+
+    @OneToMany(mappedBy = "blocker")
+    private List<BlockTb> blockedUsers;
+
+    @OneToMany(mappedBy = "blocked")
+    private List<BlockTb> blockUsers;
+
+    @OneToMany(mappedBy = "reporter")
+    private List<ReportTb> reportedUsers;
+
+    @OneToMany(mappedBy = "reported")
+    private List<ReportTb> reportUsers;
 }

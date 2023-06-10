@@ -1,21 +1,25 @@
 package com.kh.backend_finalproject.entitiy;
-import com.kh.backend_finalproject.constant.CityStatus;
+import com.kh.backend_finalproject.constant.RegionStatus;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Getter @Setter @ToString
 public class PostTb {
     @Id
-    @Column(name = "post_num_pk")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int postNum;                            // 게시글 번호
+    @Column(name = "post_num")
+    private Long id;                                // 게시글 번호
 
     @Column(nullable = false, length = 500)
     private String title;                           // 제목
 
     @Enumerated(EnumType.STRING)
-    private CityStatus region;                      // 지역
+    private RegionStatus region;                    // 지역
 
     @Column(nullable = false, length = 10)
     private String course;                          // 코스 일정
@@ -42,14 +46,17 @@ public class PostTb {
     private int reportCount;                        // 신고 누적 횟수
 
     @Column(nullable = false, length = 4000)
-    private String postContent;                     // 본문
+    private String content;                         // 본문
 
-    // ✴️N:1(회원 한 명당 여러 개의 게시글)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_num_fk")
+    /* 🦄'한 사람'이 '여러 개의 게시글'을 작성할 수 있으므로 N:1 매핑 설정!!
+    * 따라서, 연관 관계의 주인은 N인 PostTb가 됩니다.  */
+    @ManyToOne
+    @JoinColumn(name = "user_num")
     private UserTb user;
 
-    // ✴️1:N(게시글 한 개당 여러 개의 핀)
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<PinTb> pins;
+    @OneToMany(mappedBy = "post")
+    private List<BookmarkTb> bookmarks;
+
+    @OneToMany(mappedBy = "post")
+    private List<ReplyTb> replies;
 }

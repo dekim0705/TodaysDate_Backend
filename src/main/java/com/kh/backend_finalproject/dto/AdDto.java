@@ -3,6 +3,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class BookmarkDto {
-    private PostDto post;
+public class AdDto {
+    private String name;
+    private String imgUrl;
 }

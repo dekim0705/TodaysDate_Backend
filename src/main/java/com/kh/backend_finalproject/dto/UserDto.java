@@ -1,5 +1,5 @@
 package com.kh.backend_finalproject.dto;
-import com.kh.backend_finalproject.constant.CityStatus;
+import com.kh.backend_finalproject.constant.RegionStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +10,7 @@ public class UserDto {
     private String nickname;
     private String userComment;
     private String pfImg;
-    private CityStatus userCity;
+    private RegionStatus userRegion;
     private char isPushOk;
     private char isMembership;
     private String authKey;

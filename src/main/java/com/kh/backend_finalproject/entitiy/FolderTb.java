@@ -3,20 +3,20 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter @Setter @ToString
-public class BookmarkTb {
+public class FolderTb {
     @Id
     @GeneratedValue
-    @Column(name = "bookmark_num")
+    @Column(name = "folder_num")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "folder_id")
-    private FolderTb folder;
+    @JoinColumn(name = "user_id")
+    private UserTb user;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private PostTb post;
+    @OneToMany(mappedBy = "folder")
+    private List<BookmarkTb> bookmarks;
 }

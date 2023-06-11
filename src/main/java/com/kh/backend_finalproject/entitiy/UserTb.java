@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Getter @Setter @ToString
+@Getter @Setter
 public class UserTb {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Getter @Setter @ToString
+@Getter @Setter
 public class PostTb {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,7 +45,7 @@ public class PostTb {
     private LocalDateTime writeDate;                // 작성일
 
     @Column
-    private int reportCount = 0;                    // 신고 누적 횟수
+    private Integer reportCount = 0;                    // 신고 누적 횟수
 
     @Column(nullable = false, length = 4000)
     private String content;                         // 본문

@@ -37,15 +37,14 @@ public class PostTb {
     @ElementCollection
     private List<String> placeTag;                  // 장소명 태그
 
-    @ElementCollection
     @Column(length = 1000)
-    private List<String> imgUrl;                    // 이미지 주소
+    private String imgUrl;                          // 이미지 주소
 
     private int viewCount;                          // 조회수
     private LocalDateTime writeDate;                // 작성일
 
     @Column
-    private Integer reportCount = 0;                    // 신고 누적 횟수
+    private Integer reportCount = 0;                // 신고 누적 횟수
 
     @Column(nullable = false, length = 4000)
     private String content;                         // 본문

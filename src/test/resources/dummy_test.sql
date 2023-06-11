@@ -3,15 +3,15 @@ INSERT INTO user_tb (user_num, email, pwd, nickname, user_comment, pf_img, user_
 VALUES (1, 'user1@naver.com', 'a1234!@#$1', '명란젓코난', '어디든 갈 준비가 되어있습니다.', '기본이미지1', 'SEOUL', '2023-06-01 12:00:00', 'PUSH', 'FREE', 'authKey1', 'ACTIVE');
 
 INSERT INTO user_tb (user_num, email, pwd, nickname, user_comment, pf_img, user_region, reg_date, is_push, is_membership, auth_key, is_active)
-VALUES (2, 'user2@kakao.com', 'a1234!@#$1', '꿔바로무많이두개더', '맛집 탐방 위주로 다니고 있습니다.', '기본이미지2', 'BUSAN', '2023-06-05 12:00:00', 'PUSH', 'FREE', 'authKey2', 'ACTIVE');
+VALUES (2, 'user2@kakao.com', 'a1234!@#$1', '꿔바로우많이두개더', '맛집 탐방 위주로 다니고 있습니다.', '기본이미지2', 'BUSAN', '2023-06-05 12:00:00', 'PUSH', 'FREE', 'authKey2', 'ACTIVE');
 
 INSERT INTO user_tb (user_num, email, pwd, nickname, user_comment, pf_img, user_region, reg_date, is_push, is_membership, auth_key, is_active)
 VALUES (3, 'user3@nate.com', 'a1234!@#$1', '이웃집또털어', '핫플 좋아해요.', '기본이미지3', 'SEOUL', '2023-06-07 12:00:00', 'PUSH', 'FREE', 'authKey3', 'ACTIVE');
 
 -- POST_TB
 -- 1번 게시글
-INSERT INTO post_tb (post_num, title, region, course, theme, district, view_count, write_date, content, user_num)
-VALUES (1, '서울의 명소: 경복궁', 'SEOUL', '당일 치기', '힐링 코스', '서울시 종로구', 100, '2023-06-02 00:00:00', '경복궁은 조선 시대 왕궁입니다. 임금의 거처였던 곳이며, 정부의 중심지였습니다.', 1);
+INSERT INTO post_tb (post_num, title, region, course, theme, district, img_url, view_count, write_date, content, user_num)
+VALUES (1, '서울의 명소: 경복궁', 'SEOUL', '당일 치기', '힐링 코스', '서울시 종로구', '이미지1', 100, '2023-06-02 00:00:00', '경복궁은 조선 시대 왕궁입니다. 임금의 거처였던 곳이며, 정부의 중심지였습니다.', 1);
 
 INSERT INTO post_tb_comment (post_tb_post_num, comment)
 VALUES (1, '대중교통이 편해요'), (1, '사진찍기 좋아요'), (1, '야경이 이뻐요');
@@ -40,6 +40,7 @@ VALUES (2, '서면 회센터'), (2, '남천정'), (2, '쿠키인가곰');
 
 -- ALTER TABLE post_tb_comment add column id int auto_increment primary key;
 -- ALTER TABLE post_tb_place_tag add column id int auto_increment primary key;
+-- ALTER TABLE post_tb_img_url add column id int auto_increment primary key;
 
 -- FOLDER_TB
 INSERT INTO folder_tb (folder_num, name, user_id)

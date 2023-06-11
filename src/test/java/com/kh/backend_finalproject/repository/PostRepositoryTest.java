@@ -1,5 +1,4 @@
 package com.kh.backend_finalproject.repository;
-
 import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.entitiy.PostTb;
 import org.junit.jupiter.api.DisplayName;
@@ -32,6 +31,15 @@ class PostRepositoryTest {
         List<PostTb> postList = postRepository.findByKeyword("엔터테인먼트");
         for(PostTb e : postList) {
             System.out.println("📍: " + e.getTitle());
+        }
+    }
+    @Test
+    @DisplayName("메인 페이지 - 상위 북마크 5개 게시글 테스트")
+    public void findTop5ByBookmarkCountTest() {
+        List<PostTb> postList = postRepository.findTop5ByBookmarkCount();
+        for(PostTb e : postList) {
+            System.out.println("☘️ : " + e.getId());
+            System.out.println("📍 : " + e.getTitle());
         }
     }
 }

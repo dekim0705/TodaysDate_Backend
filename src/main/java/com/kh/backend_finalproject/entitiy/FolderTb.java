@@ -13,6 +13,9 @@ public class FolderTb {
     @Column(name = "folder_num")
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserTb user;

@@ -43,7 +43,9 @@ public class PostTb {
 
     private int viewCount;                          // 조회수
     private LocalDateTime writeDate;                // 작성일
-    private int reportCount;                        // 신고 누적 횟수
+
+    @Column
+    private int reportCount = 0;                    // 신고 누적 횟수
 
     @Column(nullable = false, length = 4000)
     private String content;                         // 본문

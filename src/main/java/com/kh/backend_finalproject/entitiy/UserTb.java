@@ -55,24 +55,24 @@ public class UserTb {
                       상세페이지에서 작성자 닉네임 노출하기 위해
        ✅PostTb와 1:N 관계이므로 UserTb에는 @OneToMany 사용!
          헷갈리면 PostTb 클래스 확인! */
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<PostTb> posts;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<FolderTb> folders;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<ReplyTb> replies;
 
-    @OneToMany(mappedBy = "blocker")
+    @OneToMany(mappedBy = "blocker", fetch = FetchType.LAZY)
     private List<BlockTb> blockedUsers;
 
-    @OneToMany(mappedBy = "blocked")
+    @OneToMany(mappedBy = "blocked", fetch = FetchType.LAZY)
     private List<BlockTb> blockUsers;
 
-    @OneToMany(mappedBy = "reporter")
+    @OneToMany(mappedBy = "reporter", fetch = FetchType.LAZY)
     private List<ReportTb> reportedUsers;
 
-    @OneToMany(mappedBy = "reported")
+    @OneToMany(mappedBy = "reported", fetch = FetchType.LAZY)
     private List<ReportTb> reportUsers;
 }

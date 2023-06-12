@@ -13,11 +13,11 @@ public class BlockTb {
     @Column(name = "block_num")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blocker_fk")
     private UserTb blocker;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blocked_fk")
     private UserTb blocked;
 }

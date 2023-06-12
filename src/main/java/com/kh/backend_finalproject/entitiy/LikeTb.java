@@ -12,7 +12,7 @@ public class LikeTb {
     @Column(name = "like_num")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
     private UserTb user;
 }

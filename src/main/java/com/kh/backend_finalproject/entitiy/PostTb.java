@@ -51,13 +51,13 @@ public class PostTb {
 
     /* 🦄'한 사람'이 '여러 개의 게시글'을 작성할 수 있으므로 N:1 매핑 설정!!
     * 따라서, 연관 관계의 주인은 N인 PostTb가 됩니다.  */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
     private UserTb user;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<BookmarkTb> bookmarks;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<ReplyTb> replies;
 }

@@ -18,11 +18,11 @@ public class ReportTb {
 
     private LocalDateTime reportDate; // 신고 날짜
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_fk")
     private UserTb reporter;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_fk")
     private UserTb reported;
 }

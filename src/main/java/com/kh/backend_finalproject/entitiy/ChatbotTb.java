@@ -18,7 +18,9 @@ public class ChatbotTb {
 
     private LocalDateTime inquiryDate; // 문의 날짜
 
-    @ManyToOne
+    private String email;              // 알림 받을 이메일
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
     private UserTb user;
 }

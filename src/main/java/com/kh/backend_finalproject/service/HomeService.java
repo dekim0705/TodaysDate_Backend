@@ -23,17 +23,8 @@ public class HomeService {
     private final BookmarkRepository bookmarkRepository;
 
     // ✍️전체 지역 게시글 작성일 최근순 정렬
-    public List<PostUserDto> getAllPostsWithUserDetails() {
-        List<UserTb> users = userRepository.findAll();
-        List<PostUserDto> postUserDtos = new ArrayList<>();
-        for(UserTb user : users) {
-            for(PostTb post : user.getPosts()) {
-                PostUserDto postUserDto = new PostUserDto(user.getPfImg(), user.getNickname(), post.getTitle(),
-                        post.getDistrict(), post.getImgUrl(), post.getWriteDate());
-                postUserDtos.add(postUserDto);
-            }
-        }
-        postUserDtos.sort(Comparator.comparing(PostUserDto::getWriteDate).reversed());
+    public List<PostUserDto> getAllPostsList() {
+        List<PostUserDto> postUserDtos = postRepository.getAllPostsWithUserDetails();
         return postUserDtos;
     }
 }

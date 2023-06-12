@@ -20,7 +20,7 @@ public class HomeController {
     // ✍️전체 지역 게시글 작성일 최근순 정렬
     @GetMapping(value = "/post/all")
     public ResponseEntity<List<PostUserDto>> getAllPosts() {
-        List<PostUserDto> postUserDtos = homeService.getAllPostsWithUserDetails();
+        List<PostUserDto> postUserDtos = homeService.getAllPostsList();
         return new ResponseEntity<>(postUserDtos, HttpStatus.OK);
     }
 }

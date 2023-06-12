@@ -18,11 +18,11 @@ public class ReplyTb {
 
     private LocalDateTime writeDate; // 작성 날짜
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_num")
     private PostTb post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
     private UserTb user;
 }

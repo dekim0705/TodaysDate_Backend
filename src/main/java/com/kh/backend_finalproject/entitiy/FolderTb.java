@@ -16,10 +16,10 @@ public class FolderTb {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserTb user;
 
-    @OneToMany(mappedBy = "folder")
+    @OneToMany(mappedBy = "folder", fetch = FetchType.LAZY)
     private List<BookmarkTb> bookmarks;
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -55,24 +56,24 @@ public class UserTb {
                       상세페이지에서 작성자 닉네임 노출하기 위해
        ✅PostTb와 1:N 관계이므로 UserTb에는 @OneToMany 사용!
          헷갈리면 PostTb 클래스 확인! */
-    @OneToMany(mappedBy = "user")
-    private List<PostTb> posts;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PostTb> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<FolderTb> folders;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<FolderTb> folders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<ReplyTb> replies;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ReplyTb> replies = new ArrayList<>();
 
-    @OneToMany(mappedBy = "blocker")
-    private List<BlockTb> blockedUsers;
+    @OneToMany(mappedBy = "blocker", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<BlockTb> blockedUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "blocked")
-    private List<BlockTb> blockUsers;
+    @OneToMany(mappedBy = "blocked", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<BlockTb> blockUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "reporter")
-    private List<ReportTb> reportedUsers;
+    @OneToMany(mappedBy = "reporter", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ReportTb> reportedUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "reported")
-    private List<ReportTb> reportUsers;
+    @OneToMany(mappedBy = "reported", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ReportTb> reportUsers = new ArrayList<>();
 }

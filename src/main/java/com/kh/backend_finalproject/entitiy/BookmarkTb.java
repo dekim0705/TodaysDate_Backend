@@ -12,11 +12,11 @@ public class BookmarkTb {
     @Column(name = "bookmark_num")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "folder_id")
     private FolderTb folder;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private PostTb post;
 }

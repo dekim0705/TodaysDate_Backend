@@ -21,7 +21,10 @@ public class ChatbotTb {
 
     private LocalDateTime inquiryDate; // 문의 날짜
 
-    @ManyToOne
+    @Column(nullable = false, length = 20)
+    private String inquiryStatus;  // 문의 확인 상태 (대기 or 완료)
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
     private UserTb user;
 }

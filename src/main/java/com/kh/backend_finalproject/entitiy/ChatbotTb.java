@@ -14,11 +14,15 @@ public class ChatbotTb {
     private Long id;
 
     @Column(nullable = false, length = 1000)
-    private String content;            // 문의 내용
+    private String inquiryContent;            // 문의 내용
+
+    @Column(nullable = false, length = 50)
+    private String email;                    // 이메일
 
     private LocalDateTime inquiryDate; // 문의 날짜
 
-    private String email;              // 알림 받을 이메일
+    @Column(nullable = false, length = 20)
+    private String inquiryStatus;  // 문의 확인 상태 (대기 or 완료)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")

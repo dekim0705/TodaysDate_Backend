@@ -43,7 +43,7 @@ class PostRepositoryTest {
     public void findByKeywordTest() {
         List<PostTb> postList = postRepository.findByKeyword("경복궁");
         for(PostTb e : postList) {
-            System.out.println("✴️제목 : " + e.getTitle());
+            System.out.println("🦄제목 : " + e.getTitle());
         }
     }
     @Test
@@ -52,8 +52,8 @@ class PostRepositoryTest {
         Pageable topFive = PageRequest.of(0,5);
         Page<PostBookmarkDto> postBookmarkDtos = postRepository.findTop5ByBookmarkCount(topFive);
         for(PostBookmarkDto e : postBookmarkDtos) {
-            System.out.println("✴️ 제목 : " + e.getTitle());
-            System.out.println("✴️ 북마크 수 : " + e.getBookmarkCount());
+            System.out.println("🦄️ 제목 : " + e.getTitle());
+            System.out.println("🦄️ 북마크 수 : " + e.getBookmarkCount());
         }
     }
 }

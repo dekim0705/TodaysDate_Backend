@@ -14,8 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -28,24 +26,29 @@ public class HomeService {
     private final BookmarkRepository bookmarkRepository;
 
     // ✅️전체 지역 게시글 작성일 최근순 정렬
-    public List<PostUserDto> getAllPostsList() {
+    public List<PostUserDto> findAllPostsList() {
         List<PostUserDto> postUserDtos = postRepository.findAllPostsWithUserDetails();
         return postUserDtos;
     }
     // ✅️특정 지역 게시글 작성일 최근순 정렬
-    public List<PostUserDto> getRegionPostsList(RegionStatus status) {
+    public List<PostUserDto> findRegionPostsList(RegionStatus status) {
         List<PostUserDto> postUserDtos = postRepository.findRegionPostsWithUserDetails(status);
         return postUserDtos;
     }
     // ✅키워드 검색
-    public List<PostTb> getByKeyword(String keyword) {
+    public List<PostTb> findByKeyword(String keyword) {
         List<PostTb> postList = postRepository.findByKeyword(keyword);
         return postList;
     }
-    // 북마크 상위 5개 게시글 내림차순 정렬
-    public Page<PostBookmarkDto> getTop5ByBookmarkCount() {
+    // ✅북마크 상위 5개 게시글 내림차순 정렬
+    public Page<PostBookmarkDto> findTop5ByBookmarkCount() {
         Pageable topFive = PageRequest.of(0,5);
         Page<PostBookmarkDto> postBookmarkDtos = postRepository.findTop5ByBookmarkCount(topFive);
         return postBookmarkDtos;
+    }
+    // ✅회원 프로필 가져오기(by Email)
+    public String findPfImgByEmail(String email) {
+        UserTb user = userRepository.findByEmail(email);
+        return user.getPfImg();
     }
 }

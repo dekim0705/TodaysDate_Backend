@@ -14,7 +14,10 @@ public class ChatbotTb {
     private Long id;
 
     @Column(nullable = false, length = 1000)
-    private String content;            // 문의 내용
+    private String inquiryContent;            // 문의 내용
+
+    @Column(nullable = false, length = 50)
+    private String email;                    // 이메일
 
     private LocalDateTime inquiryDate; // 문의 날짜
 

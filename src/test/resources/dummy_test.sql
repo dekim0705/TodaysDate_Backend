@@ -55,3 +55,11 @@ INSERT INTO bookmark_tb (bookmark_num, folder_id, post_id)
 VALUES (2, 2, 1);
 INSERT INTO bookmark_tb (bookmark_num, folder_id, post_id)
 VALUES (3, 2, 2);
+
+-- AD_TB
+INSERT INTO ad_tb (ad_num, img_url, name)
+VALUES (1, '광고 이미지 1', '광고1')
+INSERT INTO ad_tb (ad_num, img_url, name)
+VALUES (2, '광고 이미지 2', '광고2')
+INSERT INTO ad_tb (ad_num, img_url, name)
+VALUES (3, '광고 이미지 3', '광고3')

@@ -53,8 +53,10 @@ public class HomeService {
     }
     // ✅회원 프로필 가져오기(by Email)
     public String findPfImgByEmail(String email) {
+        String errorMsg = "프로필 이미지가 없습니다.";
         UserTb user = userRepository.findByEmail(email);
-        return user.getPfImg();
+        if(user == null) return errorMsg;
+        else return user.getPfImg();
     }
     // ✅북마크 추가
     public boolean createBookmark(Long userId, Long postId, String folderName) {

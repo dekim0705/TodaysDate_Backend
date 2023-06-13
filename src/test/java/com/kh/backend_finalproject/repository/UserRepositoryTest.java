@@ -1,4 +1,5 @@
 package com.kh.backend_finalproject.repository;
+import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.PostUserDto;
 import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.entitiy.UserTb;
@@ -40,5 +41,13 @@ class UserRepositoryTest {
     public void findByIdTest() {
         Optional<UserTb> user = userRepository.findById(1L);
         System.out.println("🦄 있으면 false : " + user.isEmpty());
+    }
+    @Test
+    @DisplayName("관심지역이 같은 사용자 조회 테스트")
+    public void findByUserRegionTest() {
+        List<UserTb> users = userRepository.findByUserRegion(RegionStatus.BUSAN);
+        for(UserTb e : users) {
+            System.out.println("🦄 부산 : " + e.getNickname());
+        }
     }
 }

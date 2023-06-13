@@ -1,4 +1,5 @@
 package com.kh.backend_finalproject.repository;
+import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.entitiy.UserTb;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,7 @@ public interface UserRepository extends JpaRepository<UserTb, Long> {
             "WHERE u.email = :email ")
     List<UserDto> findUserInfo(@Param("email") String email);
     Optional<UserTb> findById(Long id);
+
+    // ✅관심지역이 같은 사용자 조회
+    List<UserTb> findByUserRegion(RegionStatus region);
 }

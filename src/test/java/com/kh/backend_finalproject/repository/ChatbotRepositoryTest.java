@@ -1,8 +1,5 @@
 package com.kh.backend_finalproject.repository;
 import com.kh.backend_finalproject.dto.ChatbotUserDto;
-import com.kh.backend_finalproject.dto.PostUserDto;
-import com.kh.backend_finalproject.entitiy.ChatbotTb;
-import com.kh.backend_finalproject.entitiy.PostTb;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,7 @@ class ChatbotRepositoryTest {
 
     @Test
     @DisplayName("문의내역 조회 테스트")
-    public void findAllPostsWithUserDetailsTest() {
+    public void findAllInquiryWithUserNicknameTest() {
         List<ChatbotUserDto> chatbotUserDtos = chatbotRepository.findAllInquiryWithUserNickname();
         for (ChatbotUserDto e : chatbotUserDtos) {
             System.out.println("💗문의번호 : " + e.getInquiryNum());

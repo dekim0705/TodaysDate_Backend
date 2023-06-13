@@ -4,7 +4,7 @@ import com.kh.backend_finalproject.entitiy.UserTb;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import java.util.Optional;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<UserTb, Long> {
@@ -15,4 +15,5 @@ public interface UserRepository extends JpaRepository<UserTb, Long> {
             "FROM UserTb u  " +
             "WHERE u.email = :email ")
     List<UserDto> findUserInfo(@Param("email") String email);
+    Optional<UserTb> findById(Long id);
 }

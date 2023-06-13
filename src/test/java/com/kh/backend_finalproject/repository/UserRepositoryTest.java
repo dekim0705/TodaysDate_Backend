@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-
+import java.util.Optional;
 import java.util.List;
 
 @SpringBootTest
@@ -28,11 +28,17 @@ class UserRepositoryTest {
     @DisplayName("마이페이지 회원 프로필바 가져오기 테스트")
     public void findUserInfoTest() {
         List<UserDto> user = userRepository.findUserInfo("user1@naver.com");
-        for(UserDto e : user) {
+        for (UserDto e : user) {
             System.out.println("🍒프로필사진 : " + e.getPfImg());
             System.out.println("🍒닉네임 : " + e.getNickname());
             System.out.println("🍒푸쉬 설정 : " + e.getIsPushOk());
             System.out.println("🍒한 줄 소개 : " + e.getUserComment());
         }
+    }
+    @Test
+    @DisplayName("Id로 게시글 유무 확인 테스트")
+    public void findByIdTest() {
+        Optional<UserTb> user = userRepository.findById(1L);
+        System.out.println("🦄 있으면 false : " + user.isEmpty());
     }
 }

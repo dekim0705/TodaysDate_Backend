@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -55,5 +56,11 @@ class PostRepositoryTest {
             System.out.println("🦄️ 제목 : " + e.getTitle());
             System.out.println("🦄️ 북마크 수 : " + e.getBookmarkCount());
         }
+    }
+    @Test
+    @DisplayName("Id로 게시글 유무 확인 테스트")
+    public void findByIdTest() {
+        Optional<PostTb> post = postRepository.findById(1L);
+        System.out.println("🦄있으면 false : " + post.isEmpty());
     }
 }

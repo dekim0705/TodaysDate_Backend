@@ -17,7 +17,7 @@ public class UserTb {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_num")
-    private Long id;                                // 회원 번호
+    private Long id;                                 // 회원 번호
 
     @Column(nullable = false, unique = true, length = 50)
     private String email;                           // 이메일

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
+import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<PostTb, Long> {
     // ✅메인 페이지 : 전체 지역 게시글 작성일 최근순 정렬
@@ -33,4 +34,6 @@ public interface PostRepository extends JpaRepository<PostTb, Long> {
             "GROUP BY p " +
             "ORDER BY COUNT(b) DESC")
     Page<PostBookmarkDto> findTop5ByBookmarkCount(Pageable pageable);
+    // 게시글 조회(by Id)
+    Optional<PostTb> findById(@Param("id") Long id);
 }

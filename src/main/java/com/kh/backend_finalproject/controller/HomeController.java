@@ -2,6 +2,7 @@ package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.PostBookmarkDto;
 import com.kh.backend_finalproject.dto.PostUserDto;
+import com.kh.backend_finalproject.entitiy.BookmarkTb;
 import com.kh.backend_finalproject.entitiy.PostTb;
 import com.kh.backend_finalproject.service.HomeService;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,12 @@ public class HomeController {
         String pfImg = homeService.findPfImgByEmail(email);
         if(pfImg != null) return new ResponseEntity<>(pfImg, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    // 북마크 추가
+    @PostMapping(value = "/user/{userId}/post/{postId}/folder/{folderName}/bookmark")
+    public ResponseEntity<Boolean> addBookmark(@PathVariable Long userId, @PathVariable Long postId, @PathVariable String folderName) {
+        boolean isAddBookmark = homeService.createBookmark(userId, postId, folderName);
+        if(isAddBookmark) return new ResponseEntity<>(true, HttpStatus.OK);
+        else return new ResponseEntity<>(false, HttpStatus.NO_CONTENT);
     }
 }

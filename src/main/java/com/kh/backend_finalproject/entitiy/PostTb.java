@@ -1,5 +1,6 @@
 package com.kh.backend_finalproject.entitiy;
 import com.kh.backend_finalproject.constant.RegionStatus;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -55,9 +56,9 @@ public class PostTb {
     @JoinColumn(name = "user_num")
     private UserTb user;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BookmarkTb> bookmarks;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ReplyTb> replies;
 }

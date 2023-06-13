@@ -1,12 +1,12 @@
--- USER_TB
-INSERT INTO user_tb (user_num, email, pwd, nickname, user_comment, pf_img, user_region, reg_date, is_push, is_membership, auth_key, is_active)
-VALUES (1, 'user1@naver.com', 'a1234!@#$1', '명란젓코난', '어디든 갈 준비가 되어있습니다.', '기본이미지1', 'SEOUL', '2023-06-01 12:00:00', 'PUSH', 'FREE', 'authKey1', 'ACTIVE');
-
-INSERT INTO user_tb (user_num, email, pwd, nickname, user_comment, pf_img, user_region, reg_date, is_push, is_membership, auth_key, is_active)
-VALUES (2, 'user2@kakao.com', 'a1234!@#$1', '꿔바로우많이두개더', '맛집 탐방 위주로 다니고 있습니다.', '기본이미지2', 'BUSAN', '2023-06-05 12:00:00', 'PUSH', 'FREE', 'authKey2', 'ACTIVE');
-
-INSERT INTO user_tb (user_num, email, pwd, nickname, user_comment, pf_img, user_region, reg_date, is_push, is_membership, auth_key, is_active)
-VALUES (3, 'user3@nate.com', 'a1234!@#$1', '이웃집또털어', '핫플 좋아해요.', '기본이미지3', 'SEOUL', '2023-06-07 12:00:00', 'PUSH', 'FREE', 'authKey3', 'ACTIVE');
+-- -- USER_TB
+-- INSERT INTO user_tb (user_num, email, pwd, nickname, user_comment, pf_img, user_region, reg_date, is_push, is_membership, auth_key, is_active)
+-- VALUES (1, 'user1@naver.com', 'a1234!@#$1', '명란젓코난', '어디든 갈 준비가 되어있습니다.', '기본이미지1', 'SEOUL', '2023-06-01 12:00:00', 'PUSH', 'FREE', 'authKey1', 'ACTIVE');
+--
+-- INSERT INTO user_tb (user_num, email, pwd, nickname, user_comment, pf_img, user_region, reg_date, is_push, is_membership, auth_key, is_active)
+-- VALUES (2, 'user2@kakao.com', 'a1234!@#$1', '꿔바로우많이두개더', '맛집 탐방 위주로 다니고 있습니다.', '기본이미지2', 'BUSAN', '2023-06-05 12:00:00', 'PUSH', 'FREE', 'authKey2', 'ACTIVE');
+--
+-- INSERT INTO user_tb (user_num, email, pwd, nickname, user_comment, pf_img, user_region, reg_date, is_push, is_membership, auth_key, is_active)
+-- VALUES (3, 'user3@nate.com', 'a1234!@#$1', '이웃집또털어', '핫플 좋아해요.', '기본이미지3', 'SEOUL', '2023-06-07 12:00:00', 'PUSH', 'FREE', 'authKey3', 'ACTIVE');
 
 -- POST_TB
 -- 1번 게시글
@@ -63,3 +63,11 @@ INSERT INTO ad_tb (ad_num, img_url, name)
 VALUES (2, '광고 이미지 2', '광고2');
 INSERT INTO ad_tb (ad_num, img_url, name)
 VALUES (3, '광고 이미지 3', '광고3');
+
+-- REPORT_TB
+INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_fk)
+VALUES (1, '신고합니다.저한테 욕했어요 ㅡㅡ','2023-06-06 12:30:00', '명란젓코난','꿔바로우많이두개더');
+INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_fk)
+VALUES (2, '이사람 신고합니다. 광고글만 올려요','2023-06-06 12:40:00', '이웃집또털어','명란젓코난');
+INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_fk)
+VALUES (3, '신고합니다...','2023-06-06 12:50:00', '이웃집또털어','꿔바로우많이두개더');

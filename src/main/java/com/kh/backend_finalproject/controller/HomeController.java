@@ -53,7 +53,7 @@ public class HomeController {
         if(pfImg != null) return new ResponseEntity<>(pfImg, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    // 북마크 추가
+    // ✅북마크 추가
     @PostMapping(value = "/user/{userId}/post/{postId}/folder/{folderName}/bookmark")
     public ResponseEntity<Boolean> addBookmark(@PathVariable Long userId, @PathVariable Long postId, @PathVariable String folderName) {
         boolean isAddBookmark = homeService.createBookmark(userId, postId, folderName);

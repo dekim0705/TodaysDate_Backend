@@ -1,10 +1,11 @@
 package com.kh.backend_finalproject.dto;
 import com.kh.backend_finalproject.constant.RegionStatus;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 
-@Getter @Setter
+@Getter @Setter @AllArgsConstructor
 public class PostDto {
     private String title;
     private RegionStatus region;
@@ -14,7 +15,5 @@ public class PostDto {
     private List<String> comment;
     private List<String> placeTag;
     private List<String> imgUrl;
-    private int viewCount;
-    private int reportCount;
     private String content;
 }

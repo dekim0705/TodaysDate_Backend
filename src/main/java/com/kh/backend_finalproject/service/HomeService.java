@@ -56,7 +56,7 @@ public class HomeService {
         UserTb user = userRepository.findByEmail(email);
         return user.getPfImg();
     }
-    // 북마크 추가
+    // ✅북마크 추가
     public boolean createBookmark(Long userId, Long postId, String folderName) {
         Optional<UserTb> userOptional = userRepository.findById(userId);
         Optional<PostTb> postOptional = postRepository.findById(postId);

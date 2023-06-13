@@ -31,9 +31,9 @@ public class PostController {
         else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     // ✅게시글 조회
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<PostTb> getPost(@PathVariable Long id) throws IllegalAccessException {
-        PostTb post = postService.findPost(id);
+    @GetMapping(value = "/{postId}")
+    public ResponseEntity<PostTb> getPost(@PathVariable Long postId) throws IllegalAccessException {
+        PostTb post = postService.findPost(postId);
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 }

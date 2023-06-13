@@ -1,7 +1,9 @@
 package com.kh.backend_finalproject.repository;
 import com.kh.backend_finalproject.constant.RegionStatus;
+import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.dto.UserProfileDto;
+import com.kh.backend_finalproject.entitiy.PostTb;
 import com.kh.backend_finalproject.entitiy.UserTb;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +25,11 @@ public interface UserRepository extends JpaRepository<UserTb, Long> {
 
     // ✅관심지역이 같은 사용자 조회
     List<UserTb> findByUserRegion(RegionStatus region);
+
+    // 마이페이지 - 회원 전체 게시글 가져오기
+//    @Query("SELECT new com.kh.backend_finalproject.dto.PostDto(p.id, p.title, p.content, u.nickname, p.writeDate, p.viewCount) " +
+//            "FROM PostTb p JOIN p.user u " +
+//            "WHERE u.id = :userId")
+//    List<PostDto> findUserPosts(@Param("userId") Long userId);
+
 }

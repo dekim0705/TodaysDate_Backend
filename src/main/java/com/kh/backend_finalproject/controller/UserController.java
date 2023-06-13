@@ -1,9 +1,11 @@
 package com.kh.backend_finalproject.controller;
 
+import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.UserProfileDto;
 import com.kh.backend_finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,4 +31,12 @@ public class UserController {
             return new ResponseEntity<>(profileDtos, HttpStatus.OK);
         }
     }
+
+    // 마이페이지 - 회원 전체 게시글 가져오기 (글번호, 제목, 본문, 닉네임, 작성일, 조회수)
+//    @GetMapping(value = "/posts/{userNum}")
+//    public ResponseEntity<List<PostDto>> getPosts(@RequestParam Long userNum) {
+//        List<PostDto> userPosts = userService.getUserPosts(userNum);
+//        return new ResponseEntity<>(userPosts, HttpStatus.OK);
+//    }
+
 }

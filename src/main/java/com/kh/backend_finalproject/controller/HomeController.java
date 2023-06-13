@@ -2,6 +2,7 @@ package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.PostBookmarkDto;
 import com.kh.backend_finalproject.dto.PostUserDto;
+import com.kh.backend_finalproject.entitiy.AdTb;
 import com.kh.backend_finalproject.entitiy.BookmarkTb;
 import com.kh.backend_finalproject.entitiy.PostTb;
 import com.kh.backend_finalproject.service.HomeService;
@@ -59,5 +60,12 @@ public class HomeController {
         boolean isAddBookmark = homeService.createBookmark(userId, postId, folderName);
         if(isAddBookmark) return new ResponseEntity<>(true, HttpStatus.OK);
         else return new ResponseEntity<>(false, HttpStatus.NO_CONTENT);
+    }
+    // ✅광고 전체 가져오기
+    @GetMapping(value = "/ads")
+    public ResponseEntity<List<AdTb>> getAllAds() {
+        List<AdTb> ads = homeService.findAllAd();
+        if(ads != null) return new ResponseEntity<>(ads, HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

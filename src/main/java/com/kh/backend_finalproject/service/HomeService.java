@@ -2,14 +2,8 @@ package com.kh.backend_finalproject.service;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.PostBookmarkDto;
 import com.kh.backend_finalproject.dto.PostUserDto;
-import com.kh.backend_finalproject.entitiy.BookmarkTb;
-import com.kh.backend_finalproject.entitiy.FolderTb;
-import com.kh.backend_finalproject.entitiy.PostTb;
-import com.kh.backend_finalproject.entitiy.UserTb;
-import com.kh.backend_finalproject.repository.BookmarkRepository;
-import com.kh.backend_finalproject.repository.FolderRepository;
-import com.kh.backend_finalproject.repository.PostRepository;
-import com.kh.backend_finalproject.repository.UserRepository;
+import com.kh.backend_finalproject.entitiy.*;
+import com.kh.backend_finalproject.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,6 +23,7 @@ public class HomeService {
     private final PostRepository postRepository;
     private final BookmarkRepository bookmarkRepository;
     private final FolderRepository folderRepository;
+    private final AdRepository adRepository;
 
     // ✅️전체 지역 게시글 작성일 최근순 정렬
     public List<PostUserDto> findAllPostsList() {
@@ -81,5 +76,10 @@ public class HomeService {
         bookmarkRepository.save(bookmark);
 
         return true;
+    }
+    // ✅광고 전체 가져오기
+    public List<AdTb> findAllAd() {
+        List<AdTb> ads = adRepository.findAll();
+        return ads;
     }
 }

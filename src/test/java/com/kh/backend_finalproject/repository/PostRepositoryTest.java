@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -58,9 +60,15 @@ class PostRepositoryTest {
         }
     }
     @Test
+    @Transactional
     @DisplayName("Id로 게시글 유무 확인 테스트")
     public void findByIdTest() {
         Optional<PostTb> post = postRepository.findById(1L);
-        System.out.println("🦄있으면 false : " + post.isEmpty());
+        if(post.isPresent()) {
+            PostTb postTb = post.get();
+            System.out.println("🦄 id : " + postTb.getId());
+            System.out.println("🦄 제목 : " + postTb.getTitle());
+            System.out.println("🦄 닉네임 : " + postTb.getUser().getNickname());
+        }
     }
 }

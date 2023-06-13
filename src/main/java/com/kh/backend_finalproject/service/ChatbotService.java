@@ -1,7 +1,4 @@
 package com.kh.backend_finalproject.service;
-
-import com.kh.backend_finalproject.dto.ChatbotDto;
-import com.kh.backend_finalproject.entitiy.ChatbotTb;
 import com.kh.backend_finalproject.repository.ChatbotRepository;
 
 import lombok.RequiredArgsConstructor;

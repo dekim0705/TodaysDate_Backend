@@ -1,6 +1,5 @@
 package com.kh.backend_finalproject.repository;
 import com.kh.backend_finalproject.constant.RegionStatus;
-import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.dto.UserProfileDto;
 import com.kh.backend_finalproject.entitiy.PostTb;

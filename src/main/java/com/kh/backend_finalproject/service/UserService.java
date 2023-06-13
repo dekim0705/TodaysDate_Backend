@@ -1,6 +1,4 @@
 package com.kh.backend_finalproject.service;
-
-import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.dto.UserProfileDto;
 import com.kh.backend_finalproject.entitiy.PostTb;

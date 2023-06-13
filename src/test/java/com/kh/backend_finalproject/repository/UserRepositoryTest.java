@@ -1,4 +1,6 @@
 package com.kh.backend_finalproject.repository;
+import com.kh.backend_finalproject.dto.PostUserDto;
+import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.entitiy.UserTb;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
+
+import java.util.List;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -19,5 +23,16 @@ class UserRepositoryTest {
     public void findByEmailTest() {
         UserTb user = userRepository.findByEmail("user1@naver.com");
         System.out.println("🦄 : " + user.getPfImg());
+    }
+    @Test
+    @DisplayName("마이페이지 회원 프로필바 가져오기 테스트")
+    public void findUserInfoTest() {
+        List<UserDto> user = userRepository.findUserInfo("user1@naver.com");
+        for(UserDto e : user) {
+            System.out.println("🍒프로필사진 : " + e.getPfImg());
+            System.out.println("🍒닉네임 : " + e.getNickname());
+            System.out.println("🍒푸쉬 설정 : " + e.getIsPushOk());
+            System.out.println("🍒한 줄 소개 : " + e.getUserComment());
+        }
     }
 }

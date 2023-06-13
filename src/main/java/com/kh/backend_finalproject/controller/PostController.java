@@ -16,17 +16,24 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/posts")
 public class PostController {
     @Autowired
     PostService postService;
 
-    // ⭐️글 작성 Controller는 사용자 정보 받아야 해서 로그인 구현 후에 마무리 !!!
-    @PostMapping("/posts")
+    // ⚠️️게시글 작성 Controller는 사용자 정보 받아야 해서 로그인 구현 후에 마무리 !!!
+    @PostMapping("/")
     public ResponseEntity<PostTb> createPost(@RequestBody PostPinDto postPinDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserTb user = (UserTb) authentication.getPrincipal();
         PostTb post = postService.createPostWithPinAndPush(postPinDto);
         if(post != null) return new ResponseEntity<>(post, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    // ✅게시글 조회
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<PostTb> getPost(@PathVariable Long id) throws IllegalAccessException {
+        PostTb post = postService.findPost(id);
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.kh.backend_finalproject.service;
 import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.PostPinDto;
+import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.entitiy.PinTb;
 import com.kh.backend_finalproject.entitiy.PostTb;
 import com.kh.backend_finalproject.entitiy.PushTb;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -31,14 +33,15 @@ public class PostService {
     private SseService sseService;
 
     // ⚠️게시글 작성 (⭐️Spring Security 구현 후에 테스트 해볼 것!!)
-    public PostTb createPostWithPinAndPush(PostPinDto postPinDto) {
+    public PostTb createPostWithPinAndPush(Long userId, PostPinDto postPinDto) {
         // 1. 사용자 정보 가져오기(Spring Security...)
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserTb user = (UserTb) authentication.getPrincipal();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        UserTb user = (UserTb) authentication.getPrincipal();
+        Optional<UserTb> user = userRepository.findById(userId);
 
         // 2. 게시글 저장
         PostTb post = postPinDto.getPost();
-        post.setUser(user);
+        post.setUser(user.get());
         PostTb savePost = postRepository.save(post);
 
         // 3. pin(경로) 저장
@@ -61,7 +64,7 @@ public class PostService {
         }
         return savePost;
     }
-    // 게시글 조회
+    // ✅게시글 조회
     public PostTb findPost(Long postId) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));

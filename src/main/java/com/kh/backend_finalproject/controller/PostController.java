@@ -23,10 +23,10 @@ public class PostController {
 
     // ⚠️️게시글 작성 Controller는 사용자 정보 받아야 해서 로그인 구현 후에 마무리 !!!
     @PostMapping("/")
-    public ResponseEntity<PostTb> createPost(@RequestBody PostPinDto postPinDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserTb user = (UserTb) authentication.getPrincipal();
-        PostTb post = postService.createPostWithPinAndPush(postPinDto);
+    public ResponseEntity<PostTb> createPost(@RequestBody Long userId, PostPinDto postPinDto) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        UserTb user = (UserTb) authentication.getPrincipal();
+        PostTb post = postService.createPostWithPinAndPush(userId, postPinDto);
         if(post != null) return new ResponseEntity<>(post, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

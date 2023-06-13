@@ -4,6 +4,7 @@ import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.dto.UserProfileDto;
 import com.kh.backend_finalproject.entitiy.PostTb;
+import com.kh.backend_finalproject.entitiy.UserTb;
 import com.kh.backend_finalproject.repository.PostRepository;
 import com.kh.backend_finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

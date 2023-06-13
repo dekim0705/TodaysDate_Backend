@@ -41,5 +41,4 @@ public interface PostRepository extends JpaRepository<PostTb, Long> {
             "FROM UserTb u INNER JOIN u.posts p " +
             "ORDER BY p.writeDate DESC")
     List<PostUserDto> findAllPostsWithUserNickname();
-
 }

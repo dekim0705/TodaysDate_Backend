@@ -71,4 +71,17 @@ class PostRepositoryTest {
             System.out.println("🦄 닉네임 : " + postTb.getUser().getNickname());
         }
     }
+    @Test
+    @DisplayName("관리자페이지 - 전체글 조회 테스트")
+    public void findAllPostsWithUserNicknameTest () {
+        List<PostUserDto> postUserDtos = postRepository.findAllPostsWithUserNickname();
+        for (PostUserDto e : postUserDtos) {
+            System.out.println("💗글번호 : " + e.getNickname());
+            System.out.println("💗제목 : " + e.getTitle());
+            System.out.println("💗닉네임 : " + e.getNickname());
+            System.out.println("💗작성일 : " + e.getWriteDate());
+            System.out.println("—————————————— " );
+
+        }
+    }
 }

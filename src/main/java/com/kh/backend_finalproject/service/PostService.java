@@ -30,7 +30,7 @@ public class PostService {
     @Autowired
     private SseService sseService;
 
-    // 글 작성 (⭐️Spring Security 구현 후에 테스트 해볼 것!!)
+    // ⚠️게시글 작성 (⭐️Spring Security 구현 후에 테스트 해볼 것!!)
     public PostTb createPostWithPinAndPush(PostPinDto postPinDto) {
         // 1. 사용자 정보 가져오기(Spring Security...)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -61,5 +61,10 @@ public class PostService {
         }
         return savePost;
     }
-
+    // 게시글 조회
+    public PostTb findPost(Long postId) throws IllegalAccessException {
+        PostTb post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
+        return post;
+    }
 }

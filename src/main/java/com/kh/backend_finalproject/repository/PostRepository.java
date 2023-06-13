@@ -36,4 +36,10 @@ public interface PostRepository extends JpaRepository<PostTb, Long> {
     Page<PostBookmarkDto> findTop5ByBookmarkCount(Pageable pageable);
     // 게시글 조회(by Id)
     Optional<PostTb> findById(@Param("id") Long id);
+    //💗 관리자 페이지 : 전체 게시글 조회 ( 최근순 정렬)
+    @Query("SELECT new com.kh.backend_finalproject.dto.PostUserDto( p.id, u.nickname, p.title, p.writeDate) " +
+            "FROM UserTb u INNER JOIN u.posts p " +
+            "ORDER BY p.writeDate DESC")
+    List<PostUserDto> findAllPostsWithUserNickname();
+
 }

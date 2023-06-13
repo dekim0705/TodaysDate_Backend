@@ -1,9 +1,6 @@
 package com.kh.backend_finalproject.service;
 import com.kh.backend_finalproject.dto.*;
-import com.kh.backend_finalproject.entitiy.AdTb;
-import com.kh.backend_finalproject.entitiy.ChatbotTb;
-import com.kh.backend_finalproject.entitiy.PostTb;
-import com.kh.backend_finalproject.entitiy.UserTb;
+import com.kh.backend_finalproject.entitiy.*;
 import com.kh.backend_finalproject.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +22,19 @@ public class AdminService {
     private final UserRepository userRepository;
     private  final ReplyRepository replyRepository;
     private  final AdRepository adRepository;
+    private final PostRepository postRepository;
+    private final ReportRepository reportRepository;
 
     // 💗 전체 문의 내역 조회 (문의일 최근순 정렬)
     public List<ChatbotUserDto> findAllInquiryList() {
         List<ChatbotUserDto> chatbotUserDtos = chatbotRepository.findAllInquiryWithUserNickname();
         return chatbotUserDtos;
+    }
+
+    // 💗 전체 댓글 내역 조회 (문의일 최근순 정렬)
+    public List<PostUserDto> findAllPostList() {
+        List<PostUserDto> postUserDtos = postRepository.findAllPostsWithUserNickname();
+        return postUserDtos;
     }
 
     // 💗 전체 댓글 내역 조회 (문의일 최근순 정렬)
@@ -64,6 +69,18 @@ public class AdminService {
         savedAdDto.setImgUrl(adTb.getImgUrl());
         return savedAdDto;
     }
-
+    // 💗 전체 신고 내역 조회
+    public List<ReportDto> findAllReportList() {
+        List<ReportTb> reports = reportRepository.findAll();
+        List<ReportDto> reportDtos = new ArrayList<>();
+        for (ReportTb report : reports) {
+            ReportDto reportDto = new ReportDto();
+            reportDto.setReportNum(report.getId());
+            reportDto.setContent(report.getContent());
+            reportDto.setReportDate(report.getReportDate());
+            reportDtos.add(reportDto);
+        }
+        return reportDtos;
+    }
 }
 

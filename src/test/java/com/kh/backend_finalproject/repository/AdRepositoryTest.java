@@ -1,7 +1,5 @@
 package com.kh.backend_finalproject.repository;
 
-import com.kh.backend_finalproject.dto.AdDto;
-import com.kh.backend_finalproject.dto.ReplyUserDto;
 import com.kh.backend_finalproject.entitiy.AdTb;
 import org.junit.jupiter.api.DisplayName;
 
@@ -22,6 +20,7 @@ import java.util.List;
 public class AdRepositoryTest {
     @Autowired
     AdRepository adRepository;
+    PostRepository postRepository;
 
     @Test
     @DisplayName("광고 추가 테스트")
@@ -38,7 +37,7 @@ public class AdRepositoryTest {
 
     @Test
     @DisplayName("광고 조회 테스트")
-    public void findAllReplyWithUserNicknameTest() {
+    public void findAlAdTest() {
         List<AdTb> ads = adRepository.findAll();
         for (AdTb e : ads) {
             System.out.println("💗광고 번호 : " + e.getId());
@@ -46,7 +45,7 @@ public class AdRepositoryTest {
             System.out.println("💗이미지url : " + e.getImgUrl());
             System.out.println("===============================================================");
 
-
         }
     }
+
 }

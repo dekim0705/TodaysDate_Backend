@@ -1,12 +1,16 @@
 package com.kh.backend_finalproject.entitiy;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 public class ReportTb {
     @Id
     @GeneratedValue
@@ -18,11 +22,9 @@ public class ReportTb {
 
     private LocalDateTime reportDate; // 신고 날짜
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reporter_fk")
-    private UserTb reporter;
+    @Column(name = "reporter_fk")
+    private String reporter; // 신고자
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reported_fk")
-    private UserTb reported;
+    @Column(name = "reported_fk")
+    private String reported; // 신고받은 사람
 }

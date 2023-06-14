@@ -1,5 +1,6 @@
 package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.dto.UserProfileDto;
+import com.kh.backend_finalproject.entitiy.UserTb;
 import com.kh.backend_finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -28,12 +30,11 @@ public class UserController {
             return new ResponseEntity<>(profileDtos, HttpStatus.OK);
         }
     }
-
-    // 마이페이지 - 회원 전체 게시글 가져오기 (글번호, 제목, 본문, 닉네임, 작성일, 조회수)
-//    @GetMapping(value = "/posts/{userNum}")
-//    public ResponseEntity<List<PostDto>> getPosts(@RequestParam Long userNum) {
-//        List<PostDto> userPosts = userService.getUserPosts(userNum);
-//        return new ResponseEntity<>(userPosts, HttpStatus.OK);
-//    }
+    // 마이페이지 - 회원과 매핑된 모든 정보 가져오기
+    @GetMapping(value = "/posts/{userId}")
+    public ResponseEntity<UserTb> getAllPosts(@RequestParam Long userId) throws IllegalAccessException {
+        UserTb user = userService.getUserInfo(userId);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
 }

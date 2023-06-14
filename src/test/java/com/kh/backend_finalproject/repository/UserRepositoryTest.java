@@ -2,6 +2,7 @@ package com.kh.backend_finalproject.repository;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.UserProfileDto;
 import com.kh.backend_finalproject.entitiy.PostTb;
+import com.kh.backend_finalproject.entitiy.ReplyTb;
 import com.kh.backend_finalproject.entitiy.UserTb;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,20 +56,6 @@ class UserRepositoryTest {
         }
     }
 
-//    @Test
-//    @DisplayName("마이페이지 회원 전체 게시글 가져오기 테스트")
-//    public void findUserPostsTest() {
-//        List<PostDto> userPosts = userRepository.findUserPosts(1L);
-//        for (PostDto e : userPosts) {
-//            System.out.println("🍒글 번호 : " + e.getPostNum());
-//            System.out.println("🍒닉네임 : " + e.getNickname());
-//            System.out.println("🍒제목 : " + e.getTitle());
-//            System.out.println("🍒본문 : " + e.getContent());
-//            System.out.println("🍒작성일 : " + e.getWriteDate());
-//            System.out.println("🍒조회수 : " + e.getViewCount());
-//        }
-//    }
-
     @Test
     @Transactional
     @DisplayName("마이페이지 회원 전체 게시글 가져오기 테스트")
@@ -77,9 +64,29 @@ class UserRepositoryTest {
         if(user.isPresent()) {
             List<PostTb> posts = user.get().getPosts();
             for (PostTb post : posts) {
+                System.out.println("🍒 글번호: " + post.getId());
                 System.out.println("🍒 제목 : " + post.getTitle());
                 System.out.println("🍒 본문 : " + post.getContent());
                 System.out.println("🍒 닉네임 : " + post.getUser().getNickname());
+                System.out.println("🍒 작성일 : " + post.getWriteDate());
+                System.out.println("🍒 조회수 : " + post.getViewCount());
+            }
+        }
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("마이페이지 회원 전체 댓글 가져오기 테스트")
+    public void findUserRepliesTest() {
+        Optional<UserTb> user = userRepository.findById(3L);
+        if(user.isPresent()) {
+            List<ReplyTb> replies = user.get().getReplies();
+            for(ReplyTb reply : replies) {
+                System.out.println("🍒 댓글 번호: " + reply.getId());
+                System.out.println("🍒 댓글 본문 : " + reply.getContent());
+                System.out.println("🍒 원문 제목 : " + reply.getPost().getTitle());
+                System.out.println("🍒 닉네임 : " + reply.getUser().getNickname());
+                System.out.println("🍒 작성일 : " + reply.getWriteDate());
             }
         }
     }

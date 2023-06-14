@@ -20,15 +20,10 @@ public interface UserRepository extends JpaRepository<UserTb, Long> {
             "FROM UserTb u " +
             "WHERE u.email = :email")
     List<UserProfileDto> findUserProfileInfo(@Param("email") String email);
+
     Optional<UserTb> findById(Long id);
 
     // ✅관심지역이 같은 사용자 조회
     List<UserTb> findByUserRegion(RegionStatus region);
-
-    // 마이페이지 - 회원 전체 게시글 가져오기
-//    @Query("SELECT new com.kh.backend_finalproject.dto.PostDto(p.id, p.title, p.content, u.nickname, p.writeDate, p.viewCount) " +
-//            "FROM PostTb p JOIN p.user u " +
-//            "WHERE u.id = :userId")
-//    List<PostDto> findUserPosts(@Param("userId") Long userId);
 
 }

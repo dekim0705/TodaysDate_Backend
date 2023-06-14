@@ -2,6 +2,7 @@ package com.kh.backend_finalproject.service;
 import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.dto.UserProfileDto;
 import com.kh.backend_finalproject.entitiy.PostTb;
+import com.kh.backend_finalproject.dto.UserProfileDto;
 import com.kh.backend_finalproject.entitiy.UserTb;
 import com.kh.backend_finalproject.repository.PostRepository;
 import com.kh.backend_finalproject.repository.UserRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -25,9 +27,11 @@ public class UserService {
         List<UserProfileDto> profileDtos = userRepository.findUserProfileInfo(email);
         return profileDtos;
     }
-    // 마이페이지 - 회원 전체 게시글 가져오기
-//    public List<PostDto> getUserPosts(Long userNum) {
-//        List<PostDto> userPosts = userRepository.findUserPosts(userNum);
-//        return userPosts;
-//    }
+    // 마이페이지 - 회원과 매핑된 모든 정보 가져오기
+    public UserTb getUserInfo(Long userId) throws IllegalAccessException {
+        UserTb user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalAccessException("해당 사용자가 없습니다." + userId));
+        return user;
+    }
+
 }

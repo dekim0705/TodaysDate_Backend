@@ -1,6 +1,7 @@
 package com.kh.backend_finalproject.service;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.PostBookmarkDto;
+import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostUserDto;
 import com.kh.backend_finalproject.entitiy.*;
 import com.kh.backend_finalproject.repository.*;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,9 +39,20 @@ public class HomeService {
         return postUserDtos;
     }
     // ✅키워드 검색
-    public List<PostTb> findByKeyword(String keyword) {
+    public List<PostDto> findByKeyword(String keyword) {
         List<PostTb> postList = postRepository.findByKeyword(keyword);
-        return postList;
+        List<PostDto> postDtos = new ArrayList<>();
+        for (PostTb e : postList) {
+            PostDto postDto = new PostDto();
+            postDto.setPfImg(e.getUser().getPfImg());
+            postDto.setNickname(e.getUser().getNickname());
+            postDto.setWriteDate(e.getWriteDate());
+            postDto.setTitle(e.getTitle());
+            postDto.setDistrict(e.getDistrict());
+            postDto.setImgUrl(e.getImgUrl());
+            postDtos.add(postDto);
+        }
+        return postDtos;
     }
     // ✅북마크 상위 5개 게시글 내림차순 정렬
     public Page<PostBookmarkDto> findTop5ByBookmarkCount() {
@@ -48,10 +62,8 @@ public class HomeService {
     }
     // ✅회원 프로필 가져오기(by Email)
     public String findPfImgByEmail(String email) {
-        String errorMsg = "프로필 이미지가 없습니다.";
         UserTb user = userRepository.findByEmail(email);
-        if(user == null) return errorMsg;
-        else return user.getPfImg();
+        return user.getPfImg();
     }
     // ✅북마크 추가
     public boolean createBookmark(Long userId, Long postId, String folderName) {

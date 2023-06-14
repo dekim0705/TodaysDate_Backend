@@ -1,4 +1,6 @@
 package com.kh.backend_finalproject.entitiy;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kh.backend_finalproject.constant.IsActive;
 import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;

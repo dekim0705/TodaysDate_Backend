@@ -30,4 +30,16 @@ public class PostController {
         PostTb post = postService.findPost(postId);
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
+    // ✅게시글 수정
+    @PutMapping(value = "/{postId}")
+    public ResponseEntity<PostTb> updatePost(@PathVariable Long postId, @RequestBody PostTb updatePostData) throws IllegalAccessException {
+        PostTb post = postService.updatePost(postId, updatePostData);
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+    // ✅게시글 삭제
+    @DeleteMapping(value = "/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId) throws IllegalAccessException {
+        postService.deletePost(postId);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 }

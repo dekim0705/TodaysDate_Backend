@@ -1,20 +1,15 @@
 package com.kh.backend_finalproject.service;
 import com.kh.backend_finalproject.constant.IsPush;
-import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.PostPinDto;
-import com.kh.backend_finalproject.dto.UserDto;
-import com.kh.backend_finalproject.entitiy.PinTb;
-import com.kh.backend_finalproject.entitiy.PostTb;
-import com.kh.backend_finalproject.entitiy.PushTb;
-import com.kh.backend_finalproject.entitiy.UserTb;
+import com.kh.backend_finalproject.dto.ReplyUserDto;
+import com.kh.backend_finalproject.entitiy.*;
 import com.kh.backend_finalproject.repository.PinRepository;
 import com.kh.backend_finalproject.repository.PostRepository;
+import com.kh.backend_finalproject.repository.ReplyRepository;
 import com.kh.backend_finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -29,6 +24,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PinRepository pinRepository;
+    private final ReplyRepository replyRepository;
+
     @Autowired
     private SseService sseService;
 
@@ -68,12 +65,49 @@ public class PostService {
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
         return post;
     }
-    // 게시글 수정
+    // ✅게시글 수정
     public PostTb updatePost(Long postId, PostTb updatePostData) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
-        return post;
+        post.setTitle(updatePostData.getTitle());
+        post.setRegion(updatePostData.getRegion());
+        post.setCourse(updatePostData.getCourse());
+        post.setTheme(updatePostData.getTheme());
+        post.setDistrict(updatePostData.getDistrict());
+        post.setComment(updatePostData.getComment());
+        post.setPlaceTag(updatePostData.getPlaceTag());
+        post.setImgUrl(updatePostData.getImgUrl());
+        post.setContent(updatePostData.getContent());
 
-
+        return postRepository.save(post);
     }
+    // ✅게시글 삭제
+    public void deletePost(Long postId) throws IllegalAccessException {
+        PostTb post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+        postRepository.delete(post);
+    }
+    // 댓글 작성
+    public ReplyTb createReply(Long postId, Long userId, ReplyUserDto replyUserDto) throws IllegalAccessException {
+        PostTb post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+
+        UserTb user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
+
+        ReplyTb reply = new ReplyTb();
+        reply.setContent(replyUserDto.getContent());
+        reply.setWriteDate(LocalDateTime.now());
+        reply.setPost(post);
+        reply.setUser(user);
+
+        return replyRepository.save(reply);
+    }
+    // 댓글 조회
+//    public List<ReplyTb> findReply(Long PostId) {
+//
+//    }
+    // 댓글 수정
+
+    // 댓글 삭제
 }

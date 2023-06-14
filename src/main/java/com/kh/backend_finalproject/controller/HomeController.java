@@ -1,10 +1,9 @@
 package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.PostBookmarkDto;
+import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostUserDto;
 import com.kh.backend_finalproject.entitiy.AdTb;
-import com.kh.backend_finalproject.entitiy.BookmarkTb;
-import com.kh.backend_finalproject.entitiy.PostTb;
 import com.kh.backend_finalproject.service.HomeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +36,8 @@ public class HomeController {
     }
     // ✅키워드 검색
     @GetMapping(value = "/posts/search")
-    public ResponseEntity<List<PostTb>> getSearchPosts(@RequestParam String keyword) {
-        List<PostTb> posts = homeService.findByKeyword(keyword);
+    public ResponseEntity<List<PostDto>> getSearchPosts(@RequestParam String keyword) {
+        List<PostDto> posts = homeService.findByKeyword(keyword);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     // ✅북마크 상위 5개 게시글 내림차순 정렬

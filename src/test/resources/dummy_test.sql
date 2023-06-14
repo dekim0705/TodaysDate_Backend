@@ -64,14 +64,6 @@ VALUES (2, '광고 이미지 2', '광고2');
 INSERT INTO ad_tb (ad_num, img_url, name)
 VALUES (3, '광고 이미지 3', '광고3');
 
--- REPORT_TB
-INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_fk)
-VALUES (1, '신고합니다.저한테 욕했어요 ㅡㅡ','2023-06-06 12:30:00', '명란젓코난','꿔바로우많이두개더');
-INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_fk)
-VALUES (2, '이사람 신고합니다. 광고글만 올려요','2023-06-06 12:40:00', '이웃집또털어','명란젓코난');
-INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_fk)
-VALUES (3, '신고합니다...','2023-06-06 12:50:00', '이웃집또털어','꿔바로우많이두개더');
-
 -- CHATBOT_TB
 INSERT INTO chatbot_tb (inquiry_num, inquiry_content, user_num, inquiry_date, inquiry_status, email)
 VALUES (1, '문의합니다!! 안녕하세요 ~~~~ 이거 어떻게하는거죵???????? 너무어렵네요.. 관리자님.. 도와주세요 ㅜ-ㅜ', 1, '2023-06-06 11:00:00', '완료', 'user1@naver.com');

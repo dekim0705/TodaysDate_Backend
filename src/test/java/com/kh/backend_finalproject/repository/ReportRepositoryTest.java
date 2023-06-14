@@ -31,7 +31,7 @@ public class ReportRepositoryTest {
         for (ReportTb e : reports) {
             System.out.println("💗신고 번호 : " + e.getId());
             System.out.println("💗신고내용 : " + e.getContent());
-            System.out.println("💗신고자 : " + e.getReporter());
+            System.out.println("💗신고자 : " + e.getReporter().getNickname());
             System.out.println("💗신고일 : " + e.getReportDate());
             System.out.println("===============================================================");
 

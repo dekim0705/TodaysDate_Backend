@@ -75,4 +75,7 @@ public class UserTb {
 
     @OneToMany(mappedBy = "reported", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ReportTb> reportUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChatbotTb> chatbots = new ArrayList<>();
 }

@@ -33,7 +33,7 @@ public class PostService {
     private SseService sseService;
 
     // ⚠️게시글 작성 (⭐️Spring Security 구현 후에 테스트 해볼 것!!)
-    public PostTb createPostWithPinAndPush(Long userId, PostPinDto postPinDto) {
+    public boolean createPostWithPinAndPush(Long userId, PostPinDto postPinDto) {
         // 1. 사용자 정보 가져오기(추후 Spring Security...)
         Optional<UserTb> user = userRepository.findById(userId);
 
@@ -59,7 +59,7 @@ public class PostService {
                 sseService.sendEvent(pushTb);
             }
         }
-        return savePost;
+        return true;
     }
     // ✅게시글 조회
     public PostDto findPost(Long postId) throws IllegalAccessException {
@@ -87,9 +87,22 @@ public class PostService {
         return postDto;
     }
     // ✅게시글 수정
-    public PostTb updatePost(Long postId, PostTb updatePostData) throws IllegalAccessException {
+    public PostDto updatePost(Long postId, PostTb updatePostData) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
+
+        // 핀 초기화 후 다시 추가 ^^..
+        pinRepository.deleteAllByPost(post);
+        List<PinTb> newPins = updatePostData.getPins().stream()
+                        .map(pinDto -> {
+                            PinTb newPin = new PinTb();
+                            newPin.setLatitude(pinDto.getLatitude());
+                            newPin.setLongitude(pinDto.getLongitude());
+                            newPin.setRouteNum(pinDto.getRouteNum());
+                            newPin.setPost(post);
+                            return pinRepository.save(newPin);
+                        }).collect(Collectors.toList());
+
         post.setTitle(updatePostData.getTitle());
         post.setRegion(updatePostData.getRegion());
         post.setCourse(updatePostData.getCourse());
@@ -99,8 +112,9 @@ public class PostService {
         post.setPlaceTag(updatePostData.getPlaceTag());
         post.setImgUrl(updatePostData.getImgUrl());
         post.setContent(updatePostData.getContent());
+        postRepository.save(post);
 
-        return postRepository.save(post);
+        return findPost(postId);
     }
     // ✅게시글 삭제
     public void deletePost(Long postId) throws IllegalAccessException {

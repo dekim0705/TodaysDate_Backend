@@ -19,11 +19,11 @@ public class PostController {
     PostService postService;
 
     // ⚠️️게시글 작성 Controller는 사용자 정보 받아야 해서 로그인 구현 후에 마무리 !!!
-    @PostMapping("/")
-    public ResponseEntity<?> createPost(@RequestBody Long userId, PostPinDto postPinDto) {
-        PostTb post = postService.createPostWithPinAndPush(userId, postPinDto);
-        if(post != null) return new ResponseEntity<>(post, HttpStatus.OK);
-        else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PostMapping("")
+    public ResponseEntity<Boolean> createPost(@RequestBody PostPinDto postPinDto) {
+        boolean isCreate = postService.createPostWithPinAndPush(postPinDto.getUserId(), postPinDto);
+        if(isCreate) return new ResponseEntity<>(isCreate, HttpStatus.OK);
+        else return new ResponseEntity<>(isCreate, HttpStatus.NO_CONTENT);
     }
     // ✅게시글 조회
     @GetMapping(value = "/{postId}")
@@ -35,7 +35,7 @@ public class PostController {
     @PutMapping(value = "/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostTb updatePostData) throws IllegalAccessException {
         try {
-            PostTb post = postService.updatePost(postId, updatePostData);
+            PostDto post = postService.updatePost(postId, updatePostData);
             return new ResponseEntity<>(post, HttpStatus.OK);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("게시글 수정 실패..⚠️" + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -46,7 +46,7 @@ public class PostController {
     public ResponseEntity<?> deletePost(@PathVariable Long postId) throws IllegalAccessException {
         try {
             postService.deletePost(postId);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            return new ResponseEntity<>("게시글 삭제 성공 ❤️", HttpStatus.ACCEPTED);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("게시글 삭제 실패 🚨" + e.getMessage(), HttpStatus.BAD_REQUEST);
         }

@@ -11,6 +11,7 @@ import java.util.List;
 
 @Getter @Setter @AllArgsConstructor
 public class PostPinDto {
+    private Long userId;
     private PostTb post;
     private List<PinTb> pins;
 }

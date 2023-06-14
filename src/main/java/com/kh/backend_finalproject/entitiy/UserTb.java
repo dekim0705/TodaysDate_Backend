@@ -1,13 +1,10 @@
 package com.kh.backend_finalproject.entitiy;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kh.backend_finalproject.constant.IsActive;
 import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

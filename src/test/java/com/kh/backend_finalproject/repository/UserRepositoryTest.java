@@ -1,4 +1,5 @@
 package com.kh.backend_finalproject.repository;
+import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.UserProfileDto;
 import com.kh.backend_finalproject.entitiy.BlockTb;
@@ -110,5 +111,23 @@ class UserRepositoryTest {
             }
             System.out.println("————————-----------------—————— ");
         }
+    }
+    @Test
+    @DisplayName("마이페이지 - 회원 멤버십 여부")
+    public void findUserMembershipStatusTest() {
+        UserTb user = userRepository.findByEmail("user1@naver.com");
+        System.out.println("🍒회원 멤버십 여부 (아니면 FREE) : " + user.getIsMembership());
+    }
+    @Test
+    @DisplayName("마이페이지 - 회원 알림수신 동의 여부 조회와 변경..?")
+    public void findUserNotificationStatusTest() {
+        UserTb user = userRepository.findByEmail("user1@naver.com");
+        System.out.println("🍒회원 알림수신 동의 여부 (아니면 NOPUSH) : " + user.getIsPush());
+        IsPush currentStatus = user.getIsPush();
+
+        IsPush newStatus = currentStatus.equals(IsPush.PUSH) ? IsPush.NOPUSH : IsPush.PUSH;
+        user.setIsPush(newStatus);
+        userRepository.save(user);
+        System.out.println("🍒회원 알림수신 동의 여부 변경 후 : " + user.getIsPush());
     }
 }

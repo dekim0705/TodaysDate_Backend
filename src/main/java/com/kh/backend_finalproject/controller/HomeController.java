@@ -36,8 +36,8 @@ public class HomeController {
     }
     // ✅키워드 검색
     @GetMapping(value = "/posts/search")
-    public ResponseEntity<List<PostDto>> getSearchPosts(@RequestParam String keyword) {
-        List<PostDto> posts = homeService.findByKeyword(keyword);
+    public ResponseEntity<List<PostUserDto>> getSearchPosts(@RequestParam String keyword) {
+        List<PostUserDto> posts = homeService.findByKeyword(keyword);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     // ✅북마크 상위 5개 게시글 내림차순 정렬
@@ -47,8 +47,8 @@ public class HomeController {
         return new ResponseEntity<>(postBookmarkDtos, HttpStatus.OK);
     }
     // ✅회원 프로필 가져오기(by Eamil)
-    @PostMapping(value = "/pfImg")
-    public ResponseEntity<String> getPfImgByEmail(@RequestBody String email) {
+    @PostMapping(value = "/profile")
+    public ResponseEntity<String> getPfImgByEmail(@RequestParam String email) {
         String pfImg = homeService.findPfImgByEmail(email);
         if(pfImg != null) return new ResponseEntity<>(pfImg, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);

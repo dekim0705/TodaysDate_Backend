@@ -39,20 +39,20 @@ public class HomeService {
         return postUserDtos;
     }
     // ✅키워드 검색
-    public List<PostDto> findByKeyword(String keyword) {
+    public List<PostUserDto> findByKeyword(String keyword) {
         List<PostTb> postList = postRepository.findByKeyword(keyword);
-        List<PostDto> postDtos = new ArrayList<>();
+        List<PostUserDto> postUserDtos = new ArrayList<>();
         for (PostTb e : postList) {
-            PostDto postDto = new PostDto();
-            postDto.setPfImg(e.getUser().getPfImg());
-            postDto.setNickname(e.getUser().getNickname());
-            postDto.setWriteDate(e.getWriteDate());
-            postDto.setTitle(e.getTitle());
-            postDto.setDistrict(e.getDistrict());
-            postDto.setImgUrl(e.getImgUrl());
-            postDtos.add(postDto);
+            PostUserDto postUserDto = new PostUserDto();
+            postUserDto.setPfImg(e.getUser().getPfImg());
+            postUserDto.setNickname(e.getUser().getNickname());
+            postUserDto.setWriteDate(e.getWriteDate());
+            postUserDto.setTitle(e.getTitle());
+            postUserDto.setDistrict(e.getDistrict());
+            postUserDto.setThumbnail(e.getImgUrl());
+            postUserDtos.add(postUserDto);
         }
-        return postDtos;
+        return postUserDtos;
     }
     // ✅북마크 상위 5개 게시글 내림차순 정렬
     public Page<PostBookmarkDto> findTop5ByBookmarkCount() {

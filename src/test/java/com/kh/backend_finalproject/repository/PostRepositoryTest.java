@@ -98,4 +98,10 @@ class PostRepositoryTest {
 
         }
     }
+    @Test
+    @DisplayName("특정 게시글 북마크 수 가져오기 테스트")
+    public void findBookmarkCountByPostIdTest() {
+        int count = postRepository.findBookmarkCountByPostId(1L);
+        System.out.println("💟북마크 수 : " + count);
+    }
 }

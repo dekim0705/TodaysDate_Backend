@@ -1,12 +1,13 @@
 package com.kh.backend_finalproject.dto;
-import com.kh.backend_finalproject.constant.IsPush;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 
-@Getter @Setter @AllArgsConstructor
+@Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostUserDto {
     private Long id;
     private String pfImg;

@@ -1,5 +1,7 @@
 package com.kh.backend_finalproject.service;
 import com.kh.backend_finalproject.constant.IsPush;
+import com.kh.backend_finalproject.dto.PinDto;
+import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostPinDto;
 import com.kh.backend_finalproject.dto.ReplyUserDto;
 import com.kh.backend_finalproject.entitiy.*;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -53,17 +56,35 @@ public class PostService {
                 pushTb.setUser(subscribedUser);
                 pushTb.setPost(savePost);
                 pushTb.setSendDate(LocalDateTime.now());
-
                 sseService.sendEvent(pushTb);
             }
         }
         return savePost;
     }
     // ✅게시글 조회
-    public PostTb findPost(Long postId) throws IllegalAccessException {
+    public PostDto findPost(Long postId) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
-        return post;
+        int bookmarkCount = postRepository.findBookmarkCountByPostId(postId);
+        PostDto postDto = new PostDto();
+        postDto.setPfImg(post.getUser().getPfImg());
+        postDto.setNickname(post.getUser().getNickname());
+        postDto.setTitle(post.getTitle());
+        postDto.setDistrict(post.getDistrict());
+        postDto.setBookmarkCount(bookmarkCount);
+        postDto.setViewCount(post.getViewCount());
+        postDto.setCourse(post.getCourse());
+        postDto.setTheme(post.getTheme());
+        postDto.setComment(post.getComment());
+        List<PinDto> pinDtos = post.getPins().stream()
+                        .map(pin -> new PinDto(pin.getLatitude(), pin.getLongitude(), pin.getRouteNum()))
+                                .collect(Collectors.toList());
+        postDto.setPins(pinDtos);
+        postDto.setPlaceTag(post.getPlaceTag());
+        postDto.setContent(post.getContent());
+        postDto.setImgUrl(post.getImgUrl());
+        postDto.setWriteDate(post.getWriteDate());
+        return postDto;
     }
     // ✅게시글 수정
     public PostTb updatePost(Long postId, PostTb updatePostData) throws IllegalAccessException {
@@ -104,9 +125,7 @@ public class PostService {
         return replyRepository.save(reply);
     }
     // 댓글 조회
-//    public List<ReplyTb> findReply(Long PostId) {
-//
-//    }
+
     // 댓글 수정
 
     // 댓글 삭제

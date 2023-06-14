@@ -6,6 +6,7 @@ import com.kh.backend_finalproject.service.AdminService;
 import com.kh.backend_finalproject.service.ChatbotService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +63,29 @@ public class AdminController {
         return new ResponseEntity<>(reportList,HttpStatus.OK);
     }
 
+    // 💗 다중 회원 삭제
+    @DeleteMapping("/delete/users")
+    public ResponseEntity<String> deleteMultipleUsers(@RequestBody List<Long> userIds) {
+        adminService.deleteUsers(userIds);
+        return ResponseEntity.ok("회원 삭제 성공!");
+    }
 
+    //💗 다중 게시글 삭제
+    @DeleteMapping("/delete/posts")
+    public ResponseEntity<String> deleteMultiplePosts(@RequestBody List<Long> postIds) {
+        try {
+            adminService.deletePosts(postIds);
+            return ResponseEntity.ok("게시글 삭제 성공!");
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.badRequest().body("게시글이 존재하지 않아용~~ㅜㅜ");
+        }
+    }
+    //💗 다중 댓글 삭제
+    @DeleteMapping("/delete/replies")
+    public ResponseEntity<String> deleteMultipleReplies(@RequestBody List<Long> replyIds) {
+        adminService.deleteReplies(replyIds);
+        return ResponseEntity.ok("댓글 삭제 성공!");
+    }
 }
 
 

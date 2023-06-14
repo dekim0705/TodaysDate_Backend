@@ -11,7 +11,7 @@ public class ChatbotTb {
     @Id
     @GeneratedValue
     @Column(name = "inquiry_num")
-    private Long inquiryNum;
+    private Long id;
 
     @Column(nullable = false, length = 1000)
     private String inquiryContent;            // 문의 내용
@@ -22,7 +22,7 @@ public class ChatbotTb {
     private LocalDateTime inquiryDate; // 문의 날짜
 
     @Column(nullable = false, length = 20)
-    private String inquiryStatus;  // 문의 확인 상태 (대기 or 완료)
+    private String inquiryStatus = "대기"; // 기본값 "대기'
 
     @ManyToOne
     @JoinColumn(name = "user_num")

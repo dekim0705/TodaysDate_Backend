@@ -25,6 +25,29 @@ public class AdminService {
     private final PostRepository postRepository;
     private final ReportRepository reportRepository;
 
+    // 💗 전체 회원 조회
+    public List<UserDto> findAllUserList() {
+        List<UserTb> users = userRepository.findAll();
+        List<UserDto> userDtos = new ArrayList<>();
+        for (UserTb user : users) {
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDto.setNickname(user.getNickname());
+            userDto.setEmail(user.getEmail());
+            userDto.setIsMembership(user.getIsMembership());
+            userDto.setRegDate(user.getRegDate());
+
+            List<String> blockedNickname = new ArrayList<>();
+            List<BlockTb> blockedUsers = user.getBlockedUsers();
+            for (BlockTb block : blockedUsers) {
+                blockedNickname.add(block.getBlocked().getNickname());
+            }
+            userDto.setBlockedNickname(blockedNickname);
+            userDtos.add(userDto);
+        }
+        return userDtos;
+    }
+
     // 💗 전체 문의 내역 조회 (문의일 최근순 정렬)
     public List<ChatbotUserDto> findAllInquiryList() {
         List<ChatbotUserDto> chatbotUserDtos = chatbotRepository.findAllInquiryWithUserNickname();
@@ -70,6 +93,7 @@ public class AdminService {
         savedAdDto.setImgUrl(adTb.getImgUrl());
         return savedAdDto;
     }
+
     // 💗 전체 신고 내역 조회
     public List<ReportDto> findAllReportList() {
         List<ReportTb> reports = reportRepository.findAll();
@@ -78,33 +102,33 @@ public class AdminService {
             ReportDto reportDto = new ReportDto();
             reportDto.setReportNum(report.getId());
             reportDto.setContent(report.getContent());
-//            reportDto.setReporter(report.getReporter());
+            reportDto.setReporter(report.getReporter().getNickname());
             reportDto.setReportDate(report.getReportDate());
             reportDtos.add(reportDto);
         }
         return reportDtos;
     }
-    public List<UserDto> findAllUserList() {
-        List<UserTb> users = userRepository.findAll();
-        List<UserDto> userDtos = new ArrayList<>();
-        for (UserTb user : users) {
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setNickname(user.getNickname());
-            userDto.setEmail(user.getEmail());
-            userDto.setIsMembership(user.getIsMembership());
-            userDto.setRegDate(user.getRegDate());
 
-            List<String> blockedNickname = new ArrayList<>();
-            List<BlockTb> blockedUsers = user.getBlockedUsers();
-            for (BlockTb block : blockedUsers) {
-                blockedNickname.add(block.getBlocked().getNickname());
-            }
-            userDto.setBlockedNickname(blockedNickname);
-            userDtos.add(userDto);
+    // 💗다중 회원 삭제
+    public void deleteUsers(List<Long> userIds) {
+        for (Long userId : userIds) {
+            userRepository.deleteById(userId);
         }
-        return userDtos;
     }
 
+    // 💗다중 게시글 삭제
+    public void deletePosts(List<Long> postIds) {
+        for (Long postId : postIds) {
+            postRepository.deleteById(postId);
+        }
+    }
+
+    // 💗다중 댓글 삭제
+    public void deleteReplies(List<Long> replyIds) {
+        for (Long replyId : replyIds) {
+            replyRepository.deleteById(replyId);
+        }
+
+    }
 }
 

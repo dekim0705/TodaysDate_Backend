@@ -1,6 +1,7 @@
 package com.kh.backend_finalproject.repository;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.UserProfileDto;
+import com.kh.backend_finalproject.entitiy.BlockTb;
 import com.kh.backend_finalproject.entitiy.PostTb;
 import com.kh.backend_finalproject.entitiy.ReplyTb;
 import com.kh.backend_finalproject.entitiy.UserTb;
@@ -101,9 +102,13 @@ class UserRepositoryTest {
             System.out.println("💗이메일 : " + e.getEmail());
             System.out.println("💗가입일자 : " + e.getRegDate());
             System.out.println("💗멤버십여부 : " + e.getIsMembership());
-            System.out.println("💗차단회원 : " + e.getBlockedUsers().get(0).getBlocked().getNickname());
+            List<BlockTb> blockedUsers = e.getBlockedUsers();
+            if (blockedUsers != null && !blockedUsers.isEmpty()) {
+                System.out.println("💗차단회원 : " + blockedUsers.get(0).getBlocked().getNickname());
+            } else {
+                System.out.println("💗차단회원 : 없음");
+            }
             System.out.println("————————-----------------—————— ");
-
         }
     }
 }

@@ -66,11 +66,10 @@ VALUES (3, '광고 이미지 3', '광고3');
 
 -- REPORT_TB
 INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_fk)
-VALUES (1, '신고합니다.저한테 욕했어요 ㅡㅡ','2023-06-06 12:30:00', '명란젓코난','꿔바로우많이두개더');
+VALUES (1, '신고합니다... 저한테 욕했어요 ㅡㅡ','2023-06-06 12:30:00', 1,2);
 INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_fk)
-VALUES (2, '이사람 신고합니다. 광고글만 올려요','2023-06-06 12:40:00', '이웃집또털어','명란젓코난');
-INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_fk)
-VALUES (3, '신고합니다...','2023-06-06 12:50:00', '이웃집또털어','꿔바로우많이두개더');
+VALUES (2, '이사람 신고합니다. 광고글만 올려요','2023-06-06 12:40:00', 3,1);
+
 
 -- CHATBOT_TB
 INSERT INTO chatbot_tb (inquiry_num, inquiry_content, user_num, inquiry_date, inquiry_status, email)

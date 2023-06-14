@@ -22,9 +22,11 @@ public class ReportTb {
 
     private LocalDateTime reportDate; // 신고 날짜
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @Column(name = "reporter_fk")
-    private String reporter; // 신고자
+    private UserTb reporter; // 신고자
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @Column(name = "reported_fk")
-    private String reported; // 신고받은 사람
+    private UserTb reported; // 신고받은 사람
 }

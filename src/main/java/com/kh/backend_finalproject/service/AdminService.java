@@ -31,7 +31,7 @@ public class AdminService {
         return chatbotUserDtos;
     }
 
-    // 💗 전체 댓글 내역 조회 (문의일 최근순 정렬)
+    // 💗 전체 게시글 내역 조회 (문의일 최근순 정렬)
     public List<PostUserDto> findAllPostList() {
         List<PostUserDto> postUserDtos = postRepository.findAllPostsWithUserNickname();
         return postUserDtos;
@@ -56,6 +56,7 @@ public class AdminService {
         }
         return adDtos;
     }
+
     // 💗 광고 추가
     public AdDto createAd(AdDto adDto) {
         AdTb adTb = new AdTb();
@@ -77,10 +78,33 @@ public class AdminService {
             ReportDto reportDto = new ReportDto();
             reportDto.setReportNum(report.getId());
             reportDto.setContent(report.getContent());
+//            reportDto.setReporter(report.getReporter());
             reportDto.setReportDate(report.getReportDate());
             reportDtos.add(reportDto);
         }
         return reportDtos;
     }
+    public List<UserDto> findAllUserList() {
+        List<UserTb> users = userRepository.findAll();
+        List<UserDto> userDtos = new ArrayList<>();
+        for (UserTb user : users) {
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDto.setNickname(user.getNickname());
+            userDto.setEmail(user.getEmail());
+            userDto.setIsMembership(user.getIsMembership());
+            userDto.setRegDate(user.getRegDate());
+
+            List<String> blockedNickname = new ArrayList<>();
+            List<BlockTb> blockedUsers = user.getBlockedUsers();
+            for (BlockTb block : blockedUsers) {
+                blockedNickname.add(block.getBlocked().getNickname());
+            }
+            userDto.setBlockedNickname(blockedNickname);
+            userDtos.add(userDto);
+        }
+        return userDtos;
+    }
+
 }
 

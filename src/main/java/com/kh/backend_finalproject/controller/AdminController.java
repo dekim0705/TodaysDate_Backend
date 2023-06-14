@@ -19,7 +19,11 @@ import java.util.List;
 public class AdminController {
     private final AdminService adminService;
     // 💗 전체 회원 조회
-
+    @GetMapping("/user")
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserDto> userList = adminService.findAllUserList();
+        return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
 
     // 💗 전체 게시글 조회
     @GetMapping("/post")

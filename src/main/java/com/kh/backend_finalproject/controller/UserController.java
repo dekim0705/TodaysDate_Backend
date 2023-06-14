@@ -1,4 +1,5 @@
 package com.kh.backend_finalproject.controller;
+import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.dto.UserProfileDto;
@@ -39,9 +40,16 @@ public class UserController {
         List<UserDto> replies = userService.getAllUserReplies(email);
         return new ResponseEntity<>(replies,HttpStatus.OK);
     }
-
-    @GetMapping("/{email}/notification-status")
-    public ResponseEntity<IsPush> getUserNotificationStatus(@PathVariable("email") String email) {
+    // ✅ 마이페이지 - 회원의 멤버십 상태 조회
+    @GetMapping("/membership-status")
+    public ResponseEntity<IsMembership> getMembershipStatus(@RequestParam("email") String email) {
+        IsMembership membershipStatus = userService.getUserMembershipStatus(email); {
+            return ResponseEntity.ok(membershipStatus);
+        }
+    }
+    // ✅ 마이페이지 - 회원의 푸쉬알림 상태 조회
+    @GetMapping("/notification-status")
+    public ResponseEntity<IsPush> getNotificationStatus(@RequestParam("email") String email) {
         IsPush notificationStatus = userService.getUserNotificationStatus(email); {
             return ResponseEntity.ok(notificationStatus);
         }

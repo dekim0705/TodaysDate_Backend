@@ -1,4 +1,5 @@
 package com.kh.backend_finalproject.service;
+import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.dto.*;
 import com.kh.backend_finalproject.entitiy.PostTb;
@@ -51,7 +52,6 @@ public class UserService {
         }
         return userDtoList;
     }
-
     // ✅ 마이페이지 - 회원의 모든 댓글 가져오기 (댓글 번호, 작성자 닉네임, 댓글 본문, 원문 제목, 작성일)
     public List<UserDto> getAllUserReplies(String email) {
         UserTb user = userRepository.findByEmail(email);
@@ -70,8 +70,12 @@ public class UserService {
         }
         return userDtoList;
     }
-
-    // 마이페이지 - 푸쉬알림 상태 확인
+    // ✅ 마이페이지 - 회원의 멤버십 상태 조회
+    public IsMembership getUserMembershipStatus(String email) {
+        UserTb user = userRepository.findByEmail(email);
+        return user.getIsMembership();
+    }
+    // ✅ 마이페이지 - 회원의 푸쉬알림 상태 조회
     public IsPush getUserNotificationStatus(String email) {
         UserTb user = userRepository.findByEmail(email);
         return user.getIsPush();

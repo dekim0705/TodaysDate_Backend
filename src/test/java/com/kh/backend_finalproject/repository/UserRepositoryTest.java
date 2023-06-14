@@ -90,4 +90,20 @@ class UserRepositoryTest {
             }
         }
     }
+    @Test
+    @Transactional
+    @DisplayName("관리자페이지 - 전체 회원 조회 테스트")
+    public void findAllUserTest () {
+        List<UserTb> users = userRepository.findAll();
+        for (UserTb e : users) {
+            System.out.println("💗회원번호 : " + e.getId());
+            System.out.println("💗닉네임 : " + e.getNickname());
+            System.out.println("💗이메일 : " + e.getEmail());
+            System.out.println("💗가입일자 : " + e.getRegDate());
+            System.out.println("💗멤버십여부 : " + e.getIsMembership());
+            System.out.println("💗차단회원 : " + e.getBlockedUsers());
+            System.out.println("————————-----------------—————— ");
+
+        }
+    }
 }

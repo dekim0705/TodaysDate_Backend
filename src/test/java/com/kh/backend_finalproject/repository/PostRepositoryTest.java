@@ -84,4 +84,18 @@ class PostRepositoryTest {
 
         }
     }
+    @Test
+    @Transactional
+    @DisplayName("관리자페이지 - 전체글 조회 테스트")
+    public void findAllPostsTest () {
+        List<PostTb> postTbs = postRepository.findAll();
+        for (PostTb e : postTbs) {
+            System.out.println("💗글번호 : " + e.getId());
+            System.out.println("💗제목 : " + e.getTitle());
+            System.out.println("💗닉네임 : " + e.getUser().getNickname());
+            System.out.println("💗작성일 : " + e.getWriteDate());
+            System.out.println("—————————————— ");
+
+        }
+    }
 }

@@ -17,8 +17,7 @@ public class PinTb {
     private double longitude;                   // 경도
     private int routeNum;                       // 경로 순서
 
-    /* 🦄'한 개의 게시글'에 '여러 개의 경로 핀'이 생성, N:1 매핑 설정!
-          경로 핀은 어느 게시글인지 알 필요 없으므로 '단방향' 매핑!! */
+    /* 🦄'한 개의 게시글'에 '여러 개의 경로 핀'이 생성, N:1 매핑 설정! */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_num")
     private PostTb post;

@@ -101,7 +101,7 @@ class UserRepositoryTest {
             System.out.println("💗이메일 : " + e.getEmail());
             System.out.println("💗가입일자 : " + e.getRegDate());
             System.out.println("💗멤버십여부 : " + e.getIsMembership());
-            System.out.println("💗차단회원 : " + e.getBlockedUsers());
+            System.out.println("💗차단회원 : " + e.getBlockedUsers().get(0).getBlocked().getNickname());
             System.out.println("————————-----------------—————— ");
 
         }

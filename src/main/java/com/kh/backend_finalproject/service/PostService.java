@@ -34,9 +34,7 @@ public class PostService {
 
     // ⚠️게시글 작성 (⭐️Spring Security 구현 후에 테스트 해볼 것!!)
     public PostTb createPostWithPinAndPush(Long userId, PostPinDto postPinDto) {
-        // 1. 사용자 정보 가져오기(Spring Security...)
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        UserTb user = (UserTb) authentication.getPrincipal();
+        // 1. 사용자 정보 가져오기(추후 Spring Security...)
         Optional<UserTb> user = userRepository.findById(userId);
 
         // 2. 게시글 저장
@@ -69,5 +67,13 @@ public class PostService {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
         return post;
+    }
+    // 게시글 수정
+    public PostTb updatePost(Long postId, PostTb updatePostData) throws IllegalAccessException {
+        PostTb post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
+        return post;
+
+
     }
 }

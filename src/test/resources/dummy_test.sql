@@ -82,11 +82,11 @@ VALUES (2, '안녕하세요. ㅇㅇㅇㅇ에 대해 문의드립니다. 블라�
 INSERT INTO chatbot_tb (inquiry_num, inquiry_content, user_num, inquiry_date, inquiry_status, email)
 VALUES (3, '질문합니다!! 이거 제가 이해한게 맞나요?!!!!', 3, '2023-06-06 12:00:00', '대기', 'user6@naver.com');
 
-INSERT INTO chatbot_tb (inquiry_num, inquiry_content, user_num, inquiry_date, inquiry_status, email)
-VALUES (4, '문의합니다!! 안녕하세요 ~~~~ 이렇게 하려면 어떻게 해야하죠? 관리자님.. 도와주세요 ㅜ-ㅜ', 4, '2023-06-06 12:30:00', '대기', 'user9@naver.com');
-
-INSERT INTO chatbot_tb (inquiry_num, inquiry_content, user_num, inquiry_date, inquiry_status, email)
-VALUES (5, '안녕하세요 ~ 문의드립니다~ ', 5, '2023-06-06 12:30:00', '대기', 'user11@naver.com');
+--INSERT INTO chatbot_tb (inquiry_num, inquiry_content, user_num, inquiry_date, inquiry_status, email)
+--VALUES (4, '문의합니다!! 안녕하세요 ~~~~ 이렇게 하려면 어떻게 해야하죠? 관리자님.. 도와주세요 ㅜ-ㅜ', 4, '2023-06-06 12:30:00', '대기', 'user9@naver.com');
+--
+--INSERT INTO chatbot_tb (inquiry_num, inquiry_content, user_num, inquiry_date, inquiry_status, email)
+--VALUES (5, '안녕하세요 ~ 문의드립니다~ ', 5, '2023-06-06 12:30:00', '대기', 'user11@naver.com');
 
 -- BLOCK_TB
 INSERT INTO block_tb (block_num,blocker_fk, blocked_fk)

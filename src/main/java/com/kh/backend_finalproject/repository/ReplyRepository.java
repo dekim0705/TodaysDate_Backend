@@ -14,6 +14,13 @@ public interface ReplyRepository extends JpaRepository<ReplyTb, Long> {
             "INNER JOIN r.user u " +
             "ORDER BY r.writeDate DESC")
     List<ReplyUserDto> findAllReplyWithUserNickname();
+
+    @Query("SELECT new com.kh.backend_finalproject.dto.ReplyUserDto(u.nickname, r.id, r.content, r.writeDate) " +
+            "FROM ReplyTb r " +
+            "JOIN r.user u " +
+            "WHERE r.content LIKE %:keyword% OR u.nickname LIKE %:keyword%")
+    List<ReplyUserDto> searchByKeyword(String keyword);
 }
+
 
 

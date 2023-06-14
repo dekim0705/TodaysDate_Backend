@@ -36,7 +36,7 @@ public class AdRepositoryTest {
     }
 
     @Test
-    @DisplayName("광고 조회 테스트")
+    @DisplayName("관리자페이지 - 광고 조회 테스트")
     public void findAlAdTest() {
         List<AdTb> ads = adRepository.findAll();
         for (AdTb e : ads) {

@@ -82,16 +82,23 @@ public class UserController {
 
     // ✅ 마이페이지 - 회원정보 수정
     @PutMapping("/information")
-    public ResponseEntity<?> updateUserInformation(@RequestParam Long userId, @RequestBody UserDto userDto) throws IllegalAccessException {
+    public ResponseEntity<?> updateUserInformation(@RequestParam Long userId, @RequestBody UserDto userDto) {
         try {
             boolean isUpdate = userService.updateInformation(userId, userDto);
-            return new ResponseEntity<>("회원정보 수정 성공! ❣️ ️️", HttpStatus.OK);
+            return new ResponseEntity<>("회원정보 수정 성공! ❣️", HttpStatus.OK);
         } catch (IllegalAccessException e) {
-            return new ResponseEntity<>("회원정보 수정 실패.. 😰", HttpStatus.OK);
+            return new ResponseEntity<>("회원정보 수정 실패.. 😰", HttpStatus.BAD_REQUEST);
         }
-
     }
 
-
-
+    // ✅ 마이페이지 - 비밀번호 변경
+    @PutMapping("/pwd")
+    public ResponseEntity<?> updateUserPwd(@RequestParam Long userId, @RequestBody UserTb userTb) {
+        try {
+            boolean isUpdate = userService.updatePwd(userId, userTb);
+            return ResponseEntity.ok("비밀번호 변경 성공! ❣️");
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.badRequest().body("비밀번호 변경 실패.. 😰" + e.getMessage());
+        }
+    }
 }

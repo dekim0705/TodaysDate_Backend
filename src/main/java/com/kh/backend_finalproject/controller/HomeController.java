@@ -29,12 +29,12 @@ public class HomeController {
         return new ResponseEntity<>(postUserDtos, HttpStatus.OK);
     }
     // ✅특정 지역 게시글 작성일 최근순 정렬
-    @GetMapping(value = "/posts/{status}")
-    public ResponseEntity<List<PostUserDto>> getRegionPosts(@PathVariable RegionStatus status) {
-        List<PostUserDto> postUserDtos = homeService.findRegionPostsList(status);
+    @GetMapping(value = "/user/{blockerId}/posts/{status}")
+    public ResponseEntity<List<PostUserDto>> getRegionPosts(@PathVariable RegionStatus status, @PathVariable Long blockerId) {
+        List<PostUserDto> postUserDtos = homeService.findRegionPostsList(status, blockerId);
         return new ResponseEntity<>(postUserDtos, HttpStatus.OK);
     }
-    // ✅키워드 검색
+    // 🚧키워드 검색
     @GetMapping(value = "/posts/search")
     public ResponseEntity<List<PostUserDto>> getSearchPosts(@RequestParam String keyword) {
         List<PostUserDto> posts = homeService.findByKeyword(keyword);

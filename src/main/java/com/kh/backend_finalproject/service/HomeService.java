@@ -30,7 +30,7 @@ public class HomeService {
     private final AdRepository adRepository;
     private final BlockRepository blockRepository;
 
-    // ✅️전체 지역 게시글 작성일 최근순 정렬
+    // ✅️특정 사용자가 차단한 사용자의 게시글 제외 전체 지역 게시글 작성일 최근순 정렬
     public List<PostUserDto> findAllPostsList(Long blockerId) {
         // 1. 차단한 사용자 목록 가져오기
         List<BlockTb> blockedUsers = blockRepository.findByBlockerId(blockerId);
@@ -50,12 +50,27 @@ public class HomeService {
 
         return filterPosts;
     }
-    // ✅️특정 지역 게시글 작성일 최근순 정렬
-    public List<PostUserDto> findRegionPostsList(RegionStatus status) {
-        List<PostUserDto> postUserDtos = postRepository.findRegionPostsWithUserDetails(status);
-        return postUserDtos;
+    // ✅특정 사용자가 차단한 사용자의 게시글 제외 특정 지역 게시글 작성일 최근순 정렬
+    public List<PostUserDto> findRegionPostsList(RegionStatus status, Long blockerId) {
+        // 1. 차단한 사용자 목록 가져오기
+        List<BlockTb> blockedUsers = blockRepository.findByBlockerId(blockerId);
+
+        // 2. 차단한 사용자들의 userNum(Id) 만들기
+        List<Long> blockedUserIds = blockedUsers.stream()
+                .map(blockTb -> blockTb.getBlocked().getId())
+                .collect(Collectors.toList());
+
+        // 3. 특정 지역 게시글 가져오기
+        List<PostUserDto> regionPosts = postRepository.findRegionPostsWithUserDetails(status);
+
+        // 4. 차단한 사용자가 작성한 게시물 제외
+        List<PostUserDto> filterPosts = regionPosts.stream()
+                .filter(postUserDto -> !blockedUserIds.contains(postUserDto.getId()))
+                .collect(Collectors.toList());
+
+        return filterPosts;
     }
-    // ✅키워드 검색
+    // 🚧키워드 검색
     public List<PostUserDto> findByKeyword(String keyword) {
         List<PostTb> postList = postRepository.findByKeyword(keyword);
         List<PostUserDto> postUserDtos = new ArrayList<>();

@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,6 +44,9 @@ public class PostTb {
     private String imgUrl;                          // 이미지 주소
 
     private int viewCount;                          // 조회수
+
+    @CreationTimestamp
+    @Column(nullable = false)
     private LocalDateTime writeDate;                // 작성일
 
     @Column(columnDefinition = "int default 0")

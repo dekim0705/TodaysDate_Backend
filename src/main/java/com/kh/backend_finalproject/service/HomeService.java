@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -27,11 +28,27 @@ public class HomeService {
     private final BookmarkRepository bookmarkRepository;
     private final FolderRepository folderRepository;
     private final AdRepository adRepository;
+    private final BlockRepository blockRepository;
 
     // ✅️전체 지역 게시글 작성일 최근순 정렬
-    public List<PostUserDto> findAllPostsList() {
-        List<PostUserDto> postUserDtos = postRepository.findAllPostsWithUserDetails();
-        return postUserDtos;
+    public List<PostUserDto> findAllPostsList(Long blockerId) {
+        // 1. 차단한 사용자 목록 가져오기
+        List<BlockTb> blockedUsers = blockRepository.findByBlockerId(blockerId);
+
+        // 2. 차단한 사용자들의 userNum(Id) 만들기
+        List<Long> blockedUserIds = blockedUsers.stream()
+                .map(blockTb -> blockTb.getBlocked().getId())
+                .collect(Collectors.toList());
+
+        // 3. 전체 게시글 가져오기
+        List<PostUserDto> allPosts = postRepository.findAllPostsWithUserDetails();
+
+        // 4. 차단한 사용자가 작성한 게시물 제외
+        List<PostUserDto> filterPosts = allPosts.stream()
+                .filter(postUserDto -> !blockedUserIds.contains(postUserDto.getId()))
+                .collect(Collectors.toList());
+
+        return filterPosts;
     }
     // ✅️특정 지역 게시글 작성일 최근순 정렬
     public List<PostUserDto> findRegionPostsList(RegionStatus status) {

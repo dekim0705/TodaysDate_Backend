@@ -22,10 +22,10 @@ public class HomeController {
     @Autowired
     HomeService homeService;
 
-    // ✅️전체 지역 게시글 작성일 최근순 정렬
-    @GetMapping(value = "/posts")
-    public ResponseEntity<List<PostUserDto>> getAllPosts() {
-        List<PostUserDto> postUserDtos = homeService.findAllPostsList();
+    // ✅️특정 사용자가 차단한 사용자를 제외한 전체 지역의 모든 게시글..작성일 최근순 정렬
+    @GetMapping(value = "/user/{blockerId}/posts")
+    public ResponseEntity<List<PostUserDto>> getAllPosts(@PathVariable Long blockerId) {
+        List<PostUserDto> postUserDtos = homeService.findAllPostsList(blockerId);
         return new ResponseEntity<>(postUserDtos, HttpStatus.OK);
     }
     // ✅특정 지역 게시글 작성일 최근순 정렬

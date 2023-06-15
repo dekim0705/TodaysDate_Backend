@@ -6,10 +6,7 @@ import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostPinDto;
 import com.kh.backend_finalproject.dto.ReplyUserDto;
 import com.kh.backend_finalproject.entitiy.*;
-import com.kh.backend_finalproject.repository.PinRepository;
-import com.kh.backend_finalproject.repository.PostRepository;
-import com.kh.backend_finalproject.repository.ReplyRepository;
-import com.kh.backend_finalproject.repository.UserRepository;
+import com.kh.backend_finalproject.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +28,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final PinRepository pinRepository;
     private final ReplyRepository replyRepository;
+    private final PushRepository pushRepository;
 
     @Autowired
     private SseService sseService;
@@ -59,6 +57,7 @@ public class PostService {
                 pushTb.setUser(subscribedUser);
                 pushTb.setPost(savePost);
                 pushTb.setSendDate(LocalDateTime.now());
+                pushRepository.save(pushTb);
                 sseService.sendEvent(pushTb);
             }
         }

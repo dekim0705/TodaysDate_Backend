@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -29,5 +31,6 @@ public class ReportController {
         reportService.blockUser(blockerId, blockedId);
         return new ResponseEntity<>("차단 완료 ❤️", HttpStatus.ACCEPTED);
     }
+
     // 사용자 신고하기
 }

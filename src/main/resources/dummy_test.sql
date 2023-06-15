@@ -145,3 +145,9 @@ INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_f
 VALUES (2, '이사람 신고합니다. 광고글만 올려요','2023-06-06 12:40:00', 3,1);
 --INSERT INTO report_tb (report_num, content, report_date, reported_fk, reporter_fk)
 --VALUES (3, '신고합니다...','2023-06-06 12:50:00', '이웃집또털어','꿔바로우많이두개더');
+
+-- BLOCK_TB
+INSERT INTO block_tb (block_num, blocker_fk, blocked_fk)
+VALUES (1,1,2);
+INSERT INTO block_tb (block_num, blocker_fk, blocked_fk)
+VALUES (2,1,3);

@@ -130,6 +130,13 @@ public class AdminService {
         }
     }
 
+    // 💗다중 광고 삭제
+    public void deleteAds(List<Long> adIds) {
+        for (Long adId : adIds) {
+            adRepository.deleteById(adId);
+        }
+    }
+
     //💗 관리자 - 회원 검색
 
     //💗 관리자 - 게시글 검색

@@ -94,6 +94,13 @@ public class AdminController {
         return ResponseEntity.ok("댓글 삭제 성공!");
     }
 
+    //💗 광고 삭제
+    @DeleteMapping("/delete/ad")
+    public ResponseEntity<String> deleteMultipleAds(@RequestBody List<Long> adIds) {
+        adminService.deleteAds(adIds);
+        return ResponseEntity.ok("광고 삭제 성공!");
+    }
+
     //💗 관리자 - 회원 검색
 
     //💗 관리자 - 게시글 검색

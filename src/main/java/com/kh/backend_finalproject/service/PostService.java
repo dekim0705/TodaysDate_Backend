@@ -123,7 +123,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
         postRepository.delete(post);
     }
-    // 댓글 작성
+    // ✅댓글 작성
     public boolean createReply(Long postId, ReplyUserDto replyUserDto) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
@@ -132,12 +132,17 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
 
         ReplyTb reply = new ReplyTb();
+        if (replyUserDto.getContent() == null || replyUserDto.getContent().trim().isEmpty()) {
+            throw new IllegalArgumentException("댓글 내용이 비어 있습니다.");
+        }
         reply.setContent(replyUserDto.getContent());
         reply.setWriteDate(LocalDateTime.now());
         reply.setPost(post);
         reply.setUser(user);
 
-        return true;
+        ReplyTb savedReply = replyRepository.save(reply);
+
+        return savedReply != null;
     }
     // ✅댓글 조회
     public List<ReplyUserDto> findReply(Long postId) throws IllegalAccessException {
@@ -149,7 +154,7 @@ public class PostService {
 
         return replyUserDtos;
     }
-    // 댓글 수정
+    // ✅댓글 수정
     public boolean updateReply(Long replyId, ReplyUserDto replyUserDto) throws IllegalAccessException {
         ReplyTb reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new IllegalAccessException("해당 댓글이 없습니다." + replyId));

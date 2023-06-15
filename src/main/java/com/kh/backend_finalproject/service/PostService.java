@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -138,8 +139,16 @@ public class PostService {
 
         return true;
     }
-    // 댓글 조회
+    // ✅댓글 조회
+    public List<ReplyUserDto> findReply(Long postId) throws IllegalAccessException {
+        PostTb post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
+        List<ReplyUserDto> replyUserDtos = post.getReplies().stream()
+                .map(reply -> new ReplyUserDto(reply.getUser().getNickname(), reply.getContent(), reply.getWriteDate(), reply.getUser().getPfImg()))
+                .collect(Collectors.toList());
 
+        return replyUserDtos;
+    }
     // 댓글 수정
 
     // 댓글 삭제

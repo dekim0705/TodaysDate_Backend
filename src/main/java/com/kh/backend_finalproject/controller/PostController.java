@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -61,5 +63,11 @@ public class PostController {
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("댓글 작성 실패! ⚠️", HttpStatus.BAD_REQUEST);
         }
+    }
+    // ✅댓글 조회
+    @GetMapping("/{postId}/reply")
+    public ResponseEntity<List<ReplyUserDto>> getReply(@PathVariable Long postId) throws IllegalAccessException {
+        List<ReplyUserDto> replyUserDtos = postService.findReply(postId);
+        return new ResponseEntity<>(replyUserDtos, HttpStatus.OK);
     }
 }

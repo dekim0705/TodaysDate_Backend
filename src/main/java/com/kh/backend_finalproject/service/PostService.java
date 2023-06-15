@@ -87,13 +87,13 @@ public class PostService {
         return postDto;
     }
     // ✅게시글 수정
-    public PostDto updatePost(Long postId, PostTb updatePostData) throws IllegalAccessException {
+    public boolean updatePost(Long postId, PostPinDto postPinDto) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
 
         // 핀 초기화 후 다시 추가 ^^..
         pinRepository.deleteAllByPost(post);
-        List<PinTb> newPins = updatePostData.getPins().stream()
+        List<PinTb> newPins = postPinDto.getPins().stream()
                         .map(pinDto -> {
                             PinTb newPin = new PinTb();
                             newPin.setLatitude(pinDto.getLatitude());
@@ -103,18 +103,18 @@ public class PostService {
                             return pinRepository.save(newPin);
                         }).collect(Collectors.toList());
 
-        post.setTitle(updatePostData.getTitle());
-        post.setRegion(updatePostData.getRegion());
-        post.setCourse(updatePostData.getCourse());
-        post.setTheme(updatePostData.getTheme());
-        post.setDistrict(updatePostData.getDistrict());
-        post.setComment(updatePostData.getComment());
-        post.setPlaceTag(updatePostData.getPlaceTag());
-        post.setImgUrl(updatePostData.getImgUrl());
-        post.setContent(updatePostData.getContent());
+        post.setTitle(postPinDto.getPost().getTitle());
+        post.setRegion(postPinDto.getPost().getRegion());
+        post.setCourse(postPinDto.getPost().getCourse());
+        post.setTheme(postPinDto.getPost().getTheme());
+        post.setDistrict(postPinDto.getPost().getDistrict());
+        post.setComment(postPinDto.getPost().getComment());
+        post.setPlaceTag(postPinDto.getPost().getPlaceTag());
+        post.setImgUrl(postPinDto.getPost().getImgUrl());
+        post.setContent(postPinDto.getPost().getContent());
         postRepository.save(post);
 
-        return findPost(postId);
+        return true;
     }
     // ✅게시글 삭제
     public void deletePost(Long postId) throws IllegalAccessException {
@@ -123,11 +123,11 @@ public class PostService {
         postRepository.delete(post);
     }
     // 댓글 작성
-    public ReplyTb createReply(Long postId, Long userId, ReplyUserDto replyUserDto) throws IllegalAccessException {
+    public boolean createReply(Long postId, ReplyUserDto replyUserDto) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
 
-        UserTb user = userRepository.findById(userId)
+        UserTb user = userRepository.findById(replyUserDto.getUserNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
 
         ReplyTb reply = new ReplyTb();
@@ -136,7 +136,7 @@ public class PostService {
         reply.setPost(post);
         reply.setUser(user);
 
-        return replyRepository.save(reply);
+        return true;
     }
     // 댓글 조회
 

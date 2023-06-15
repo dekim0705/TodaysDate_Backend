@@ -1,6 +1,7 @@
 package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostPinDto;
+import com.kh.backend_finalproject.dto.ReplyUserDto;
 import com.kh.backend_finalproject.entitiy.PostTb;
 import com.kh.backend_finalproject.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -33,12 +34,12 @@ public class PostController {
     }
     // ✅게시글 수정
     @PutMapping(value = "/{postId}")
-    public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostTb updatePostData) throws IllegalAccessException {
+    public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostPinDto postPinDto) throws IllegalAccessException {
         try {
-            PostDto post = postService.updatePost(postId, updatePostData);
-            return new ResponseEntity<>(post, HttpStatus.OK);
+            boolean isUpdate = postService.updatePost(postId, postPinDto);
+            return new ResponseEntity<>("게시글 수정 성공 ❤️", HttpStatus.OK);
         } catch (IllegalAccessException e) {
-            return new ResponseEntity<>("게시글 수정 실패..⚠️" + e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("게시글 수정 실패 🚨️" + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
     // ✅게시글 삭제
@@ -49,6 +50,16 @@ public class PostController {
             return new ResponseEntity<>("게시글 삭제 성공 ❤️", HttpStatus.ACCEPTED);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("게시글 삭제 실패 🚨" + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    // 댓글 작성
+    @PostMapping("/{postId}/reply")
+    public ResponseEntity<?> createReply(@RequestParam Long PostId, @RequestBody ReplyUserDto replyUserDto) throws IllegalAccessException {
+        try {
+            postService.createReply(replyUserDto.getUserNum(), replyUserDto);
+            return new ResponseEntity<>("댓글 작성 성공! ❤️", HttpStatus.CREATED);
+        } catch (IllegalAccessException e) {
+            return new ResponseEntity<>("댓글 작성 실패! ⚠️", HttpStatus.BAD_REQUEST);
         }
     }
 }

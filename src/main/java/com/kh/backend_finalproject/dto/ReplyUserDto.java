@@ -12,8 +12,5 @@ public class ReplyUserDto {
     private Long replyNum;
     private String content;
     private LocalDateTime writeDate;
-
+    private Long userNum;
 }
-
-
-

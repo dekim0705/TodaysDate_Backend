@@ -64,6 +64,9 @@ public class UserTb {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ReplyTb> replies = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PushTb> push = new ArrayList<>();
+
     @OneToMany(mappedBy = "blocker", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BlockTb> blockedUsers = new ArrayList<>();
 
@@ -78,4 +81,6 @@ public class UserTb {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ChatbotTb> chatbots = new ArrayList<>();
+
+
 }

@@ -80,7 +80,22 @@ public class UserService {
         UserTb user = userRepository.findByEmail(email);
         return user.getIsPush();
     }
-    // 마이페이지 - 회원의 북마크 폴더 가져오기
+
+    // ✅ 마이페이지 - 회원의 푸쉬알림 상태 변경
+    public IsPush updateUserNotificationStatus(String email) {
+        UserTb user = userRepository.findByEmail(email);
+        IsPush currentStatus = user.getIsPush();
+        System.out.println("🍒(" + email + ")현재 알림 설정 상태  : " + currentStatus);
+
+        IsPush newStatus = currentStatus.equals(IsPush.PUSH) ? IsPush.NOPUSH : IsPush.PUSH;
+        user.setIsPush(newStatus);
+        userRepository.save(user);
+        System.out.println("🍒(" + email + ")변경된 알림 설정 : " + newStatus);
+
+        return newStatus;
+    }
+
+    // ✅ 마이페이지 - 회원의 북마크 폴더 가져오기
     public List<FolderDto> getUserBookmarkFolders(String email) {
         UserTb user = userRepository.findByEmail(email);
         if (user != null) {
@@ -107,7 +122,7 @@ public class UserService {
         return Collections.emptyList();
     }
 
-
+    // ✅ 회원의 북마크 가져오기
     public List<BookmarkDto> getBookmarksInFolder(Long folderId, String email) {
         Optional<FolderTb> folderOptional = folderRepository.findById(folderId);
         if (folderOptional.isPresent()) {

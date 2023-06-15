@@ -56,6 +56,13 @@ public class UserController {
             return ResponseEntity.ok(notificationStatus);
         }
     }
+    // ✅ 마이페이지 - 회원의 푸쉬알림 상태 변경
+    @PutMapping(value = "/notification-status")
+    public ResponseEntity<IsPush> updateNotificationStatus(@RequestParam("email") String email) {
+            IsPush updateNotificationStatus = userService.updateUserNotificationStatus(email);
+            return new ResponseEntity<>(updateNotificationStatus, HttpStatus.OK);
+    }
+
     // ✅ 마이페이지 - 회원의 북마크 폴더 가져오기
     @GetMapping(value = "/bookmark-folders")
     public ResponseEntity<List<FolderDto>> getBookmarkFolders(@RequestParam("email") String email) {
@@ -63,6 +70,7 @@ public class UserController {
         return new ResponseEntity<>(folderDtos, HttpStatus.OK);
     }
 
+    // ✅ 마이페이지 - 회원의 북마크 가져오기
     @GetMapping("/bookmark-folders/{folderId}/bookmarks")
     public ResponseEntity<List<BookmarkDto>> getBookmarksInFolder(
             @PathVariable("folderId") Long folderId,

@@ -10,6 +10,7 @@ import com.kh.backend_finalproject.repository.ReplyRepository;
 import com.kh.backend_finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -148,10 +149,18 @@ public class UserService {
         return Collections.emptyList();
     }
 
-    // 마이페이지 - 회원정보 수정
+    // ✅ 마이페이지 - 회원정보 수정
     public boolean updateInformation(Long userId, UserDto userDto) throws IllegalAccessException {
         UserTb user = userRepository.findById(userId)
                         .orElseThrow(() -> new IllegalAccessException("해당 회원이 없습니다." + userId));
+
+        if (userDto.getPfImg() == null || userDto.getPfImg().isEmpty()
+                || userDto.getNickname() == null || userDto.getNickname().isEmpty()
+                || userDto.getUserComment() == null || userDto.getUserComment().isEmpty()
+                || userDto.getUserRegion() == null) {
+            throw new IllegalArgumentException("모든 정보를 입력해 주세요..😰");
+        }
+
         user.setPfImg(userDto.getPfImg());
         user.setNickname(userDto.getNickname());
         user.setUserComment(userDto.getUserComment());
@@ -161,5 +170,19 @@ public class UserService {
         return true;
     }
 
+    // ✅ 마이페이지 - 비밀번호 변경
+    public boolean updatePwd(Long userId, UserTb userTb) throws IllegalAccessException {
+        UserTb user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다." + userId));
 
+        if (userTb.getPwd() == null || userTb.getPwd().isEmpty()) {
+            throw new IllegalArgumentException("비밀번호가 없어요..😰");
+        }
+
+        user.setPwd(userTb.getPwd());
+        UserTb savedUser = userRepository.save(user);
+        log.info(savedUser.toString());
+
+        return true;
+    }
 }

@@ -19,6 +19,7 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
     private final AdminService adminService;
+
     // 💗 전체 회원 조회
     @GetMapping("/user")
     public ResponseEntity<List<UserDto>> getAllUsers() {
@@ -32,30 +33,35 @@ public class AdminController {
         List<PostUserDto> postList = adminService.findAllPostList();
         return new ResponseEntity<>(postList,HttpStatus.OK);
     }
+
     // 💗 전체 댓글 내역 조회 (문의일 최근순 정렬)
     @GetMapping("/reply")
     public ResponseEntity<List<ReplyUserDto>> getAllReplies() {
         List<ReplyUserDto> replyList = adminService.findAllReplyList();
         return new ResponseEntity<>(replyList,HttpStatus.OK);
     }
+
     // 💗 광고 추가
     @PostMapping("/ad/new")
     public ResponseEntity<AdDto> addAd(@RequestBody AdDto adDto) {
         AdDto savedAdDto = adminService.createAd(adDto);
         return new ResponseEntity<>(savedAdDto, HttpStatus.OK);
     }
+
     // 💗 전체 광고 조회
     @GetMapping("/ad")
     public ResponseEntity<List<AdDto>> getAllAds() {
         List<AdDto> adList = adminService.findAllAdList();
         return new ResponseEntity<>(adList,HttpStatus.OK);
     }
+
     // 💗 전체 문의 내역 조회 (최근순 정렬)
     @GetMapping("/inquiry")
     public ResponseEntity<List<ChatbotUserDto>> getAllInquiries() {
         List<ChatbotUserDto> inquiryList = adminService.findAllInquiryList();
         return new ResponseEntity<>(inquiryList,HttpStatus.OK);
     }
+
     // 💗 전체 신고 내역 조회
     @GetMapping("/report")
     public ResponseEntity<List<ReportDto>> getAllReports() {
@@ -80,12 +86,19 @@ public class AdminController {
             return ResponseEntity.badRequest().body("게시글이 존재하지 않아용~~ㅜㅜ");
         }
     }
+
     //💗 다중 댓글 삭제
     @DeleteMapping("/delete/replies")
     public ResponseEntity<String> deleteMultipleReplies(@RequestBody List<Long> replyIds) {
         adminService.deleteReplies(replyIds);
         return ResponseEntity.ok("댓글 삭제 성공!");
     }
+
+    //💗 관리자 - 회원 검색
+
+    //💗 관리자 - 게시글 검색
+
+    //💗 관리자 - 댓글 검색
 }
 
 

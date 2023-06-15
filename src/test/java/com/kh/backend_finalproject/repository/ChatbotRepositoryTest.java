@@ -25,7 +25,7 @@ class ChatbotRepositoryTest {
     public void findAllInquiriesTest () {
         List<ChatbotTb> chatbotTbs = chatbotRepository.findAll();
         for (ChatbotTb e : chatbotTbs) {
-            System.out.println("💗문의 번호 : " + e.getInquiryNum());
+            System.out.println("💗문의 번호 : " + e.getId());
             System.out.println("💗문의 내용 : " + e.getInquiryContent());
             System.out.println("💗문의자 : " + e.getUser().getNickname());
             System.out.println("💗문의일 : " + e.getInquiryDate());

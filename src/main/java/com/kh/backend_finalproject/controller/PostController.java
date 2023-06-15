@@ -87,7 +87,7 @@ public class PostController {
             return new ResponseEntity<>("댓글 수정 실패 🚨" + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    // 댓글 삭제
+    // ✅댓글 삭제
     @DeleteMapping("/{replyId}/reply")
     public ResponseEntity<?> deleteReply(@PathVariable Long replyId) {
         postService.deleteReply(replyId);

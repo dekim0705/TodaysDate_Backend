@@ -164,22 +164,10 @@ public class PostService {
 
         return true;
     }
-    // 댓글 삭제
+    // ✅댓글 삭제
     public void deleteReply(Long replyId) {
         ReplyTb reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다."));
         replyRepository.delete(reply);
     }
 }
-
-/*
-@DeleteMapping(value = "/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) throws IllegalAccessException {
-        try {
-            postService.deletePost(postId);
-            return new ResponseEntity<>("게시글 삭제 성공 ❤️", HttpStatus.ACCEPTED);
-        } catch (IllegalAccessException e) {
-            return new ResponseEntity<>("게시글 삭제 실패 🚨" + e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-*/

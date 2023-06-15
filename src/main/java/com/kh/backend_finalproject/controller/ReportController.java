@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -26,7 +23,11 @@ public class ReportController {
         return new ResponseEntity<>("게시글 신고 완료 ❤️", HttpStatus.ACCEPTED);
     }
 
-    // 사용자 차단하기
-
+    // ✅사용자 차단하기
+    @PostMapping("/user/{blockerId}/block/{blockedId}")
+    public ResponseEntity<?> blockUser(@PathVariable Long blockerId, @PathVariable Long blockedId) {
+        reportService.blockUser(blockerId, blockedId);
+        return new ResponseEntity<>("차단 완료 ❤️", HttpStatus.ACCEPTED);
+    }
     // 사용자 신고하기
 }

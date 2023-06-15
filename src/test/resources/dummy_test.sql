@@ -82,4 +82,4 @@ VALUES (3, '질문합니다!! 이거 제가 이해한게 맞나요?!!!!', 3, '20
 
 -- BLOCK_TB
 INSERT INTO block_tb (block_num,blocker_fk, blocked_fk)
-VALUES (1,1,3);
+VALUES (1,1,2);

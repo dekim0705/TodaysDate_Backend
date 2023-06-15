@@ -10,9 +10,14 @@ import com.kh.backend_finalproject.repository.ReplyRepository;
 import com.kh.backend_finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +44,6 @@ public class UserService {
         UserTb user = userRepository.findByEmail(email);
         List<PostTb> posts = user.getPosts();
         List<UserDto> userDtoList = new ArrayList<>();
-
         for (PostTb post : posts) {
             UserDto userDto = new UserDto();
             userDto.setPostNum(post.getId());
@@ -48,7 +52,6 @@ public class UserService {
             userDto.setViewCount(post.getViewCount());
             userDto.setWriteDate(post.getWriteDate());
             userDto.setNickname(post.getUser().getNickname());
-
             userDtoList.add(userDto);
         }
         return userDtoList;
@@ -184,5 +187,22 @@ public class UserService {
         log.info(savedUser.toString());
 
         return true;
+    }
+
+    // ✅ 마이페이지 - 회원 탈퇴
+    public void deleteUser(Long userId) throws IllegalAccessException{
+        UserTb userTb = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다."));
+        userRepository.delete(userTb);
+    }
+
+    // ✅ 회원가입 - 닉네임 중복 확인
+    public Optional<UserTb> findUserByNickname(String nickname) {
+        return userRepository.findByNickname(nickname);
+    }
+
+    // ✅ 회원가입 - 이메일 중복 확인
+    public boolean findUserByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

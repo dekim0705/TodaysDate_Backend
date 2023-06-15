@@ -1,0 +1,49 @@
+package com.kh.backend_finalproject.controller;
+
+import com.kh.backend_finalproject.entitiy.UserTb;
+import com.kh.backend_finalproject.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+@RestController
+@Slf4j
+@RequiredArgsConstructor
+@RequestMapping("/join")
+public class JoinController {
+    @Autowired
+    UserService userService;
+
+    // ✅ 회원가입 - 닉네임 중복 확인
+    @PostMapping("/dupnickname")
+    public ResponseEntity<Boolean> checkDuplicateNickname(@RequestParam String nickname) {
+        Optional<UserTb> user = userService.findUserByNickname(nickname);
+
+        if (user.isPresent()) {
+            System.out.println("🍒 존재하는 닉네임 (가입 불가): " + nickname);
+            return ResponseEntity.ok(false);
+        } else {
+            System.out.println("🍒 존재하지 않는 닉네임 (가입 가능): " + nickname);
+            return ResponseEntity.ok(true);
+        }
+    }
+
+    // ✅ 회원가입 - 이메일 중복 확인
+    @GetMapping("/dupemail")
+    public ResponseEntity<Boolean> checkDuplicateEmail(@RequestParam String email) {
+        boolean isDuplicate = userService.findUserByEmail(email);
+        if(isDuplicate) {
+            System.out.println("🍒 존재하는 이메일 (가입 불가): " + email);
+            return ResponseEntity.ok(false);
+        } else {
+            System.out.println("🍒 존재하지 않는 이메일 (가입 가능): " + email);
+            return ResponseEntity.ok(true);
+        }
+        // if(isDuplicate) return ResponseEntity.ok(false);
+        // else return ResponseEntity.ok(true);
+    }
+
+}

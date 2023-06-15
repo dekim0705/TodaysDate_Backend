@@ -2,10 +2,9 @@ package com.kh.backend_finalproject.service;
 import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.dto.*;
-import com.kh.backend_finalproject.entitiy.PostTb;
+import com.kh.backend_finalproject.entitiy.*;
 import com.kh.backend_finalproject.dto.UserProfileDto;
-import com.kh.backend_finalproject.entitiy.ReplyTb;
-import com.kh.backend_finalproject.entitiy.UserTb;
+import com.kh.backend_finalproject.repository.FolderRepository;
 import com.kh.backend_finalproject.repository.PostRepository;
 import com.kh.backend_finalproject.repository.ReplyRepository;
 import com.kh.backend_finalproject.repository.UserRepository;
@@ -27,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final ReplyRepository replyRepository;
+    private final FolderRepository folderRepository;
 
     // ✅ 마이페이지 - 회원 프로필 바 가져오기 (프로필사진, 닉네임, 멤버십 여부, 한 줄 소개, 총 게시글/댓글 수)
     public List<UserProfileDto> getUserProfileInfo(String email) {
@@ -80,4 +80,61 @@ public class UserService {
         UserTb user = userRepository.findByEmail(email);
         return user.getIsPush();
     }
+    // 마이페이지 - 회원의 북마크 폴더 가져오기
+    public List<FolderDto> getUserBookmarkFolders(String email) {
+        UserTb user = userRepository.findByEmail(email);
+        if (user != null) {
+            List<FolderDto> folderDtos = new ArrayList<>();
+            for (FolderTb folder : user.getFolders()) {
+                FolderDto folderDto = new FolderDto();
+                folderDto.setId(folder.getId());
+                folderDto.setName(folder.getName());
+
+//                List<BookmarkDto> bookmarkDtos = new ArrayList<>();
+//                for (BookmarkTb bookmark : folder.getBookmarks()) {
+//                    BookmarkDto bookmarkDto = new BookmarkDto();
+//                    bookmarkDto.setId(bookmark.getId());
+//                    bookmarkDto.setPostId(bookmark.getPost().getId());
+//
+//                    bookmarkDtos.add(bookmarkDto);
+//                }
+//                folderDto.setBookmarks(bookmarkDtos);
+
+                folderDtos.add(folderDto);
+            }
+            return folderDtos;
+        }
+        return Collections.emptyList();
+    }
+
+
+    public List<BookmarkDto> getBookmarksInFolder(Long folderId, String email) {
+        Optional<FolderTb> folderOptional = folderRepository.findById(folderId);
+        if (folderOptional.isPresent()) {
+            FolderTb folder = folderOptional.get();
+            // 폴더 소유자 확인
+            if (folder.getUser().getEmail().equals(email)) {
+                List<BookmarkDto> bookmarkDtos = new ArrayList<>();
+                for (BookmarkTb bookmark : folder.getBookmarks()) {
+                    BookmarkDto bookmarkDto = new BookmarkDto();
+                    bookmarkDto.setId(bookmark.getId());
+                    bookmarkDto.setPostId(bookmark.getPost().getId());
+                    bookmarkDto.setImgUrl(bookmark.getPost().getImgUrl());
+                    bookmarkDto.setTitle(bookmark.getPost().getTitle());
+                    bookmarkDto.setDistrict(bookmark.getPost().getDistrict());
+
+                    bookmarkDtos.add(bookmarkDto);
+                }
+                return bookmarkDtos;
+            } else {
+                throw new IllegalArgumentException("해당 폴더에 접근 권한이 없습니다.");
+            }
+        }
+        return Collections.emptyList();
+    }
+
+
+
+
+
 }

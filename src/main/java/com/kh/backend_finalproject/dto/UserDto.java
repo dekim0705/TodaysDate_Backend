@@ -5,6 +5,7 @@ import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.constant.RegionStatus;
 
+import com.kh.backend_finalproject.entitiy.FolderTb;
 import lombok.Getter;
 import lombok.Setter;
 

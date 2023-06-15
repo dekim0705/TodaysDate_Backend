@@ -1,6 +1,8 @@
 package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;
+import com.kh.backend_finalproject.dto.BookmarkDto;
+import com.kh.backend_finalproject.dto.FolderDto;
 import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.dto.UserProfileDto;
 import com.kh.backend_finalproject.service.UserService;
@@ -54,6 +56,23 @@ public class UserController {
             return ResponseEntity.ok(notificationStatus);
         }
     }
+    // ✅ 마이페이지 - 회원의 북마크 폴더 가져오기
+    @GetMapping(value = "/bookmark-folders")
+    public ResponseEntity<List<FolderDto>> getBookmarkFolders(@RequestParam("email") String email) {
+        List<FolderDto> folderDtos = userService.getUserBookmarkFolders(email);
+        return new ResponseEntity<>(folderDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/bookmark-folders/{folderId}/bookmarks")
+    public ResponseEntity<List<BookmarkDto>> getBookmarksInFolder(
+            @PathVariable("folderId") Long folderId,
+            @RequestParam("email") String email
+    ) {
+        List<BookmarkDto> bookmarks = userService.getBookmarksInFolder(folderId, email);
+        return new ResponseEntity<>(bookmarks, HttpStatus.OK);
+    }
+
+
 
 
 }

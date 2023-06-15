@@ -102,10 +102,25 @@ public class AdminController {
     }
 
     //💗 관리자 - 회원 검색
+    @GetMapping(value = "/user/search")
+    public ResponseEntity<List<UserDto>> getSearchUser(@RequestParam String keyword) {
+        List<UserDto> user = adminService.findByKeywordUser(keyword);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
     //💗 관리자 - 게시글 검색
+    @GetMapping(value = "/posts/search")
+    public ResponseEntity<List<PostUserDto>> getSearchPosts(@RequestParam String keyword) {
+        List<PostUserDto> posts = adminService.findByKeywordAdminPost(keyword);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
 
     //💗 관리자 - 댓글 검색
+    @GetMapping(value = "/replies/search")
+    public ResponseEntity<List<ReplyUserDto>> getSearchReplies(@RequestParam String keyword) {
+        List<ReplyUserDto> replies = adminService.findByKeywordReply(keyword);
+        return new ResponseEntity<>(replies, HttpStatus.OK);
+    }
 }
 
 

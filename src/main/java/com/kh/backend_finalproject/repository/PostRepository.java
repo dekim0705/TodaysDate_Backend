@@ -44,4 +44,10 @@ public interface PostRepository extends JpaRepository<PostTb, Long> {
     // ✅특정 게시글의 북마크 수 가져오기
     @Query("SELECT COUNT(b) FROM BookmarkTb b WHERE b.post.id = :postId")
     int findBookmarkCountByPostId(@Param("postId") Long postId);
+
+    //💗 관리자 페이지 : 게시물 검색 (제목, 작성자)
+    @Query("SELECT p FROM PostTb p JOIN p.user u WHERE p.title LIKE %:keyword% OR u.nickname LIKE %:keyword%")
+    List<PostTb> findByKeywordAdminPost(@Param("keyword") String keyword);
+
+
 }

@@ -70,11 +70,11 @@ public class AdminService {
     public List<AdDto> findAllAdList() {
         List<AdTb> ads = adRepository.findAll();
         List<AdDto> adDtos = new ArrayList<>();
-        for (AdTb ad : ads) {
+        for (AdTb e : ads) {
             AdDto adDto = new AdDto();
-            adDto.setAdNum(ad.getId());
-            adDto.setName(ad.getName());
-            adDto.setImgUrl(ad.getImgUrl());
+            adDto.setAdNum(e.getId());
+            adDto.setName(e.getName());
+            adDto.setImgUrl(e.getImgUrl());
             adDtos.add(adDto);
         }
         return adDtos;
@@ -138,9 +138,56 @@ public class AdminService {
     }
 
     //💗 관리자 - 회원 검색
+    public List<UserDto> findByKeywordUser(String keyword) {
+        List<UserTb> user = userRepository.findByKeywordUser(keyword);
+        List<UserDto> userDtos = new ArrayList<>();
+        for (UserTb e : user) {
+            UserDto dto = new UserDto();
+            dto.setId(e.getId());
+            dto.setNickname(e.getNickname());
+            dto.setEmail(e.getEmail());
+            dto.setIsMembership(e.getIsMembership());
+            dto.setRegDate(e.getRegDate());
+
+            List<String> blockedNickname = new ArrayList<>();
+            List<BlockTb> blockedUsers = e.getBlockedUsers();
+            for (BlockTb block : blockedUsers) {
+                blockedNickname.add(block.getBlocked().getNickname());
+            }
+            dto.setBlockedNickname(blockedNickname);
+            userDtos.add(dto);
+        }
+        return userDtos;
+    }
 
     //💗 관리자 - 게시글 검색
+    public List<PostUserDto> findByKeywordAdminPost(String keyword) {
+        List<PostTb> postList = postRepository.findByKeywordAdminPost(keyword);
+        List<PostUserDto> postUserDtos = new ArrayList<>();
+        for (PostTb e : postList) {
+            PostUserDto dto = new PostUserDto();
+            dto.setId(e.getId());
+            dto.setTitle(e.getTitle());
+            dto.setNickname(e.getUser().getNickname());
+            dto.setWriteDate(e.getWriteDate());
+            postUserDtos.add(dto);
+        }
+        return postUserDtos;
+    }
 
     //💗 관리자 - 댓글 검색
+    public List<ReplyUserDto> findByKeywordReply(String keyword) {
+        List<ReplyTb> replyList = replyRepository.findByKeywordReply(keyword);
+        List<ReplyUserDto> replyUserDtos = new ArrayList<>();
+        for (ReplyTb e : replyList) {
+            ReplyUserDto dto = new ReplyUserDto();
+            dto.setReplyNum(e.getId());
+            dto.setContent(e.getContent());
+            dto.setNickname(e.getUser().getNickname());
+            dto.setWriteDate(e.getWriteDate());
+            replyUserDtos.add(dto);
+        }
+        return replyUserDtos;
+    }
 }
 

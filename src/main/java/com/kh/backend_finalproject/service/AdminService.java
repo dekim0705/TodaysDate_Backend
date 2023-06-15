@@ -128,7 +128,12 @@ public class AdminService {
         for (Long replyId : replyIds) {
             replyRepository.deleteById(replyId);
         }
-
     }
+
+    //💗 관리자 - 회원 검색
+
+    //💗 관리자 - 게시글 검색
+
+    //💗 관리자 - 댓글 검색
 }
 

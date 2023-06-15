@@ -1,10 +1,9 @@
 package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;
-import com.kh.backend_finalproject.dto.BookmarkDto;
-import com.kh.backend_finalproject.dto.FolderDto;
-import com.kh.backend_finalproject.dto.UserDto;
-import com.kh.backend_finalproject.dto.UserProfileDto;
+import com.kh.backend_finalproject.constant.RegionStatus;
+import com.kh.backend_finalproject.dto.*;
+import com.kh.backend_finalproject.entitiy.UserTb;
 import com.kh.backend_finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -80,6 +80,17 @@ public class UserController {
         return new ResponseEntity<>(bookmarks, HttpStatus.OK);
     }
 
+    // ✅ 마이페이지 - 회원정보 수정
+    @PutMapping("/information")
+    public ResponseEntity<?> updateUserInformation(@RequestParam Long userId, @RequestBody UserDto userDto) throws IllegalAccessException {
+        try {
+            boolean isUpdate = userService.updateInformation(userId, userDto);
+            return new ResponseEntity<>("회원정보 수정 성공! ❣️ ️️", HttpStatus.OK);
+        } catch (IllegalAccessException e) {
+            return new ResponseEntity<>("회원정보 수정 실패.. 😰", HttpStatus.OK);
+        }
+
+    }
 
 
 

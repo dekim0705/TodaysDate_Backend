@@ -122,7 +122,7 @@ public class UserService {
         return Collections.emptyList();
     }
 
-    // ✅ 회원의 북마크 가져오기
+    // ✅ 마이페이지 - 회원의 북마크 가져오기
     public List<BookmarkDto> getBookmarksInFolder(Long folderId, String email) {
         Optional<FolderTb> folderOptional = folderRepository.findById(folderId);
         if (folderOptional.isPresent()) {
@@ -148,8 +148,18 @@ public class UserService {
         return Collections.emptyList();
     }
 
+    // 마이페이지 - 회원정보 수정
+    public boolean updateInformation(Long userId, UserDto userDto) throws IllegalAccessException {
+        UserTb user = userRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalAccessException("해당 회원이 없습니다." + userId));
+        user.setPfImg(userDto.getPfImg());
+        user.setNickname(userDto.getNickname());
+        user.setUserComment(userDto.getUserComment());
+        user.setUserRegion(userDto.getUserRegion());
+        userRepository.save(user);
 
-
+        return true;
+    }
 
 
 }

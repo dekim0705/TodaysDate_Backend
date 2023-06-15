@@ -150,6 +150,15 @@ public class PostService {
         return replyUserDtos;
     }
     // 댓글 수정
+    public boolean updateReply(Long replyId, ReplyUserDto replyUserDto) throws IllegalAccessException {
+        ReplyTb reply = replyRepository.findById(replyId)
+                .orElseThrow(() -> new IllegalAccessException("해당 댓글이 없습니다." + replyId));
+
+        reply.setContent(replyUserDto.getContent());
+        replyRepository.save(reply);
+
+        return true;
+    }
 
     // 댓글 삭제
 }

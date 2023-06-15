@@ -1,13 +1,10 @@
 package com.kh.backend_finalproject.dto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 
-@Getter @Setter @AllArgsConstructor
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class ReplyUserDto {
     private String nickname;
     private Long replyNum;
@@ -21,5 +18,9 @@ public class ReplyUserDto {
         this.content = content;
         this.writeDate = writeDate;
         this.pfImg = pfImg;
+    }
+
+    public ReplyUserDto(String content) {
+        this.content = content;
     }
 }

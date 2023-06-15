@@ -1,7 +1,6 @@
 package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;
-import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.*;
 import com.kh.backend_finalproject.entitiy.UserTb;
 import com.kh.backend_finalproject.service.UserService;
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Slf4j
@@ -99,6 +97,17 @@ public class UserController {
             return ResponseEntity.ok("비밀번호 변경 성공! ❣️");
         } catch (IllegalAccessException e) {
             return ResponseEntity.badRequest().body("비밀번호 변경 실패.. 😰" + e.getMessage());
+        }
+    }
+
+    // ✅ 마이페이지 - 회원 탈퇴
+    @DeleteMapping(value = "/information/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+            return new ResponseEntity<>("회원 탈퇴 성공! ❣️", HttpStatus.ACCEPTED);
+        } catch (IllegalAccessException e) {
+            return new ResponseEntity<>("회원 탈퇴 실패.. 😰" + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

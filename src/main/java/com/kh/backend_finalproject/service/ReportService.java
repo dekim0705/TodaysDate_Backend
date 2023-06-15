@@ -1,7 +1,9 @@
 package com.kh.backend_finalproject.service;
 
+import com.kh.backend_finalproject.dto.ReportRequestDto;
 import com.kh.backend_finalproject.entitiy.BlockTb;
 import com.kh.backend_finalproject.entitiy.PostTb;
+import com.kh.backend_finalproject.entitiy.ReportTb;
 import com.kh.backend_finalproject.entitiy.UserTb;
 import com.kh.backend_finalproject.repository.BlockRepository;
 import com.kh.backend_finalproject.repository.PostRepository;
@@ -60,4 +62,24 @@ public class ReportService {
     }
 
     // 🔴사용자 신고하기
+    public void reportUser(ReportRequestDto reportRequestDto) {
+        // 1. 사용자가 존재하는지 확인
+        UserTb reporter = userRepository.findById(reportRequestDto.getReporterId())
+                .orElseThrow(() -> new IllegalArgumentException("신고하려는 사용자가 존재하지 않습니다." + reportRequestDto.getReporterId()));
+        UserTb reported = userRepository.findById(reportRequestDto.getReportedId())
+                .orElseThrow(() -> new IllegalArgumentException("신고 당하는 사용자가 존재하지 않습니다." + reportRequestDto.getReportedId()));
+
+        // 2. 신고자와 신고 당하는 사용자가 동일한 사용자인지 확인
+        if(reporter.equals(reported)) {
+            throw new IllegalArgumentException("사용자는 본인을 신고할 수 없습니다.");
+        }
+
+        // 3. 신고하기!!
+        ReportTb report = new ReportTb();
+        report.setReporter(reporter);
+        report.setReported(reported);
+        report.setContent(reportRequestDto.getContent());
+        report.setReportDate(reportRequestDto.getReportDate());
+        reportRepository.save(report);
+    }
 }

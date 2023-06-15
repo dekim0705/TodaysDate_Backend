@@ -2,6 +2,8 @@ package com.kh.backend_finalproject.entitiy;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -16,6 +18,8 @@ public class ReplyTb {
     @Column(nullable = false, length = 2000)
     private String content;          // 댓글 내용
 
+    @CreationTimestamp
+    @Column(nullable = false)
     private LocalDateTime writeDate; // 작성 날짜
 
     @ManyToOne(fetch = FetchType.LAZY)

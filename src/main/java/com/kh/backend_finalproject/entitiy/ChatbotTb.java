@@ -2,6 +2,8 @@ package com.kh.backend_finalproject.entitiy;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -19,6 +21,8 @@ public class ChatbotTb {
     @Column(nullable = false, length = 50)
     private String email;                    // 이메일
 
+    @CreationTimestamp
+    @Column(nullable = false)
     private LocalDateTime inquiryDate; // 문의 날짜
 
     @Column(nullable = false, length = 20)

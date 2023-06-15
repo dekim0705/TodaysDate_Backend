@@ -2,6 +2,8 @@ package com.kh.backend_finalproject.entitiy;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,6 +15,8 @@ public class PushTb {
     @Column(name = "push_num")
     private Long id;
 
+    @CreationTimestamp
+    @Column(nullable = false)
     private LocalDateTime sendDate; // 발송 날짜
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -3,6 +3,7 @@ package com.kh.backend_finalproject.entitiy;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,6 +21,8 @@ public class ReportTb {
     @Column(nullable = false, length = 2000)
     private String content; // 신고 내용
 
+    @CreationTimestamp
+    @Column(nullable = false)
     private LocalDateTime reportDate; // 신고 날짜
 
     @ManyToOne(fetch = FetchType.LAZY)

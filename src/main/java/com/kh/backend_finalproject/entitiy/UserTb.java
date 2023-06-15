@@ -5,6 +5,8 @@ import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.constant.RegionStatus;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class UserTb {
     @Enumerated(EnumType.STRING)
     private RegionStatus userRegion;                // 관심 지역
 
+    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime regDate;                  // 가입일
 

@@ -1,5 +1,6 @@
 package com.kh.backend_finalproject.controller;
 
+import com.kh.backend_finalproject.dto.ReportRequestDto;
 import com.kh.backend_finalproject.service.PostService;
 import com.kh.backend_finalproject.service.ReportService;
 import lombok.RequiredArgsConstructor;
@@ -33,4 +34,9 @@ public class ReportController {
     }
 
     // 사용자 신고하기
+    @PostMapping("/user/{reporterId}/report")
+    public ResponseEntity<?> reportUser(@PathVariable Long reporterId, @RequestBody ReportRequestDto reportRequestDto) {
+        reportService.reportUser(reportRequestDto);
+        return new ResponseEntity<>("신고가 접수되었습니다.🫡", HttpStatus.CREATED);
+    }
 }

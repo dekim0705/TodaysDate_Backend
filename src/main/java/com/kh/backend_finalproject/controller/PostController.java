@@ -63,7 +63,7 @@ public class PostController {
     @PostMapping("/{postId}/reply")
     public ResponseEntity<?> createReply(@PathVariable Long postId, @RequestBody ReplyUserDto replyUserDto) throws IllegalAccessException {
         try {
-            postService.createReply(replyUserDto.getUserNum(), replyUserDto);
+            postService.createReply(postId, replyUserDto);
             return new ResponseEntity<>("댓글 작성 성공! ❤️", HttpStatus.CREATED);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("댓글 작성 실패! ⚠️", HttpStatus.BAD_REQUEST);
@@ -87,6 +87,7 @@ public class PostController {
             return new ResponseEntity<>("댓글 수정 실패 🚨" + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     // ✅댓글 삭제
     @DeleteMapping("/{replyId}/reply")
     public ResponseEntity<?> deleteReply(@PathVariable Long replyId) {

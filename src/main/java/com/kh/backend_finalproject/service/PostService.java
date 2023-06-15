@@ -1,4 +1,5 @@
 package com.kh.backend_finalproject.service;
+
 import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.dto.PinDto;
 import com.kh.backend_finalproject.dto.PostDto;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,14 +46,14 @@ public class PostService {
         PostTb savePost = postRepository.save(post);
 
         // 3. pin(경로) 저장
-        for(PinTb pin : postPinDto.getPins()) {
+        for (PinTb pin : postPinDto.getPins()) {
             pin.setPost(savePost);
             pinRepository.save(pin);
         }
 
         // 4. 관심 지역 설정한 사용자들에게 알림
         List<UserTb> subscribedUsers = userRepository.findByUserRegion(savePost.getRegion());
-        for(UserTb subscribedUser : subscribedUsers) {
+        for (UserTb subscribedUser : subscribedUsers) {
             if (subscribedUser.getIsPush() == IsPush.PUSH) {
                 PushTb pushTb = new PushTb();
                 pushTb.setUser(subscribedUser);
@@ -62,6 +64,7 @@ public class PostService {
         }
         return true;
     }
+
     // ✅게시글 조회
     public PostDto findPost(Long postId) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
@@ -78,8 +81,8 @@ public class PostService {
         postDto.setTheme(post.getTheme());
         postDto.setComment(post.getComment());
         List<PinDto> pinDtos = post.getPins().stream()
-                        .map(pin -> new PinDto(pin.getLatitude(), pin.getLongitude(), pin.getRouteNum()))
-                                .collect(Collectors.toList());
+                .map(pin -> new PinDto(pin.getLatitude(), pin.getLongitude(), pin.getRouteNum()))
+                .collect(Collectors.toList());
         postDto.setPins(pinDtos);
         postDto.setPlaceTag(post.getPlaceTag());
         postDto.setContent(post.getContent());
@@ -87,6 +90,7 @@ public class PostService {
         postDto.setWriteDate(post.getWriteDate());
         return postDto;
     }
+
     // ✅게시글 수정
     public boolean updatePost(Long postId, PostPinDto postPinDto) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
@@ -95,14 +99,14 @@ public class PostService {
         // 핀 초기화 후 다시 추가 ^^..
         pinRepository.deleteAllByPost(post);
         List<PinTb> newPins = postPinDto.getPins().stream()
-                        .map(pinDto -> {
-                            PinTb newPin = new PinTb();
-                            newPin.setLatitude(pinDto.getLatitude());
-                            newPin.setLongitude(pinDto.getLongitude());
-                            newPin.setRouteNum(pinDto.getRouteNum());
-                            newPin.setPost(post);
-                            return pinRepository.save(newPin);
-                        }).collect(Collectors.toList());
+                .map(pinDto -> {
+                    PinTb newPin = new PinTb();
+                    newPin.setLatitude(pinDto.getLatitude());
+                    newPin.setLongitude(pinDto.getLongitude());
+                    newPin.setRouteNum(pinDto.getRouteNum());
+                    newPin.setPost(post);
+                    return pinRepository.save(newPin);
+                }).collect(Collectors.toList());
 
         post.setTitle(postPinDto.getPost().getTitle());
         post.setRegion(postPinDto.getPost().getRegion());
@@ -117,12 +121,14 @@ public class PostService {
 
         return true;
     }
+
     // ✅게시글 삭제
     public void deletePost(Long postId) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
         postRepository.delete(post);
     }
+
     // ✅댓글 작성
     public boolean createReply(Long postId, ReplyUserDto replyUserDto) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
@@ -144,6 +150,7 @@ public class PostService {
 
         return savedReply != null;
     }
+
     // ✅댓글 조회
     public List<ReplyUserDto> findReply(Long postId) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
@@ -154,6 +161,7 @@ public class PostService {
 
         return replyUserDtos;
     }
+
     // ✅댓글 수정
     public boolean updateReply(Long replyId, ReplyUserDto replyUserDto) throws IllegalAccessException {
         ReplyTb reply = replyRepository.findById(replyId)
@@ -164,6 +172,7 @@ public class PostService {
 
         return true;
     }
+
     // ✅댓글 삭제
     public void deleteReply(Long replyId) {
         ReplyTb reply = replyRepository.findById(replyId)

@@ -7,6 +7,7 @@ import com.kh.backend_finalproject.dto.PostPinDto;
 import com.kh.backend_finalproject.dto.ReplyUserDto;
 import com.kh.backend_finalproject.entitiy.*;
 import com.kh.backend_finalproject.repository.*;
+import com.kh.backend_finalproject.utils.BlockFilterUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,12 @@ public class PostService {
     private final PinRepository pinRepository;
     private final ReplyRepository replyRepository;
     private final PushRepository pushRepository;
+    private final BlockRepository blockRepository;
 
     @Autowired
     private SseService sseService;
 
-    // ⚠️게시글 작성 (⭐️Spring Security 구현 후에 테스트 해볼 것!!)
+    // ⚠🔐게시글 작성 (⭐️Spring Security 구현 후에 테스트 해볼 것!!)
     public boolean createPostWithPinAndPush(Long userId, PostPinDto postPinDto) {
         // 1. 사용자 정보 가져오기(추후 Spring Security...)
         Optional<UserTb> user = userRepository.findById(userId);
@@ -90,7 +92,7 @@ public class PostService {
         return postDto;
     }
 
-    // ✅게시글 수정
+    // 🔐게시글 수정
     public boolean updatePost(Long postId, PostPinDto postPinDto) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
@@ -121,14 +123,14 @@ public class PostService {
         return true;
     }
 
-    // ✅게시글 삭제
+    // 🔐게시글 삭제
     public void deletePost(Long postId) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
         postRepository.delete(post);
     }
 
-    // ✅댓글 작성
+    // 🔐댓글 작성
     public boolean createReply(Long postId, ReplyUserDto replyUserDto) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
@@ -150,18 +152,27 @@ public class PostService {
         return savedReply != null;
     }
 
-    // 🚧특정 사용자가 차단한 사용자의 댓글 제외 후 조회
-    public List<ReplyUserDto> findReply(Long postId) throws IllegalAccessException {
+    // 🔐특정 사용자가 차단한 사용자의 댓글 제외 후 조회
+    public List<ReplyUserDto> findReply(Long postId, Long blockerId) throws IllegalAccessException {
+        // 1. 차단한 사용자들의 목록 가져오기
+        List<Long> blockedUserIds = BlockFilterUtil.getBlockedUserIds(blockerId, blockRepository);
+
+        // 2. 특정 게시글 전체 댓글 가져오기
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
-        List<ReplyUserDto> replyUserDtos = post.getReplies().stream()
+        List<ReplyUserDto> allReplies = post.getReplies().stream()
                 .map(reply -> new ReplyUserDto(reply.getUser().getNickname(), reply.getContent(), reply.getWriteDate(), reply.getUser().getPfImg()))
                 .collect(Collectors.toList());
 
-        return replyUserDtos;
+        // 3. 차단한 사용자가 작성한 댓글 제외
+        List<ReplyUserDto> filterReplies = allReplies.stream()
+                .filter(replyUserDto -> !blockedUserIds.contains(replyUserDto.getUserNum()))
+                .collect(Collectors.toList());
+
+        return filterReplies;
     }
 
-    // ✅댓글 수정
+    // 🔐댓글 수정
     public boolean updateReply(Long replyId, ReplyUserDto replyUserDto) throws IllegalAccessException {
         ReplyTb reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new IllegalAccessException("해당 댓글이 없습니다." + replyId));
@@ -172,7 +183,7 @@ public class PostService {
         return true;
     }
 
-    // ✅댓글 삭제
+    // 🔐댓글 삭제
     public void deleteReply(Long replyId) {
         ReplyTb reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다."));

@@ -11,8 +11,7 @@ public class BlockFilterUtil {
     private BlockFilterUtil() {} // 외부에서 객체 생성 방지하기 위해 작성
 
     // ♻️blockerId가 차단한 사용자들의 목록 가져오기
-    public static List<Long> getBlockedUserIds(Long blockerId) {
-        final BlockRepository blockRepository = null;
+    public static List<Long> getBlockedUserIds(Long blockerId, BlockRepository blockRepository) {
         // 1. 차단한 사용자 목록 가져오기
         List<BlockTb> blockedUsers = blockRepository.findByBlockerId(blockerId);
 

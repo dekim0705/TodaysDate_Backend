@@ -72,8 +72,8 @@ public class PostController {
 
     // ✅댓글 조회
     @GetMapping("/{postId}/reply")
-    public ResponseEntity<List<ReplyUserDto>> getReply(@PathVariable Long postId) throws IllegalAccessException {
-        List<ReplyUserDto> replyUserDtos = postService.findReply(postId);
+    public ResponseEntity<List<ReplyUserDto>> getReply(@PathVariable Long postId, @RequestBody Long blockerId) throws IllegalAccessException {
+        List<ReplyUserDto> replyUserDtos = postService.findReply(postId, blockerId);
         return new ResponseEntity<>(replyUserDtos, HttpStatus.OK);
     }
 

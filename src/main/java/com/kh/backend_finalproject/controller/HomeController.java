@@ -35,9 +35,9 @@ public class HomeController {
         return new ResponseEntity<>(postUserDtos, HttpStatus.OK);
     }
     // 🚧키워드 검색
-    @GetMapping(value = "/posts/search")
-    public ResponseEntity<List<PostUserDto>> getSearchPosts(@RequestParam String keyword) {
-        List<PostUserDto> posts = homeService.findByKeyword(keyword);
+    @GetMapping(value = "/user/{blockerId}/posts/search")
+    public ResponseEntity<List<PostUserDto>> getSearchPosts(@PathVariable Long blockerId, @RequestParam String keyword) {
+        List<PostUserDto> posts = homeService.findByKeyword(blockerId, keyword);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     // ✅북마크 상위 5개 게시글 내림차순 정렬

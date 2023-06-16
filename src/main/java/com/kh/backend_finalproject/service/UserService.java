@@ -41,8 +41,8 @@ public class UserService {
     }
     // ✅ 마이페이지 - 회원의 모든 게시글 가져오기 (글 번호, 제목, 본문, 조회수, 작성일, 작성자 닉네임)
     public List<UserDto> getAllUserPosts(String email) {
-        UserTb user = userRepository.findByEmail(email);
-        List<PostTb> posts = user.getPosts();
+        Optional<UserTb> user = userRepository.findByEmail(email);
+        List<PostTb> posts = user.get().getPosts();;
         List<UserDto> userDtoList = new ArrayList<>();
         for (PostTb post : posts) {
             UserDto userDto = new UserDto();
@@ -58,8 +58,8 @@ public class UserService {
     }
     // ✅ 마이페이지 - 회원의 모든 댓글 가져오기 (댓글 번호, 작성자 닉네임, 댓글 본문, 원문 제목, 작성일)
     public List<UserDto> getAllUserReplies(String email) {
-        UserTb user = userRepository.findByEmail(email);
-        List<ReplyTb> replies = user.getReplies();
+        Optional<UserTb> user = userRepository.findByEmail(email);
+        List<ReplyTb> replies = user.get().getReplies();
         List<UserDto> userDtoList = new ArrayList<>();
 
         for (ReplyTb reply : replies) {
@@ -76,24 +76,24 @@ public class UserService {
     }
     // ✅ 마이페이지 - 회원의 멤버십 상태 조회
     public IsMembership getUserMembershipStatus(String email) {
-        UserTb user = userRepository.findByEmail(email);
-        return user.getIsMembership();
+        Optional<UserTb> user = userRepository.findByEmail(email);
+        return user.get().getIsMembership();
     }
     // ✅ 마이페이지 - 회원의 푸쉬알림 상태 조회
     public IsPush getUserNotificationStatus(String email) {
-        UserTb user = userRepository.findByEmail(email);
-        return user.getIsPush();
+        Optional<UserTb> user = userRepository.findByEmail(email);
+        return user.get().getIsPush();
     }
 
     // ✅ 마이페이지 - 회원의 푸쉬알림 상태 변경
     public IsPush updateUserNotificationStatus(String email) {
-        UserTb user = userRepository.findByEmail(email);
-        IsPush currentStatus = user.getIsPush();
+        Optional<UserTb> user = userRepository.findByEmail(email);
+        IsPush currentStatus = user.get().getIsPush();
         System.out.println("🍒(" + email + ")현재 알림 설정 상태  : " + currentStatus);
 
         IsPush newStatus = currentStatus.equals(IsPush.PUSH) ? IsPush.NOPUSH : IsPush.PUSH;
-        user.setIsPush(newStatus);
-        userRepository.save(user);
+        user.get().setIsPush(newStatus);
+        userRepository.save(user.get());
         System.out.println("🍒(" + email + ")변경된 알림 설정 : " + newStatus);
 
         return newStatus;
@@ -101,10 +101,10 @@ public class UserService {
 
     // ✅ 마이페이지 - 회원의 북마크 폴더 가져오기
     public List<FolderDto> getUserBookmarkFolders(String email) {
-        UserTb user = userRepository.findByEmail(email);
+        Optional<UserTb> user = userRepository.findByEmail(email);
         if (user != null) {
             List<FolderDto> folderDtos = new ArrayList<>();
-            for (FolderTb folder : user.getFolders()) {
+            for (FolderTb folder : user.get().getFolders()) {
                 FolderDto folderDto = new FolderDto();
                 folderDto.setId(folder.getId());
                 folderDto.setName(folder.getName());

@@ -1,17 +1,19 @@
-package com.kh.backend_finalproject.config;
-import org.springframework.context.annotation.Configuration;
+package com.kh.backend_finalproject.security;
+import com.kh.backend_finalproject.jwt.JwtFilter;
+import com.kh.backend_finalproject.jwt.TokenProvider;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@RequiredArgsConstructor
+public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+    private final TokenProvider tokenProvider;
+
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest().permitAll(); // 모든 요청을 허용
-
-        http.csrf().disable(); // CSRF(Cross-Site Request Forgery) 보호 비활성화 (옵션)
+    public void configure(HttpSecurity http) {
+        JwtFilter customFilter = new JwtFilter(tokenProvider);
+        http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

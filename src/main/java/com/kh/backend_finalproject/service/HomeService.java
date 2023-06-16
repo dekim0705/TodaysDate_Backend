@@ -99,8 +99,8 @@ public class HomeService {
 
     // 🔐회원 프로필 가져오기(by Email)
     public String findPfImgByEmail(String email) {
-        UserTb user = userRepository.findByEmail(email);
-        return user.getPfImg();
+        Optional<UserTb> user = userRepository.findByEmail(email);
+        return user.get().getPfImg();
     }
 
     // 🔐북마크 추가

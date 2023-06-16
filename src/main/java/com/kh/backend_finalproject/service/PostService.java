@@ -150,7 +150,7 @@ public class PostService {
         return savedReply != null;
     }
 
-    // ✅댓글 조회
+    // 🚧특정 사용자가 차단한 사용자의 댓글 제외 후 조회
     public List<ReplyUserDto> findReply(Long postId) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));

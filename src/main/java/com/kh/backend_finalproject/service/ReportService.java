@@ -61,7 +61,7 @@ public class ReportService {
         blockRepository.save(block);
     }
 
-    // 🔴사용자 신고하기
+    // ✅사용자 신고하기
     public void reportUser(ReportRequestDto reportRequestDto) {
         // 1. 사용자가 존재하는지 확인
         UserTb reporter = userRepository.findById(reportRequestDto.getReporterId())

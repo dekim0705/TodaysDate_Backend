@@ -33,7 +33,7 @@ public class ReportController {
         return new ResponseEntity<>("차단 완료 ❤️", HttpStatus.ACCEPTED);
     }
 
-    // 사용자 신고하기
+    // ✅사용자 신고하기
     @PostMapping("/user/{reporterId}/report")
     public ResponseEntity<?> reportUser(@PathVariable Long reporterId, @RequestBody ReportRequestDto reportRequestDto) {
         reportService.reportUser(reportRequestDto);

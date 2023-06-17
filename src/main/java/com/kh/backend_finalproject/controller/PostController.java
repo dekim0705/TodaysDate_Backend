@@ -88,10 +88,12 @@ public class PostController {
         }
     }
 
-    // 댓글 조회
+    // 🔐특정 사용자가 차단한 사용자의 댓글 제외 후 조회 (SecurityContext 적용 OK)
     @GetMapping("/{postId}/reply")
-    public ResponseEntity<List<ReplyUserDto>> getReply(@PathVariable Long postId, @RequestBody Long blockerId) throws IllegalAccessException {
-        List<ReplyUserDto> replyUserDtos = postService.findReply(postId, blockerId);
+    public ResponseEntity<List<ReplyUserDto>> getReply(@PathVariable Long postId,
+                                                       @AuthenticationPrincipal UserDetails userDetails,
+                                                       HttpServletRequest request) throws IllegalAccessException {
+        List<ReplyUserDto> replyUserDtos = postService.findReply(postId, request, userDetails);
         return new ResponseEntity<>(replyUserDtos, HttpStatus.OK);
     }
 

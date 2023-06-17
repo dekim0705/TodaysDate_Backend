@@ -13,11 +13,12 @@ public class ReplyUserDto {
     private Long userNum;
     private String pfImg;
 
-    public ReplyUserDto(String nickname, String content, LocalDateTime writeDate, String pfImg) {
+    public ReplyUserDto(String nickname, String content, LocalDateTime writeDate, String pfImg, Long userNum) {
         this.nickname = nickname;
         this.content = content;
         this.writeDate = writeDate;
         this.pfImg = pfImg;
+        this.userNum = userNum;
     }
 
     public ReplyUserDto(String content) {

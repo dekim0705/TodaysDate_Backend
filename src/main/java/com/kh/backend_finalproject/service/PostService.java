@@ -176,17 +176,21 @@ public class PostService {
         return savedReply != null;
     }
 
-    // 특정 사용자가 차단한 사용자의 댓글 제외 후 조회
-    public List<ReplyUserDto> findReply(Long postId, Long blockerId) throws IllegalAccessException {
+    // 🔐특정 사용자가 차단한 사용자의 댓글 제외 후 조회 (SecurityContext 적용 OK)
+    public List<ReplyUserDto> findReply(Long postId, HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         // 1. 차단한 사용자들의 목록 가져오기
-        List<Long> blockedUserIds = BlockFilterUtil.getBlockedUserIds(blockerId, blockRepository);
+        List<Long> blockedUserIds = BlockFilterUtil.getBlockedUserIds(user.getId(), blockRepository);
 
         // 2. 특정 게시글 전체 댓글 가져오기
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
+
         List<ReplyUserDto> allReplies = post.getReplies().stream()
                 .map(reply -> new ReplyUserDto(reply.getUser().getNickname(), reply.getContent(),
-                        reply.getWriteDate(), reply.getUser().getPfImg()))
+                        reply.getWriteDate(), reply.getUser().getPfImg(), reply.getUser().getId()))
                 .collect(Collectors.toList());
 
         // 3. 차단한 사용자가 작성한 댓글 제외

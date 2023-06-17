@@ -35,11 +35,9 @@ public class AuthService {
 
     public TokenDto login(UserRequestDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
-        System.out.println("제대로 되고 있나?! 🐟" + authenticationToken);
 
         try {
             Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-            System.out.println("제대로!!!!??? 🦤" + authentication);
             return tokenProvider.generateTokenDto(authentication);
         } catch (AuthenticationException e) {
             System.out.println("뭔가 잘못됐다....⛑️" + e.getMessage());

@@ -1,8 +1,11 @@
 package com.kh.backend_finalproject.jwt;
 
 import com.kh.backend_finalproject.dto.TokenDto;
+import com.kh.backend_finalproject.entitiy.RefreshTokenTb;
+import com.kh.backend_finalproject.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,12 +25,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class TokenProvider {
+    private final RefreshTokenRepository refreshTokenRepository;
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 7L * 24 * 60 * 60 * 1000; // 일주일
     private final Key key;
 
-    public TokenProvider(@Value("${springboot.jwt.secret}") String secretKey) {
+    public TokenProvider(@Value("${springboot.jwt.secret}") String secretKey, RefreshTokenRepository refreshTokenRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
@@ -47,9 +53,23 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
+        Date refreshTokenExpiresIn = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
+        String refreshToken = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim(AUTHORITIES_KEY, authorities)
+                .setExpiration(refreshTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        RefreshTokenTb refreshTokenTb = refreshTokenRepository.findByUserId(Long.parseLong(authentication.getName()))
+                .map(tokenEntity -> tokenEntity.update(refreshToken))
+                .orElse(new RefreshTokenTb(Long.parseLong(authentication.getName()), refreshToken));
+        refreshTokenRepository.save(refreshTokenTb);
+
         return TokenDto.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .tokenExpiresIn(tokenExpiresIn.getTime())
                 .build();
     }

@@ -35,7 +35,7 @@ public class PostService {
     @Autowired
     private SseService sseService;
 
-    // ⚠🔐게시글 작성 (⭐️Spring Security 구현 후에 테스트 해볼 것!!)
+    // 🔐게시글 작성 (⭐️Spring Security 구현 후에 테스트 해볼 것!!)
     public boolean createPostWithPinAndPush(Long userId, PostPinDto postPinDto) {
         // 1. 사용자 정보 가져오기(추후 Spring Security...)
         Optional<UserTb> user = userRepository.findById(userId);

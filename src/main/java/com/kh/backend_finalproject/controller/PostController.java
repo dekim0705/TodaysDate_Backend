@@ -4,12 +4,16 @@ import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostPinDto;
 import com.kh.backend_finalproject.dto.ReplyUserDto;
 import com.kh.backend_finalproject.entitiy.PostTb;
+import com.kh.backend_finalproject.entitiy.UserTb;
+import com.kh.backend_finalproject.repository.UserRepository;
 import com.kh.backend_finalproject.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,10 +25,17 @@ import java.util.List;
 public class PostController {
     @Autowired
     PostService postService;
+    private final UserRepository userRepository;
 
-    // ⚠️️게시글 작성 Controller는 사용자 정보 받아야 해서 로그인 구현 후에 마무리 !!!
+    // 🔐게시글 작성 (SecurityContext 적용 OK)
     @PostMapping("")
-    public ResponseEntity<Boolean> createPost(@RequestBody PostPinDto postPinDto) {
+    public ResponseEntity<Boolean> createPost(@RequestBody PostPinDto postPinDto, @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = Long.valueOf(userDetails.getUsername());
+        UserTb user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
+
+        postPinDto.setUserId(user.getId());
+
         boolean isCreate = postService.createPostWithPinAndPush(postPinDto.getUserId(), postPinDto);
         if (isCreate) return new ResponseEntity<>(isCreate, HttpStatus.OK);
         else return new ResponseEntity<>(isCreate, HttpStatus.NO_CONTENT);
@@ -37,7 +48,7 @@ public class PostController {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    // ✅게시글 수정
+    // 게시글 수정
     @PutMapping(value = "/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostPinDto postPinDto) throws IllegalAccessException {
         try {
@@ -48,7 +59,7 @@ public class PostController {
         }
     }
 
-    // ✅게시글 삭제
+    // 게시글 삭제
     @DeleteMapping(value = "/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId) throws IllegalAccessException {
         try {
@@ -59,7 +70,7 @@ public class PostController {
         }
     }
 
-    // ✅댓글 작성
+    // 댓글 작성
     @PostMapping("/{postId}/reply")
     public ResponseEntity<?> createReply(@PathVariable Long postId, @RequestBody ReplyUserDto replyUserDto) throws IllegalAccessException {
         try {
@@ -77,7 +88,7 @@ public class PostController {
         return new ResponseEntity<>(replyUserDtos, HttpStatus.OK);
     }
 
-    // ✅댓글 수정
+    // 댓글 수정
     @PutMapping("/{replyId}/reply")
     public ResponseEntity<?> updateReply(@PathVariable Long replyId, @RequestBody ReplyUserDto replyUserDto) {
         try {
@@ -88,7 +99,7 @@ public class PostController {
         }
     }
 
-    // ✅댓글 삭제
+    // 댓글 삭제
     @DeleteMapping("/{replyId}/reply")
     public ResponseEntity<?> deleteReply(@PathVariable Long replyId) {
         postService.deleteReply(replyId);

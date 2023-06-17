@@ -22,19 +22,19 @@ public class HomeController {
     @Autowired
     HomeService homeService;
 
-    // ✅️특정 사용자가 차단한 사용자를 제외한 전체 지역의 모든 게시글..작성일 최근순 정렬
+    // 특정 사용자가 차단한 사용자를 제외한 전체 지역의 모든 게시글..작성일 최근순 정렬
     @GetMapping(value = "/user/{blockerId}/posts")
     public ResponseEntity<List<PostUserDto>> getAllPosts(@PathVariable Long blockerId) {
         List<PostUserDto> postUserDtos = homeService.findAllPostsList(blockerId);
         return new ResponseEntity<>(postUserDtos, HttpStatus.OK);
     }
-    // ✅특정 지역 게시글 작성일 최근순 정렬
+    // 특정 사용자가 차단한 사용자를 제외한 특정 지역 게시글 작성일 최근순 정렬
     @GetMapping(value = "/user/{blockerId}/posts/{status}")
     public ResponseEntity<List<PostUserDto>> getRegionPosts(@PathVariable RegionStatus status, @PathVariable Long blockerId) {
         List<PostUserDto> postUserDtos = homeService.findRegionPostsList(status, blockerId);
         return new ResponseEntity<>(postUserDtos, HttpStatus.OK);
     }
-    // 🚧키워드 검색
+    // 키워드 검색
     @GetMapping(value = "/user/{blockerId}/posts/search")
     public ResponseEntity<List<PostUserDto>> getSearchPosts(@PathVariable Long blockerId, @RequestParam String keyword) {
         List<PostUserDto> posts = homeService.findByKeyword(blockerId, keyword);
@@ -46,14 +46,14 @@ public class HomeController {
         Page<PostBookmarkDto> postBookmarkDtos = homeService.findTop5ByBookmarkCount();
         return new ResponseEntity<>(postBookmarkDtos, HttpStatus.OK);
     }
-    // ✅회원 프로필 가져오기(by Eamil)
+    // 회원 프로필 가져오기(by Eamil)
     @PostMapping(value = "/profile")
     public ResponseEntity<String> getPfImgByEmail(@RequestParam String email) {
         String pfImg = homeService.findPfImgByEmail(email);
         if(pfImg != null) return new ResponseEntity<>(pfImg, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    // ✅북마크 추가
+    // 북마크 추가
     @PostMapping(value = "/user/{userId}/post/{postId}/folder/{folderName}/bookmark")
     public ResponseEntity<Boolean> addBookmark(@PathVariable Long userId, @PathVariable Long postId, @PathVariable String folderName) {
         boolean isAddBookmark = homeService.createBookmark(userId, postId, folderName);

@@ -133,14 +133,24 @@ public class PostService {
         return true;
     }
 
-    // 🔐게시글 삭제
-    public void deletePost(Long postId) throws IllegalAccessException {
+    // 🔐게시글 삭제 (SecurityContext 적용 OK)
+    public void deletePost(Long postId, HttpServletRequest request,
+                           UserDetails userDetails) throws IllegalAccessException {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
+
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
-        postRepository.delete(post);
+
+        if(user.getId().equals(post.getUser().getId())) {
+            postRepository.delete(post);
+        } else {
+            throw new IllegalArgumentException("요청한 자는 글 작성자가 아닙니다. 삭제 할 수 없습니다.");
+        }
     }
 
-    // 🔐댓글 작성
+    // 댓글 작성
     public boolean createReply(Long postId, ReplyUserDto replyUserDto) throws IllegalAccessException {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
@@ -162,7 +172,7 @@ public class PostService {
         return savedReply != null;
     }
 
-    // 🔐특정 사용자가 차단한 사용자의 댓글 제외 후 조회
+    // 특정 사용자가 차단한 사용자의 댓글 제외 후 조회
     public List<ReplyUserDto> findReply(Long postId, Long blockerId) throws IllegalAccessException {
         // 1. 차단한 사용자들의 목록 가져오기
         List<Long> blockedUserIds = BlockFilterUtil.getBlockedUserIds(blockerId, blockRepository);
@@ -182,7 +192,7 @@ public class PostService {
         return filterReplies;
     }
 
-    // 🔐댓글 수정
+    // 댓글 수정
     public boolean updateReply(Long replyId, ReplyUserDto replyUserDto) throws IllegalAccessException {
         ReplyTb reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new IllegalAccessException("해당 댓글이 없습니다." + replyId));
@@ -193,7 +203,7 @@ public class PostService {
         return true;
     }
 
-    // 🔐댓글 삭제
+    // 댓글 삭제
     public void deleteReply(Long replyId) {
         ReplyTb reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다."));

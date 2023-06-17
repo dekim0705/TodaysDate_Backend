@@ -63,11 +63,12 @@ public class PostController {
         }
     }
 
-    // 게시글 삭제
+    // 🔐게시글 삭제 (SecurityContext 적용 OK)
     @DeleteMapping(value = "/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) throws IllegalAccessException {
+    public ResponseEntity<?> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetails userDetails,
+                                        HttpServletRequest request) throws IllegalAccessException {
         try {
-            postService.deletePost(postId);
+            postService.deletePost(postId, request, userDetails);
             return new ResponseEntity<>("게시글 삭제 성공 ❤️", HttpStatus.ACCEPTED);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("게시글 삭제 실패 🚨" + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -85,7 +86,7 @@ public class PostController {
         }
     }
 
-    // ✅댓글 조회
+    // 댓글 조회
     @GetMapping("/{postId}/reply")
     public ResponseEntity<List<ReplyUserDto>> getReply(@PathVariable Long postId, @RequestBody Long blockerId) throws IllegalAccessException {
         List<ReplyUserDto> replyUserDtos = postService.findReply(postId, blockerId);

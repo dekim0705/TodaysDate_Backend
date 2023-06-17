@@ -37,7 +37,7 @@ public class TokenService {
         UserTb user = userRepository.findById(userId).get();
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getAuthority().toString()));
         // user를 Authentication 객체로 변환해야 함... 음..!!
-        UserDetails userDetails = User.withUsername(user.getEmail())
+        UserDetails userDetails = User.withUsername(String.valueOf(user.getId()))
                 .password(user.getPwd())
                 .authorities(authorities)
                 .build();

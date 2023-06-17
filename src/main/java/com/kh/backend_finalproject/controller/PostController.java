@@ -38,7 +38,7 @@ public class PostController {
                                         @AuthenticationPrincipal UserDetails userDetails,
                                         HttpServletRequest request) {
 
-        boolean isCreate = postService.createPostWithPinAndPush(postPinDto.getUserId(), postPinDto, request, userDetails);
+        boolean isCreate = postService.createPostWithPinAndPush(postPinDto, request, userDetails);
         if (isCreate) return new ResponseEntity<>("글 작성 성공❤️", HttpStatus.OK);
         else return new ResponseEntity<>("글 작성 실패💥", HttpStatus.NO_CONTENT);
     }

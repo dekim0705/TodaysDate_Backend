@@ -40,29 +40,24 @@ public class PostService {
     private SseService sseService;
 
     // 🔐게시글 작성
-    public boolean createPostWithPinAndPush(Long userId, PostPinDto postPinDto,
+    public boolean createPostWithPinAndPush(PostPinDto postPinDto,
                                             HttpServletRequest request, UserDetails userDetails) {
         // 🔑토큰 검증 및 사용자 정보 추출
         UserTb user = authService.validateTokenAndGetUser(request, userDetails);
 
-        // 1. 사용자 정보 가져오기
-        Optional<UserTb> userTbOpt = userRepository.findById(userId);
-        user = userTbOpt.orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
-
+        // 1. 게시글 저장
         postPinDto.setUserId(user.getId());
-
-        // 2. 게시글 저장
         PostTb post = postPinDto.getPost();
         post.setUser(user);
         PostTb savePost = postRepository.save(post);
 
-        // 3. pin(경로) 저장
+        // 2. pin(경로) 저장
         for (PinTb pin : postPinDto.getPins()) {
             pin.setPost(savePost);
             pinRepository.save(pin);
         }
 
-        // 4. 관심 지역 설정한 사용자들에게 알림
+        // 3. 관심 지역 설정한 사용자들에게 알림
         List<UserTb> subscribedUsers = userRepository.findByUserRegion(savePost.getRegion());
         for (UserTb subscribedUser : subscribedUsers) {
             if (subscribedUser.getIsPush() == IsPush.PUSH) {

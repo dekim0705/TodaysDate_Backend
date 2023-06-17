@@ -97,9 +97,11 @@ public class PostController {
 
     // 댓글 수정
     @PutMapping("/{replyId}/reply")
-    public ResponseEntity<?> updateReply(@PathVariable Long replyId, @RequestBody ReplyUserDto replyUserDto) {
+    public ResponseEntity<?> updateReply(@PathVariable Long replyId, @RequestBody ReplyUserDto replyUserDto,
+                                         @AuthenticationPrincipal UserDetails userDetails,
+                                         HttpServletRequest request) {
         try {
-            boolean isUpdate = postService.updateReply(replyId, replyUserDto);
+            boolean isUpdate = postService.updateReply(replyId, replyUserDto, request, userDetails);
             return new ResponseEntity<>("댓글 수정 성공! ❤️", HttpStatus.OK);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("댓글 수정 실패 🚨" + e.getMessage(), HttpStatus.BAD_REQUEST);

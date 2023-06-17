@@ -106,30 +106,34 @@ public class PostService {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
 
-        // 핀 초기화 후 다시 추가 ^^..
-        pinRepository.deleteAllByPost(post);
-        List<PinTb> newPins = postPinDto.getPins().stream()
-                .map(pinDto -> {
-                    PinTb newPin = new PinTb();
-                    newPin.setLatitude(pinDto.getLatitude());
-                    newPin.setLongitude(pinDto.getLongitude());
-                    newPin.setRouteNum(pinDto.getRouteNum());
-                    newPin.setPost(post);
-                    return pinRepository.save(newPin);
-                }).collect(Collectors.toList());
+        if(user.getId().equals(post.getUser().getId())) {
+            // 핀 초기화 후 다시 추가 ^^..
+            pinRepository.deleteAllByPost(post);
+            List<PinTb> newPins = postPinDto.getPins().stream()
+                    .map(pinDto -> {
+                        PinTb newPin = new PinTb();
+                        newPin.setLatitude(pinDto.getLatitude());
+                        newPin.setLongitude(pinDto.getLongitude());
+                        newPin.setRouteNum(pinDto.getRouteNum());
+                        newPin.setPost(post);
+                        return pinRepository.save(newPin);
+                    }).collect(Collectors.toList());
 
-        post.setTitle(postPinDto.getPost().getTitle());
-        post.setRegion(postPinDto.getPost().getRegion());
-        post.setCourse(postPinDto.getPost().getCourse());
-        post.setTheme(postPinDto.getPost().getTheme());
-        post.setDistrict(postPinDto.getPost().getDistrict());
-        post.setComment(postPinDto.getPost().getComment());
-        post.setPlaceTag(postPinDto.getPost().getPlaceTag());
-        post.setImgUrl(postPinDto.getPost().getImgUrl());
-        post.setContent(postPinDto.getPost().getContent());
-        postRepository.save(post);
+            post.setTitle(postPinDto.getPost().getTitle());
+            post.setRegion(postPinDto.getPost().getRegion());
+            post.setCourse(postPinDto.getPost().getCourse());
+            post.setTheme(postPinDto.getPost().getTheme());
+            post.setDistrict(postPinDto.getPost().getDistrict());
+            post.setComment(postPinDto.getPost().getComment());
+            post.setPlaceTag(postPinDto.getPost().getPlaceTag());
+            post.setImgUrl(postPinDto.getPost().getImgUrl());
+            post.setContent(postPinDto.getPost().getContent());
+            postRepository.save(post);
 
-        return true;
+            return true;
+        } else {
+            throw new IllegalArgumentException("요청한 자는 글 작성자가 아닙니다. 수정 할 수 없습니다.");
+        }
     }
 
     // 🔐게시글 삭제 (SecurityContext 적용 OK)
@@ -194,14 +198,22 @@ public class PostService {
     }
 
     // 댓글 수정
-    public boolean updateReply(Long replyId, ReplyUserDto replyUserDto) throws IllegalAccessException {
+    public boolean updateReply(Long replyId, ReplyUserDto replyUserDto,
+                               HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         ReplyTb reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new IllegalAccessException("해당 댓글이 없습니다." + replyId));
 
-        reply.setContent(replyUserDto.getContent());
-        replyRepository.save(reply);
+        if(user.getId().equals(reply.getUser().getId())) {
+            reply.setContent(replyUserDto.getContent());
+            replyRepository.save(reply);
 
-        return true;
+            return true;
+        } else {
+            throw new IllegalArgumentException("요청한 자는 댓글 작성자가 아닙니다. 수정할 수 없습니다.");
+        }
     }
 
     // 댓글 삭제

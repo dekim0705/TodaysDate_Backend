@@ -75,11 +75,13 @@ public class PostController {
         }
     }
 
-    // 댓글 작성
+    // 🔐댓글 작성 (SecurityContext 적용 OK)
     @PostMapping("/{postId}/reply")
-    public ResponseEntity<?> createReply(@PathVariable Long postId, @RequestBody ReplyUserDto replyUserDto) throws IllegalAccessException {
+    public ResponseEntity<?> createReply(@PathVariable Long postId, @RequestBody ReplyUserDto replyUserDto,
+                                         @AuthenticationPrincipal UserDetails userDetails,
+                                         HttpServletRequest request) throws IllegalAccessException {
         try {
-            postService.createReply(postId, replyUserDto);
+            postService.createReply(postId, replyUserDto, request, userDetails);
             return new ResponseEntity<>("댓글 작성 성공! ❤️", HttpStatus.CREATED);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("댓글 작성 실패! ⚠️", HttpStatus.BAD_REQUEST);

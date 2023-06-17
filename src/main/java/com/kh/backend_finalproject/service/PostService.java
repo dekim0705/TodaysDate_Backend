@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -150,13 +149,14 @@ public class PostService {
         }
     }
 
-    // 댓글 작성
-    public boolean createReply(Long postId, ReplyUserDto replyUserDto) throws IllegalAccessException {
+    // 🔐댓글 작성 (SecurityContext 적용 OK)
+    public boolean createReply(Long postId, ReplyUserDto replyUserDto,
+                               HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
-
-        UserTb user = userRepository.findById(replyUserDto.getUserNum())
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
 
         ReplyTb reply = new ReplyTb();
         if (replyUserDto.getContent() == null || replyUserDto.getContent().trim().isEmpty()) {
@@ -181,7 +181,8 @@ public class PostService {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
         List<ReplyUserDto> allReplies = post.getReplies().stream()
-                .map(reply -> new ReplyUserDto(reply.getUser().getNickname(), reply.getContent(), reply.getWriteDate(), reply.getUser().getPfImg()))
+                .map(reply -> new ReplyUserDto(reply.getUser().getNickname(), reply.getContent(),
+                        reply.getWriteDate(), reply.getUser().getPfImg()))
                 .collect(Collectors.toList());
 
         // 3. 차단한 사용자가 작성한 댓글 제외

@@ -50,11 +50,13 @@ public class PostController {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    // 게시글 수정
+    // 🔐게시글 수정 (SecurityContext 적용 OK)
     @PutMapping(value = "/{postId}")
-    public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostPinDto postPinDto) throws IllegalAccessException {
+    public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostPinDto postPinDto,
+                                        @AuthenticationPrincipal UserDetails userDetails,
+                                        HttpServletRequest request) throws IllegalAccessException {
         try {
-            boolean isUpdate = postService.updatePost(postId, postPinDto);
+            boolean isUpdate = postService.updatePost(postId, postPinDto, request, userDetails);
             return new ResponseEntity<>("게시글 수정 성공 ❤️", HttpStatus.OK);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("게시글 수정 실패 🚨️" + e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -39,7 +39,7 @@ public class PostService {
     @Autowired
     private SseService sseService;
 
-    // 🔐게시글 작성
+    // 🔐게시글 작성 (SecurityContext 적용 OK)
     public boolean createPostWithPinAndPush(PostPinDto postPinDto,
                                             HttpServletRequest request, UserDetails userDetails) {
         // 🔑토큰 검증 및 사용자 정보 추출
@@ -98,8 +98,12 @@ public class PostService {
         return postDto;
     }
 
-    // 🔐게시글 수정
-    public boolean updatePost(Long postId, PostPinDto postPinDto) throws IllegalAccessException {
+    // 🔐게시글 수정 (SecurityContext 적용 OK)
+    public boolean updatePost(Long postId, PostPinDto postPinDto,
+                              HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
 

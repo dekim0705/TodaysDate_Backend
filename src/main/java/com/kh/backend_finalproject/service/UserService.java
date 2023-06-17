@@ -99,6 +99,59 @@ public class UserService {
         return newStatus;
     }
 
+    // ✅ 마이페이지 - 회원의 북마크 폴더 생성하기
+    public boolean createBookmarkFolder(Long userId, String folderName) {
+
+        UserTb user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다." + userId));
+        if (user != null) {
+            FolderTb folder = new FolderTb();
+            folder.setUser(user);
+            folder.setName(folderName);
+
+            FolderTb savedFolder = folderRepository.save(folder);
+        } else {
+            throw new IllegalArgumentException("유효하지 않은 사용자입니다.");
+        }
+        return true;
+    }
+
+    // ✅ 마이페이지 - 회원의 북마크 폴더 삭제하기
+    public boolean deleteBookmarkFolder(Long folderId, Long userId) {
+        Optional<FolderTb> folderOptional = folderRepository.findById(folderId);
+        if (folderOptional.isPresent()) {
+            FolderTb folder = folderOptional.get();
+
+            if (folder.getUser().getId().equals(userId)) {
+                folderRepository.delete(folder);
+                return true;
+            } else {
+                throw new IllegalArgumentException("해당 폴더에 접근 권한이 없습니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("해당 폴더가 존재하지 않습니다.");
+        }
+    }
+
+    // ✅ 마이페이지 - 회원의 북마크 폴더 이름 변경하기
+    public boolean updateBookmarkFolderName(Long folderId, String folderName, Long userId) {
+        Optional<FolderTb> folderOptional = folderRepository.findById(folderId);
+        if (folderOptional.isPresent()) {
+            FolderTb folder = folderOptional.get();
+
+            if (folder.getUser().getId().equals(userId)) {
+                folder.setName(folderName);
+                folderRepository.save(folder);
+                return true;
+            } else {
+                throw new IllegalArgumentException("해당 폴더에 접근 권한이 없습니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("해당 폴더가 존재하지 않습니다.");
+        }
+    }
+
+
     // ✅ 마이페이지 - 회원의 북마크 폴더 가져오기
     public List<FolderDto> getUserBookmarkFolders(String email) {
         Optional<UserTb> user = userRepository.findByEmail(email);

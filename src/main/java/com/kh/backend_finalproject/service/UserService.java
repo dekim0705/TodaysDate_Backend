@@ -56,6 +56,20 @@ public class UserService {
         }
         return userDtoList;
     }
+    // ✅ 마이페이지 - 회원의 게시글 삭제하기
+    public boolean deletePosts(List<Long> postIds) {
+        for (Long postId : postIds) {
+            Optional<PostTb> postOptional = postRepository.findById(postId);
+            if (postOptional.isPresent()) {
+                PostTb post = postOptional.get();
+                postRepository.delete(post);
+            } else {
+                throw new IllegalArgumentException("해당 게시글이 존재하지 않습니다.");
+            }
+        }
+        return true;
+    }
+
     // ✅ 마이페이지 - 회원의 모든 댓글 가져오기 (댓글 번호, 작성자 닉네임, 댓글 본문, 원문 제목, 작성일)
     public List<UserDto> getAllUserReplies(String email) {
         Optional<UserTb> user = userRepository.findByEmail(email);
@@ -74,6 +88,20 @@ public class UserService {
         }
         return userDtoList;
     }
+    // ✅ 마이페이지 - 회원의 댓글 삭제하기
+    public boolean deleteReplies(List<Long> replyIds) {
+        for (Long replyId : replyIds) {
+            Optional<ReplyTb> replyOptionl = replyRepository.findById(replyId);
+            if (replyOptionl.isPresent()) {
+                ReplyTb reply = replyOptionl.get();
+                replyRepository.delete(reply);
+            } else {
+                throw new IllegalArgumentException("해당 댓글이 존재하지 않습니다.");
+            }
+        }
+        return true;
+    }
+
     // ✅ 마이페이지 - 회원의 멤버십 상태 조회
     public IsMembership getUserMembershipStatus(String email) {
         Optional<UserTb> user = userRepository.findByEmail(email);

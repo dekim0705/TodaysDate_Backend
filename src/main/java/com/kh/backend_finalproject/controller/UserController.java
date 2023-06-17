@@ -33,6 +33,16 @@ public class UserController {
         List<UserDto> posts = userService.getAllUserPosts(email);
         return new ResponseEntity<>(posts,HttpStatus.OK);
     }
+    // ✅ 마이페이지 - 회원의 게시글 삭제하기
+    @DeleteMapping(value = "/posts")
+    public ResponseEntity<?> deletePosts(@RequestBody List<Long> postIds) {
+        boolean isDeleted = userService.deletePosts(postIds);
+        if (isDeleted) {
+            return new ResponseEntity<>("게시글 삭제 성공 ❣️", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("게시글 삭제 실패 .. 😰", HttpStatus.BAD_REQUEST);
+        }
+    }
 
     // ✅ 마이페이지 - 회원의 모든 댓글 가져오기
     @GetMapping(value = "/replies")
@@ -40,6 +50,17 @@ public class UserController {
         List<UserDto> replies = userService.getAllUserReplies(email);
         return new ResponseEntity<>(replies,HttpStatus.OK);
     }
+    // ✅ 마이페이지 - 회원의 댓글 삭제하기
+    @DeleteMapping(value = "/replies")
+    public ResponseEntity<?> deleteReplies(@RequestBody List<Long> replyIds) {
+        boolean isDeleted = userService.deleteReplies(replyIds);
+        if (isDeleted) {
+            return new ResponseEntity<>("댓글 삭제 성공 ❣️", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("댓글 삭제 실패 .. 😰", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // ✅ 마이페이지 - 회원의 멤버십 상태 조회
     @GetMapping("/membership-status")
     public ResponseEntity<IsMembership> getMembershipStatus(@RequestParam("email") String email) {

@@ -95,7 +95,7 @@ public class PostController {
         return new ResponseEntity<>(replyUserDtos, HttpStatus.OK);
     }
 
-    // 댓글 수정
+    // 🔐댓글 수정 (SecurityContext 적용 OK)
     @PutMapping("/{replyId}/reply")
     public ResponseEntity<?> updateReply(@PathVariable Long replyId, @RequestBody ReplyUserDto replyUserDto,
                                          @AuthenticationPrincipal UserDetails userDetails,
@@ -108,10 +108,11 @@ public class PostController {
         }
     }
 
-    // 댓글 삭제
+    // 🔐댓글 삭제 (SecurityContext 적용 OK)
     @DeleteMapping("/{replyId}/reply")
-    public ResponseEntity<?> deleteReply(@PathVariable Long replyId) {
-        postService.deleteReply(replyId);
+    public ResponseEntity<?> deleteReply(@PathVariable Long replyId,
+                                         @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+        postService.deleteReply(replyId, request, userDetails);
         return new ResponseEntity<>("댓글 삭제 성공 ❤️", HttpStatus.ACCEPTED);
     }
 }

@@ -197,7 +197,7 @@ public class PostService {
         return filterReplies;
     }
 
-    // 댓글 수정
+    // 🔐댓글 수정 (SecurityContext 적용 OK)
     public boolean updateReply(Long replyId, ReplyUserDto replyUserDto,
                                HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
         // 🔑토큰 검증 및 사용자 정보 추출
@@ -216,10 +216,18 @@ public class PostService {
         }
     }
 
-    // 댓글 삭제
-    public void deleteReply(Long replyId) {
+    // 🔐댓글 삭제 (SecurityContext 적용 OK)
+    public void deleteReply(Long replyId, HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         ReplyTb reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다."));
-        replyRepository.delete(reply);
+
+        if(user.getId().equals(reply.getUser().getId())) {
+            replyRepository.delete(reply);
+        } else {
+            throw new IllegalArgumentException("요청한 자는 댓글 작성자가 아닙니다. 삭제할 수 없습니다.");
+        }
     }
 }

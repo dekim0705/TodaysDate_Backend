@@ -6,16 +6,18 @@ import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostPinDto;
 import com.kh.backend_finalproject.dto.ReplyUserDto;
 import com.kh.backend_finalproject.entitiy.*;
+import com.kh.backend_finalproject.jwt.TokenProvider;
 import com.kh.backend_finalproject.repository.*;
 import com.kh.backend_finalproject.utils.BlockFilterUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,18 +33,27 @@ public class PostService {
     private final ReplyRepository replyRepository;
     private final PushRepository pushRepository;
     private final BlockRepository blockRepository;
+    private final TokenProvider tokenProvider;
+    private final AuthService authService;
 
     @Autowired
     private SseService sseService;
 
-    // 🔐게시글 작성 (⭐️Spring Security 구현 후에 테스트 해볼 것!!)
-    public boolean createPostWithPinAndPush(Long userId, PostPinDto postPinDto) {
-        // 1. 사용자 정보 가져오기(추후 Spring Security...)
-        Optional<UserTb> user = userRepository.findById(userId);
+    // 🔐게시글 작성
+    public boolean createPostWithPinAndPush(Long userId, PostPinDto postPinDto,
+                                            HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
+        // 1. 사용자 정보 가져오기
+        Optional<UserTb> userTbOpt = userRepository.findById(userId);
+        user = userTbOpt.orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
+
+        postPinDto.setUserId(user.getId());
 
         // 2. 게시글 저장
         PostTb post = postPinDto.getPost();
-        post.setUser(user.get());
+        post.setUser(user);
         PostTb savePost = postRepository.save(post);
 
         // 3. pin(경로) 저장

@@ -3,9 +3,9 @@ package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostPinDto;
 import com.kh.backend_finalproject.dto.ReplyUserDto;
-import com.kh.backend_finalproject.entitiy.PostTb;
-import com.kh.backend_finalproject.entitiy.UserTb;
+import com.kh.backend_finalproject.jwt.TokenProvider;
 import com.kh.backend_finalproject.repository.UserRepository;
+import com.kh.backend_finalproject.service.AuthService;
 import com.kh.backend_finalproject.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -25,20 +26,21 @@ import java.util.List;
 public class PostController {
     @Autowired
     PostService postService;
+
     private final UserRepository userRepository;
+    private final TokenProvider tokenProvider;
+    private final AuthService authService;
+
 
     // 🔐게시글 작성 (SecurityContext 적용 OK)
     @PostMapping("")
-    public ResponseEntity<Boolean> createPost(@RequestBody PostPinDto postPinDto, @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = Long.valueOf(userDetails.getUsername());
-        UserTb user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
+    public ResponseEntity<?> createPost(@RequestBody PostPinDto postPinDto,
+                                        @AuthenticationPrincipal UserDetails userDetails,
+                                        HttpServletRequest request) {
 
-        postPinDto.setUserId(user.getId());
-
-        boolean isCreate = postService.createPostWithPinAndPush(postPinDto.getUserId(), postPinDto);
-        if (isCreate) return new ResponseEntity<>(isCreate, HttpStatus.OK);
-        else return new ResponseEntity<>(isCreate, HttpStatus.NO_CONTENT);
+        boolean isCreate = postService.createPostWithPinAndPush(postPinDto.getUserId(), postPinDto, request, userDetails);
+        if (isCreate) return new ResponseEntity<>("글 작성 성공❤️", HttpStatus.OK);
+        else return new ResponseEntity<>("글 작성 실패💥", HttpStatus.NO_CONTENT);
     }
 
     // ✅게시글 조회

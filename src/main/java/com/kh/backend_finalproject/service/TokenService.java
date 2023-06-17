@@ -4,6 +4,7 @@ import com.kh.backend_finalproject.entitiy.UserTb;
 import com.kh.backend_finalproject.jwt.TokenProvider;
 import com.kh.backend_finalproject.repository.RefreshTokenRepository;
 import com.kh.backend_finalproject.repository.UserRepository;
+import com.kh.backend_finalproject.utils.TokenExpiredException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +30,7 @@ public class TokenService {
 
     public String createNewAccessToken(String refreshToken) {
         if(!tokenProvider.validateToken(refreshToken)) {
-            throw new IllegalArgumentException("🚨");
+            throw new TokenExpiredException("🔑Refresh Token이 만료되었습니다. 새로 발급 받으세요.😁");
         }
 
         Long userId = refreshTokenRepository.findByRefreshToken(refreshToken).get().getUserId();

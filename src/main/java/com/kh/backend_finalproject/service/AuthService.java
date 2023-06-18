@@ -1,5 +1,6 @@
 package com.kh.backend_finalproject.service;
 
+import com.kh.backend_finalproject.constant.Authority;
 import com.kh.backend_finalproject.dto.TokenDto;
 import com.kh.backend_finalproject.dto.UserRequestDto;
 import com.kh.backend_finalproject.dto.UserResponseDto;
@@ -39,15 +40,39 @@ public class AuthService {
     }
 
     // 🔐로그인
+    /* ✨예외 처리 ✨
+        1. 사용자가 있는지 확인✅
+        2. 아이디 비밀번호 맞는지 확인✅
+        3. 이메일 인증 관련 IsActive 유무 확인
+    */
     public TokenDto login(UserRequestDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+        // 사용자가 있는지 확인
+        UserTb loginUser = userRepository.findByEmail(requestDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. 회원가입 진행 후 다시 시도해주세요."));
 
-        try {
-            Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-            return tokenProvider.generateTokenDto(authentication);
-        } catch (AuthenticationException e) {
-            System.out.println("뭔가 잘못됐다....⛑️" + e.getMessage());
-            throw e;
+        // 비밀번호 맞는지 확인
+        if (!passwordEncoder.matches(requestDto.getPwd(), loginUser.getPwd())) {
+            throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
+        }
+
+        // 권한 확인
+        if (loginUser.getAuthority().equals(Authority.ROLE_ADMIN)) {
+            try {
+                Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+                return tokenProvider.generateTokenDto(authentication);
+            } catch (AuthenticationException e) {
+                throw e;
+            }
+        } else if (loginUser.getAuthority().equals(Authority.ROLE_USER)) {
+            try {
+                Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+                return tokenProvider.generateTokenDto(authentication);
+            } catch (AuthenticationException e) {
+                throw e;
+            }
+        } else {
+            throw new IllegalArgumentException("권한이 올바르지 않습니다.");
         }
     }
 
@@ -55,11 +80,11 @@ public class AuthService {
     public UserTb validateTokenAndGetUser(HttpServletRequest request, UserDetails userDetails) {
         // ♻️토큰 추출
         String accessToken = request.getHeader("Authorization");
-        if(accessToken != null && accessToken.startsWith("Bearer ")) {
+        if (accessToken != null && accessToken.startsWith("Bearer ")) {
             accessToken = accessToken.substring(7);
         }
         // 🔑토큰 유효한지 검증
-        if(accessToken != null && tokenProvider.validateToken(accessToken)) {
+        if (accessToken != null && tokenProvider.validateToken(accessToken)) {
             Long userId = Long.valueOf(userDetails.getUsername());
             UserTb user = userRepository.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));

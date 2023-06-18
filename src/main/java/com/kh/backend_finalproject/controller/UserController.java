@@ -33,6 +33,16 @@ public class UserController {
         List<UserDto> posts = userService.getAllUserPosts(email);
         return new ResponseEntity<>(posts,HttpStatus.OK);
     }
+    // ✅ 마이페이지 - 회원의 게시글 삭제하기
+    @DeleteMapping(value = "/posts")
+    public ResponseEntity<?> deletePosts(@RequestBody List<Long> postIds) {
+        boolean isDeleted = userService.deletePosts(postIds);
+        if (isDeleted) {
+            return new ResponseEntity<>("게시글 삭제 성공 ❣️", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("게시글 삭제 실패 .. 😰", HttpStatus.BAD_REQUEST);
+        }
+    }
 
     // ✅ 마이페이지 - 회원의 모든 댓글 가져오기
     @GetMapping(value = "/replies")
@@ -40,6 +50,17 @@ public class UserController {
         List<UserDto> replies = userService.getAllUserReplies(email);
         return new ResponseEntity<>(replies,HttpStatus.OK);
     }
+    // ✅ 마이페이지 - 회원의 댓글 삭제하기
+    @DeleteMapping(value = "/replies")
+    public ResponseEntity<?> deleteReplies(@RequestBody List<Long> replyIds) {
+        boolean isDeleted = userService.deleteReplies(replyIds);
+        if (isDeleted) {
+            return new ResponseEntity<>("댓글 삭제 성공 ❣️", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("댓글 삭제 실패 .. 😰", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // ✅ 마이페이지 - 회원의 멤버십 상태 조회
     @GetMapping("/membership-status")
     public ResponseEntity<IsMembership> getMembershipStatus(@RequestParam("email") String email) {
@@ -61,6 +82,37 @@ public class UserController {
             return new ResponseEntity<>(updateNotificationStatus, HttpStatus.OK);
     }
 
+    // ✅ 마이페이지 - 회원의 북마크 폴더 생성하기
+    @PostMapping(value="/bookmark-folders")
+    public ResponseEntity<?> createBookmarkFolder(@RequestBody FolderDto folderDto) {
+        boolean isFolderCreated = userService.createBookmarkFolder(folderDto.getUserId(), folderDto.getName());
+        if (isFolderCreated) return new ResponseEntity<>("폴더 생성 성공 ❣️", HttpStatus.CREATED);
+        else return new ResponseEntity<>("폴더 생성 실패 .. 😰", HttpStatus.BAD_REQUEST);
+    }
+
+    // ✅ 마이페이지 - 회원의 북마크 폴더 삭제하기
+    @DeleteMapping(value = "/bookmark-folders/{folderId}")
+    public ResponseEntity<?> deleteBookmarkFolder(@PathVariable Long folderId, @RequestBody FolderDto folderDto) {
+        boolean isFolderDeleted = userService.deleteBookmarkFolder(folderId, folderDto.getUserId());
+        if (isFolderDeleted) return new ResponseEntity<>("폴더 삭제 성공 ❣️", HttpStatus.OK);
+        else return new ResponseEntity<>("폴더 삭제 실패 .. 😰", HttpStatus.BAD_REQUEST);
+    }
+
+    // ✅ 마이페이지 - 회원의 북마크 폴더 이름 변경하기
+    @PutMapping(value = "/bookmark-folders/{folderId}")
+    public ResponseEntity<?> updateBookmarkFolderName(@PathVariable Long folderId, @RequestBody FolderDto folderDto) {
+        boolean isFolderUpdated = userService.updateBookmarkFolderName(
+                folderId,
+                folderDto.getName(),
+                folderDto.getUserId()
+        );
+        if (isFolderUpdated) {
+            return new ResponseEntity<>("폴더 이름 변경 성공 ❣️", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("폴더 이름 변경 실패 .. 😰", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // ✅ 마이페이지 - 회원의 북마크 폴더 가져오기
     @GetMapping(value = "/bookmark-folders")
     public ResponseEntity<List<FolderDto>> getBookmarkFolders(@RequestParam("email") String email) {
@@ -70,10 +122,8 @@ public class UserController {
 
     // ✅ 마이페이지 - 회원의 북마크 가져오기
     @GetMapping("/bookmark-folders/{folderId}/bookmarks")
-    public ResponseEntity<List<BookmarkDto>> getBookmarksInFolder(
-            @PathVariable("folderId") Long folderId,
-            @RequestParam("email") String email
-    ) {
+    public ResponseEntity<List<BookmarkDto>> getBookmarksInFolder(@PathVariable("folderId") Long folderId,
+                                                                  @RequestParam("email") String email) {
         List<BookmarkDto> bookmarks = userService.getBookmarksInFolder(folderId, email);
         return new ResponseEntity<>(bookmarks, HttpStatus.OK);
     }

@@ -10,9 +10,6 @@ import java.util.List;
 public class FolderDto {
     private Long id;
     private String name;
+    private Long userId;
     private List<BookmarkDto> bookmarks;
-    public void setBookmarks(List<BookmarkDto> bookmarkDtos) {
-        this.bookmarks = bookmarkDtos;
-
-    }
 }

@@ -1,10 +1,12 @@
 package com.kh.backend_finalproject.controller;
 
 import com.kh.backend_finalproject.entitiy.UserTb;
+import com.kh.backend_finalproject.service.EmailService;
 import com.kh.backend_finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,8 @@ import java.util.Optional;
 public class JoinController {
     @Autowired
     UserService userService;
+    @Autowired
+    EmailService emailService;
 
     // ✅ 회원가입 - 닉네임 중복 확인
     @PostMapping("/dupnickname")
@@ -46,4 +50,12 @@ public class JoinController {
         // else return ResponseEntity.ok(true);
     }
 
+    // ✅ 회원가입 - 이메일 인증
+    @PostMapping("/email-auth")
+    public ResponseEntity<Boolean> confirmEmail(@RequestParam("email") String email) throws Exception {
+
+        String authKey = emailService.sendSimpleMessage(email);
+        System.out.println("🍒 인증 키 : " + authKey);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 }

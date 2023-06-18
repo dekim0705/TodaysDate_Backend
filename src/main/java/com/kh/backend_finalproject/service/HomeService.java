@@ -5,6 +5,7 @@ import com.kh.backend_finalproject.dto.PostBookmarkDto;
 import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostUserDto;
 import com.kh.backend_finalproject.entitiy.*;
+import com.kh.backend_finalproject.jwt.TokenProvider;
 import com.kh.backend_finalproject.repository.*;
 import com.kh.backend_finalproject.utils.BlockFilterUtil;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,11 +34,16 @@ public class HomeService {
     private final FolderRepository folderRepository;
     private final AdRepository adRepository;
     private final BlockRepository blockRepository;
+    private final TokenProvider tokenProvider;
+    private final AuthService authService;
 
-    // 🔐️특정 사용자가 차단한 사용자의 게시글 제외 전체 지역 게시글 작성일 최근순 정렬
-    public List<PostUserDto> findAllPostsList(Long blockerId) {
+    // 🔐️특정 사용자가 차단한 사용자의 게시글 제외 전체 지역 게시글 작성일 최근순 정렬 (SecurityContext 적용 OK)
+    public List<PostUserDto> findAllPostsList(HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         // 1. 차단한 사용자들의 목록 가져오기
-        List<Long> blockedUserIds = BlockFilterUtil.getBlockedUserIds(blockerId, blockRepository);
+        List<Long> blockedUserIds = BlockFilterUtil.getBlockedUserIds(user.getId(), blockRepository);
 
         // 2. 전체 게시글 가져오기
         List<PostUserDto> allPosts = postRepository.findAllPostsWithUserDetails();
@@ -48,10 +56,13 @@ public class HomeService {
         return filterPosts;
     }
 
-    // 🔐특정 사용자가 차단한 사용자의 게시글 제외 특정 지역 게시글 작성일 최근순 정렬
-    public List<PostUserDto> findRegionPostsList(RegionStatus status, Long blockerId) {
+    // 🔐특정 사용자가 차단한 사용자의 게시글 제외 특정 지역 게시글 작성일 최근순 정렬 (SecurityContext 적용 OK)
+    public List<PostUserDto> findRegionPostsList(RegionStatus status, HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         // 1. 차단한 사용자들의 목록 가져오기
-        List<Long> blockedUserIds = BlockFilterUtil.getBlockedUserIds(blockerId, blockRepository);
+        List<Long> blockedUserIds = BlockFilterUtil.getBlockedUserIds(user.getId(), blockRepository);
 
         // 2. 특정 지역 게시글 가져오기
         List<PostUserDto> regionPosts = postRepository.findRegionPostsWithUserDetails(status);
@@ -64,10 +75,13 @@ public class HomeService {
         return filterPosts;
     }
 
-    // 🔐🚧키워드 검색
-    public List<PostUserDto> findByKeyword(Long blockerId, String keyword) {
+    // 🔐키워드 검색 (SecurityContext 적용 OK)
+    public List<PostUserDto> findByKeyword(String keyword, HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         // 1. 차단한 사용자들의 목록 가져오기
-        List<Long> blockedUserIds = BlockFilterUtil.getBlockedUserIds(blockerId, blockRepository);
+        List<Long> blockedUserIds = BlockFilterUtil.getBlockedUserIds(user.getId(), blockRepository);
 
         // 2. 키워드로 검색한 게시글 가져오기
         List<PostTb> postList = postRepository.findByKeyword(keyword);
@@ -90,22 +104,31 @@ public class HomeService {
         return postUserDtos;
     }
 
-    // ✅북마크 상위 5개 게시글 내림차순 정렬
-    public Page<PostBookmarkDto> findTop5ByBookmarkCount() {
+    // 🔐북마크 상위 5개 게시글 내림차순 정렬 (SecurityContext 적용 OK)
+    public Page<PostBookmarkDto> findTop5ByBookmarkCount(HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         Pageable topFive = PageRequest.of(0, 5);
         Page<PostBookmarkDto> postBookmarkDtos = postRepository.findTop5ByBookmarkCount(topFive);
         return postBookmarkDtos;
     }
 
-    // 🔐회원 프로필 가져오기(by Email)
-    public String findPfImgByEmail(String email) {
-        Optional<UserTb> user = userRepository.findByEmail(email);
+    // 🔐회원 프로필 가져오기 (SecurityContext 적용 OK)
+    public String findPfImgById(HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
+        Optional<UserTb> user = userRepository.findById(authUser.getId());
         return user.get().getPfImg();
     }
 
-    // 🔐북마크 추가
-    public boolean createBookmark(Long userId, Long postId, String folderName) {
-        Optional<UserTb> userOptional = userRepository.findById(userId);
+    // 🔐북마크 추가 (SecurityContext 적용 OK)
+    public boolean createBookmark(Long postId, String folderName, HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
+        Optional<UserTb> userOptional = userRepository.findById(authUser.getId());
         Optional<PostTb> postOptional = postRepository.findById(postId);
         if (userOptional.isEmpty() || postOptional.isEmpty()) return false;
 
@@ -128,8 +151,11 @@ public class HomeService {
         return true;
     }
 
-    // ✅광고 전체 가져오기
-    public List<AdTb> findAllAd() {
+    // 🔐광고 전체 가져오기 (SecurityContext 적용 OK)
+    public List<AdTb> findAllAd(HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
         List<AdTb> ads = adRepository.findAll();
         return ads;
     }

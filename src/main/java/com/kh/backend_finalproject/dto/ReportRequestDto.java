@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class ReportRequestDto {
-    private Long reporterId;
     private Long reportedId;
     private String content;
     private LocalDateTime reportDate;

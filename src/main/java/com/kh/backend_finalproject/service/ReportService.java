@@ -5,14 +5,18 @@ import com.kh.backend_finalproject.entitiy.BlockTb;
 import com.kh.backend_finalproject.entitiy.PostTb;
 import com.kh.backend_finalproject.entitiy.ReportTb;
 import com.kh.backend_finalproject.entitiy.UserTb;
+import com.kh.backend_finalproject.jwt.TokenProvider;
 import com.kh.backend_finalproject.repository.BlockRepository;
 import com.kh.backend_finalproject.repository.PostRepository;
 import com.kh.backend_finalproject.repository.ReportRepository;
 import com.kh.backend_finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 @Transactional
@@ -23,23 +27,37 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final BlockRepository blockRepository;
+    private final TokenProvider tokenProvider;
+    private final AuthService authService;
 
-    // ✅게시글 신고하기
-    public void reportPost(Long postId) {
+
+    // 🔐게시글 신고하기 (SecurityContext 적용 OK)
+    public void reportPost(Long postId, HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
-        post.setReportCount(post.getReportCount()+1);
-        postRepository.save(post);
-        if(post.getReportCount() == 3) {
-            postRepository.delete(post);
+
+        if(user.getId().equals(post.getUser().getId())) {
+            throw new IllegalArgumentException("본인의 게시글은 신고할 수 없습니다. 😅");
+        } else {
+            post.setReportCount(post.getReportCount()+1);
+            postRepository.save(post);
+            if(post.getReportCount() == 3) {
+                postRepository.delete(post);
+            }
         }
     }
 
-    // ✅사용자 차단하기
-    public void blockUser(Long blockerId, Long blockedId) {
+    // 🔐사용자 차단하기 (SecurityContext 적용 OK)
+    public void blockUser(Long blockedId, HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         // 1. 사용자가 존재하는지 확인
-        UserTb blocker = userRepository.findById(blockerId) // 차단하려는 사용자
-                .orElseThrow(() -> new IllegalArgumentException("차단하려는 사용자가 존재하지 않습니다." + blockerId));
+        UserTb blocker = userRepository.findById(user.getId()) // 차단하려는 사용자
+                .orElseThrow(() -> new IllegalArgumentException("차단하려는 사용자가 존재하지 않습니다." + user.getId()));
         UserTb blocked = userRepository.findById(blockedId)
                 .orElseThrow(() -> new IllegalArgumentException("차단 당하는 사용자가 존재하지 않습니다." + blockedId));
 
@@ -61,11 +79,14 @@ public class ReportService {
         blockRepository.save(block);
     }
 
-    // ✅사용자 신고하기
-    public void reportUser(ReportRequestDto reportRequestDto) {
+    // 🔐사용자 신고하기 (SecurityContext 적용 OK)
+    public void reportUser(ReportRequestDto reportRequestDto, HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         // 1. 사용자가 존재하는지 확인
-        UserTb reporter = userRepository.findById(reportRequestDto.getReporterId())
-                .orElseThrow(() -> new IllegalArgumentException("신고하려는 사용자가 존재하지 않습니다." + reportRequestDto.getReporterId()));
+        UserTb reporter = userRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException("신고하려는 사용자가 존재하지 않습니다." + user.getId()));
         UserTb reported = userRepository.findById(reportRequestDto.getReportedId())
                 .orElseThrow(() -> new IllegalArgumentException("신고 당하는 사용자가 존재하지 않습니다." + reportRequestDto.getReportedId()));
 

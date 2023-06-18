@@ -43,10 +43,11 @@ public class PostController {
         else return new ResponseEntity<>("글 작성 실패💥", HttpStatus.NO_CONTENT);
     }
 
-    // ✅게시글 조회
+    // 🔐게시글 조회 (SecurityContext 적용 OK)
     @GetMapping(value = "/{postId}")
-    public ResponseEntity<PostDto> getPost(@PathVariable Long postId) throws IllegalAccessException {
-        PostDto post = postService.findPost(postId);
+    public ResponseEntity<PostDto> getPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetails userDetails,
+                                           HttpServletRequest request) throws IllegalAccessException {
+        PostDto post = postService.findPost(postId, request, userDetails);
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 

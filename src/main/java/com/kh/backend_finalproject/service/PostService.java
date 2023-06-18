@@ -71,8 +71,11 @@ public class PostService {
         return true;
     }
 
-    // ✅게시글 조회
-    public PostDto findPost(Long postId) throws IllegalAccessException {
+    // 🔐게시글 조회 (SecurityContext 적용 OK)
+    public PostDto findPost(Long postId, HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
         int bookmarkCount = postRepository.findBookmarkCountByPostId(postId);

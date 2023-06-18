@@ -283,9 +283,25 @@ public class UserService {
         return userRepository.findByNickname(nickname);
     }
 
-    // ✅ 회원가입 - 이메일 중복 확인
+    // ✅ 회원가입 - 이메일 인증 (인증키 생성 + 메일 전송)
     public boolean findUserByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
+    // ✅ 회원가입 - 이메일 인증 (인증키 확인)
+    public void checkEmailWithAuthKey(String email, String authKey) throws IllegalArgumentException {
+        Optional<UserTb> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            UserTb user = userOptional.get();
+            if (authKey.equals(user.getAuthKey())) {
+                user.setIsActive(IsActive.ACTIVE);
+                userRepository.save(user);
+                System.out.println("🍒 이메일 인증 완료: " + email);
+            } else {
+                throw new IllegalArgumentException("인증키가 올바르지 않습니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("이메일 주소를 찾을 수 없습니다.: " + email);
+        }
+    }
 }

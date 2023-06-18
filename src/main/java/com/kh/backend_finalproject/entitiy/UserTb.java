@@ -62,7 +62,7 @@ public class UserTb {
 
     @Builder
     public UserTb(String email, String pwd, String nickname, RegionStatus userRegion,
-                  IsPush isPush, IsMembership isMembership, Authority authority) {
+                  IsPush isPush, IsMembership isMembership, Authority authority, String authKey) {
         this.email = email;
         this.pwd = pwd;
         this.nickname = nickname;
@@ -70,6 +70,7 @@ public class UserTb {
         this.isPush = isPush;
         this.isMembership = isMembership;
         this.authority = authority;
+        this.authKey = authKey;
     }
 
     /* 🦄양방향 쓴 이유: 게시글의 작성자만 수정/삭제 가능하게 하기 위해

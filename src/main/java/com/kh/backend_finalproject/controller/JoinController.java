@@ -50,12 +50,25 @@ public class JoinController {
         // else return ResponseEntity.ok(true);
     }
 
-    // ✅ 회원가입 - 이메일 인증
+    // ✅ 회원가입 - 이메일 인증 (인증키 생성 + 메일 발송)
     @PostMapping("/email-auth")
-    public ResponseEntity<Boolean> confirmEmail(@RequestParam("email") String email) throws Exception {
-
+    public ResponseEntity<Boolean> sendMailWithAuthKey(@RequestParam("email") String email) throws Exception {
         String authKey = emailService.sendSimpleMessage(email);
         System.out.println("🍒 인증 키 : " + authKey);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
+
+    // ✅ 회원가입 - 이메일 인증 (인증키 확인)
+    @PostMapping("/auth")
+    public ResponseEntity<Boolean> checkMailWithAuthKey(@RequestParam("email") String email, @RequestParam("authKey") String authKey) throws Exception {
+        try {
+            userService.checkEmailWithAuthKey(email, authKey);
+            System.out.println("🍒 이메일 인증 완료 : " + email);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            System.out.println("🍒 이메일 인증 실패 : " + e.getMessage());
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
+    }
+
 }

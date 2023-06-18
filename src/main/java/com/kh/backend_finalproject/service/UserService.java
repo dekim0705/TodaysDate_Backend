@@ -1,4 +1,5 @@
 package com.kh.backend_finalproject.service;
+import com.kh.backend_finalproject.constant.IsActive;
 import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;
 import com.kh.backend_finalproject.dto.*;
@@ -286,4 +287,5 @@ public class UserService {
     public boolean findUserByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
 }

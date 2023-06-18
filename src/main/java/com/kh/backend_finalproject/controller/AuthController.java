@@ -19,7 +19,7 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/join")
-    public ResponseEntity<UserResponseDto> join(@RequestBody UserRequestDto requestDto) {
+    public ResponseEntity<UserResponseDto> join(@RequestBody UserRequestDto requestDto) throws Exception {
         return ResponseEntity.ok(authService.join(requestDto));
     }
 

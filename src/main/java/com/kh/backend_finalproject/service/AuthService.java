@@ -9,6 +9,7 @@ import com.kh.backend_finalproject.jwt.TokenProvider;
 import com.kh.backend_finalproject.repository.UserRepository;
 import com.kh.backend_finalproject.utils.TokenExpiredException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -28,12 +29,17 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    @Autowired
+    EmailService emailService;
 
     // 🔐회원가입
-    public UserResponseDto join(UserRequestDto requestDto) {
+    public UserResponseDto join(UserRequestDto requestDto) throws Exception {
         if (userRepository.existsByEmail(requestDto.getEmail())) {
             throw new RuntimeException("이미 가입되어 있는 사용자 압니다. 🐿️");
         }
+
+        String authKey = emailService.sendSimpleMessage(requestDto.getEmail());
+        requestDto.setAuthKey(authKey);
 
         UserTb user = requestDto.toUserTb(passwordEncoder);
         return UserResponseDto.of(userRepository.save(user));

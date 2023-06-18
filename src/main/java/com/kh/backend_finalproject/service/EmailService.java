@@ -34,7 +34,7 @@ public class EmailService {
     }
 
     // 회원가입 이메일 인증
-    private String ePw;
+    private String ePw = createKey();
 
     // 이메일 작성
     private MimeMessage createEmailMessage(String to) throws Exception {
@@ -84,8 +84,6 @@ public class EmailService {
 
     // 이메일 보내기
     public String sendSimpleMessage(String to) throws Exception {
-
-        ePw = createKey(); // 랜덤 인증번호 생성
 
         MimeMessage message = createEmailMessage(to); // 메일 발송
         try {// 예외처리

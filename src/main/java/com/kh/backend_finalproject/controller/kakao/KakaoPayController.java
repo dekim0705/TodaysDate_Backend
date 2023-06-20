@@ -5,7 +5,11 @@ import com.kh.backend_finalproject.service.KakaoPayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/payment")
@@ -15,8 +19,9 @@ public class KakaoPayController {
 
     // 결제 요청
     @PostMapping("/ready")
-    public ResponseEntity<?> readyToKakaoPay() {
-        return new ResponseEntity<>(kakaoPayService.kakaoPayReady(), HttpStatus.OK);
+    public ResponseEntity<?> readyToKakaoPay(@AuthenticationPrincipal UserDetails userDetails,
+                                             HttpServletRequest request) {
+        return new ResponseEntity<>(kakaoPayService.kakaoPayReady(request, userDetails), HttpStatus.OK);
     }
 
     // 결제 성공

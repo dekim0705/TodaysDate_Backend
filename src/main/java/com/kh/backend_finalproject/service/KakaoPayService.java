@@ -2,15 +2,20 @@ package com.kh.backend_finalproject.service;
 
 import com.kh.backend_finalproject.dto.kakao.KakaoApproveResponseDto;
 import com.kh.backend_finalproject.dto.kakao.KakaoReadyResponseDto;
+import com.kh.backend_finalproject.entitiy.UserTb;
+import com.kh.backend_finalproject.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +23,17 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoPayService {
     private static final String cid = "TC0ONETIME"; // 가맹점 테스트 코드
     private KakaoReadyResponseDto kakaoReadyResponseDto;
+    private final TokenProvider tokenProvider;
+    private final AuthService authService;
 
     @Value("${spring.security.oauth2.client.registration.kakao.admin-key}")
     private String adminKey;
 
-    // '결제 준비하기' 하기 위한 카카오페이 요청 양식
-    public KakaoReadyResponseDto kakaoPayReady() {
+    // 🔐'결제 준비하기' 하기 위한 카카오페이 요청 양식 (SecurityContext 적용 OK)
+    public KakaoReadyResponseDto kakaoPayReady(HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<>();
         parameters.add("cid", cid);
         parameters.add("partner_order_id", "가맹점 주문 번호");

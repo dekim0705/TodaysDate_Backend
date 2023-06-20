@@ -1,9 +1,11 @@
 package com.kh.backend_finalproject.service;
 
+import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.dto.kakao.KakaoApproveResponseDto;
 import com.kh.backend_finalproject.dto.kakao.KakaoReadyResponseDto;
 import com.kh.backend_finalproject.entitiy.UserTb;
 import com.kh.backend_finalproject.jwt.TokenProvider;
+import com.kh.backend_finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -25,6 +27,7 @@ public class KakaoPayService {
     private KakaoReadyResponseDto kakaoReadyResponseDto;
     private final TokenProvider tokenProvider;
     private final AuthService authService;
+    private final UserRepository userRepository;
 
     @Value("${spring.security.oauth2.client.registration.kakao.admin-key}")
     private String adminKey;
@@ -56,8 +59,11 @@ public class KakaoPayService {
         return kakaoReadyResponseDto;
     }
 
-    // 결제 완료 승인
-    public KakaoApproveResponseDto approveResponse(String pgToken) {
+    // 🔐결제 완료 승인 (SecurityContext 적용 OK)
+    public KakaoApproveResponseDto approveResponse(String pgToken, HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<>();
         parameters.add("cid", cid);
         parameters.add("tid", kakaoReadyResponseDto.getTid());
@@ -71,6 +77,11 @@ public class KakaoPayService {
 
         KakaoApproveResponseDto approveResponse = restTemplate.postForObject("https://kapi.kakao.com/v1/payment/approve",
                 requestEntity, KakaoApproveResponseDto.class);
+
+        if(approveResponse != null) {
+            user.setIsMembership(IsMembership.MEMBERSHIP);
+            userRepository.save(user);
+        }
 
         return approveResponse;
     }

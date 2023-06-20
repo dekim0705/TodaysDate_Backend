@@ -1,6 +1,7 @@
 package com.kh.backend_finalproject.service;
 
 import com.kh.backend_finalproject.constant.Authority;
+import com.kh.backend_finalproject.constant.IsActive;
 import com.kh.backend_finalproject.dto.TokenDto;
 import com.kh.backend_finalproject.dto.UserRequestDto;
 import com.kh.backend_finalproject.dto.UserResponseDto;
@@ -10,6 +11,8 @@ import com.kh.backend_finalproject.repository.UserRepository;
 import com.kh.backend_finalproject.utils.TokenExpiredException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -19,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
@@ -31,6 +35,9 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    JavaMailSender javaMailSender;
 
     // 🔐회원가입
     public UserResponseDto join(UserRequestDto requestDto) throws Exception {
@@ -49,7 +56,7 @@ public class AuthService {
     /* ✨예외 처리 ✨
         1. 사용자가 있는지 확인✅
         2. 아이디 비밀번호 맞는지 확인✅
-        3. 이메일 인증 관련 IsActive 유무 확인
+        3. 이메일 인증 관련 IsActive 유무 확인✅
     */
     public TokenDto login(UserRequestDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
@@ -71,11 +78,15 @@ public class AuthService {
                 throw e;
             }
         } else if (loginUser.getAuthority().equals(Authority.ROLE_USER)) {
-            try {
-                Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-                return tokenProvider.generateTokenDto(authentication);
-            } catch (AuthenticationException e) {
-                throw e;
+            if(loginUser.getIsActive().equals(IsActive.ACTIVE)) {
+                try {
+                    Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+                    return tokenProvider.generateTokenDto(authentication);
+                } catch (AuthenticationException e) {
+                    throw e;
+                }
+            } else {
+                throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
             }
         } else {
             throw new IllegalArgumentException("권한이 올바르지 않습니다.");
@@ -98,5 +109,14 @@ public class AuthService {
         } else {
             throw new TokenExpiredException("🔴토큰이 만료됐습니다. Refresh Token을 보내주세요.");
         }
+    }
+
+    // 임시 비밀번호 발송 및 회원정보 업데이트
+    public void updatePasswordWithAuthKey(String to) throws Exception {
+        String ePw = emailService.sendPasswordAuthKey(to);
+        UserTb user = userRepository.findByEmail(to)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
+        user.setPwd(ePw);
+        userRepository.save(user);
     }
 }

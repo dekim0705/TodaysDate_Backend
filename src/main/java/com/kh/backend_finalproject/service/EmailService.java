@@ -94,4 +94,37 @@ public class EmailService {
         }
         return ePw; // 메일로 보냈던 인증 코드를 서버로 반환
     }
+
+    // 비밀번호 재설정 이메일 작성
+    public MimeMessage createPasswordResetMessage(String to) throws Exception {
+        MimeMessage message = javaMailSender.createMimeMessage();
+
+        message.addRecipients(MimeMessage.RecipientType.TO, to);
+        message.setSubject("[오늘의 데이트] 비밀번호 재설정 링크");
+
+        String msg="";
+        msg += "<p>안녕하세요!</p>";
+        msg += "<p>오늘의 데이트 재설정된 비밀번호 입니다.</p>";
+        msg += "<p>로그인 시 아래 코드를 입력해 주세요.</p>";
+        msg += "<h3>임시 비밀번호 : " + ePw + "</h3>";
+        msg += "<p>감사합니다.</p>";
+
+        message.setText(msg, "utf-8", "html"); // 내용
+        message.setFrom(new InternetAddress("devpawcommunity@naver.com", "오늘의데이트")); // 보내는 사람
+
+        return message;
+    }
+
+    // 이메일 보내기
+    public String sendPasswordAuthKey(String to) throws Exception {
+
+        MimeMessage message = createPasswordResetMessage(to); // 메일 발송
+        try {// 예외처리
+            javaMailSender.send(message);
+        } catch (MailException es) {
+            es.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+        return ePw; // 메일로 보냈던 인증 코드를 서버로 반환
+    }
 }

@@ -2,14 +2,12 @@ package com.kh.backend_finalproject.controller;
 
 import com.kh.backend_finalproject.dto.*;
 import com.kh.backend_finalproject.service.AuthService;
+import com.kh.backend_finalproject.service.EmailService;
 import com.kh.backend_finalproject.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
     private final TokenService tokenService;
+    private final EmailService emailService;
 
     @PostMapping("/join")
     public ResponseEntity<UserResponseDto> join(@RequestBody UserRequestDto requestDto) throws Exception {
@@ -35,4 +34,9 @@ public class AuthController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @PostMapping("/password")
+    public ResponseEntity<?> sendMailWithPwdAuthKey(@RequestParam("email") String email) throws Exception {
+        authService.updatePasswordWithAuthKey(email);
+        return new ResponseEntity<>("임시 비밀번호 발송 및 업데이트 완료 ❤️", HttpStatus.OK);
+    }
 }

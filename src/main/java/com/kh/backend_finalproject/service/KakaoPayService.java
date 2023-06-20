@@ -1,5 +1,6 @@
 package com.kh.backend_finalproject.service;
 
+import com.kh.backend_finalproject.dto.kakao.KakaoApproveResponseDto;
 import com.kh.backend_finalproject.dto.kakao.KakaoReadyResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,13 +17,13 @@ import org.springframework.web.client.RestTemplate;
 @Transactional
 public class KakaoPayService {
     private static final String cid = "TC0ONETIME"; // 가맹점 테스트 코드
+    private KakaoReadyResponseDto kakaoReadyResponseDto;
 
     @Value("${spring.security.oauth2.client.registration.kakao.admin-key}")
     private String adminKey;
-    private KakaoReadyResponseDto kakaoReadyResponseDto;
 
+    // '결제 준비하기' 하기 위한 카카오페이 요청 양식
     public KakaoReadyResponseDto kakaoPayReady() {
-        // 카카오페이 요청 양식
         MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<>();
         parameters.add("cid", cid);
         parameters.add("partner_order_id", "가맹점 주문 번호");
@@ -39,9 +40,29 @@ public class KakaoPayService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        kakaoReadyResponseDto = restTemplate.postForObject("https://kapi.kakao.com/v1/payment/ready", requestEntity, KakaoReadyResponseDto.class);
+        kakaoReadyResponseDto = restTemplate.postForObject("https://kapi.kakao.com/v1/payment/ready",
+                requestEntity, KakaoReadyResponseDto.class);
 
         return kakaoReadyResponseDto;
+    }
+
+    // 결제 완료 승인
+    public KakaoApproveResponseDto approveResponse(String pgToken) {
+        MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<>();
+        parameters.add("cid", cid);
+        parameters.add("tid", kakaoReadyResponseDto.getTid());
+        parameters.add("partner_order_id", "가맹점 주문 번호");
+        parameters.add("partner_user_id", "가맹점 회원 ID");
+        parameters.add("pg_token", pgToken);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        KakaoApproveResponseDto approveResponse = restTemplate.postForObject("https://kapi.kakao.com/v1/payment/approve",
+                requestEntity, KakaoApproveResponseDto.class);
+
+        return approveResponse;
     }
 
     // 카카오에서 요구하는 헤더 값

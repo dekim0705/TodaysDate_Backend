@@ -1,6 +1,9 @@
 package com.kh.backend_finalproject.controller;
 
 import com.kh.backend_finalproject.dto.*;
+import com.kh.backend_finalproject.dto.token.NewAccessTokenRequestDto;
+import com.kh.backend_finalproject.dto.token.NewAccessTokenResponseDto;
+import com.kh.backend_finalproject.dto.token.TokenDto;
 import com.kh.backend_finalproject.service.AuthService;
 import com.kh.backend_finalproject.service.EmailService;
 import com.kh.backend_finalproject.service.TokenService;

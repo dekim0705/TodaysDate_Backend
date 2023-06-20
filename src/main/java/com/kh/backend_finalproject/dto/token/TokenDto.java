@@ -1,4 +1,4 @@
-package com.kh.backend_finalproject.dto;
+package com.kh.backend_finalproject.dto.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

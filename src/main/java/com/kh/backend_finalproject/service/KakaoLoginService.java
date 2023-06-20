@@ -19,7 +19,7 @@ import java.util.Map;
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
-public class KakaoService {
+public class KakaoLoginService {
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 

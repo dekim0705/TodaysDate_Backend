@@ -1,11 +1,10 @@
 package com.kh.backend_finalproject.jwt;
 
-import com.kh.backend_finalproject.dto.TokenDto;
+import com.kh.backend_finalproject.dto.token.TokenDto;
 import com.kh.backend_finalproject.entitiy.RefreshTokenTb;
 import com.kh.backend_finalproject.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -2,7 +2,7 @@ package com.kh.backend_finalproject.service;
 
 import com.kh.backend_finalproject.constant.Authority;
 import com.kh.backend_finalproject.constant.IsActive;
-import com.kh.backend_finalproject.dto.TokenDto;
+import com.kh.backend_finalproject.dto.token.TokenDto;
 import com.kh.backend_finalproject.dto.UserRequestDto;
 import com.kh.backend_finalproject.dto.UserResponseDto;
 import com.kh.backend_finalproject.entitiy.UserTb;
@@ -11,7 +11,6 @@ import com.kh.backend_finalproject.repository.UserRepository;
 import com.kh.backend_finalproject.utils.TokenExpiredException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 @Service

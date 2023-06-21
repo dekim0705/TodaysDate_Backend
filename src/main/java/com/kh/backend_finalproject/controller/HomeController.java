@@ -72,7 +72,7 @@ public class HomeController {
         if(isAddBookmark) return new ResponseEntity<>("북마크 추가 성공 ❤️", HttpStatus.OK);
         else return new ResponseEntity<>("북마크 추가 실패 🚨", HttpStatus.NO_CONTENT);
     }
-    // 북마크 삭제
+    // 🔐북마크 삭제 (SecurityContext 적용 OK)
     @DeleteMapping(value = "/post/{postId}/folder/{folderName}/bookmark")
     public ResponseEntity<?> deleteBookmark(@PathVariable Long postId, @PathVariable String folderName,
                                             @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {

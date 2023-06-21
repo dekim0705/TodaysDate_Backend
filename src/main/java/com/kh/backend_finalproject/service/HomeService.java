@@ -152,7 +152,7 @@ public class HomeService {
         return true;
     }
 
-    // 북마크 삭제
+    // 🔐북마크 삭제 (SecurityContext 적용 OK)
     public boolean deleteBookmark(Long postId, String folderName, HttpServletRequest request, UserDetails userDetails) {
         // 🔑토큰 검증 및 사용자 정보 추출
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);

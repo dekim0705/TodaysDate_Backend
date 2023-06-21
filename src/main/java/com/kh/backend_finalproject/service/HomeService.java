@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -147,6 +148,31 @@ public class HomeService {
         bookmark.setFolder(folder);
         bookmark.setPost(post);
         bookmarkRepository.save(bookmark);
+
+        return true;
+    }
+
+    // 북마크 삭제
+    public boolean deleteBookmark(Long postId, String folderName, HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
+        Optional<UserTb> userOptional = userRepository.findById(authUser.getId());
+        Optional<PostTb> postOptional = postRepository.findById(postId);
+        if (userOptional.isEmpty() || postOptional.isEmpty()) return false;
+
+        UserTb user = userOptional.get();
+        PostTb post = postOptional.get();
+
+        FolderTb folder = folderRepository.findByNameAndUser(folderName, user)
+                .orElse(null);
+        if (folder == null) return false;
+
+        BookmarkTb bookmark = bookmarkRepository.findByFolderAndPost(folder, post)
+                .orElse(null);
+        if (bookmark == null) return false;
+
+        bookmarkRepository.delete(bookmark);
 
         return true;
     }

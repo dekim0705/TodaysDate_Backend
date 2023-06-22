@@ -44,6 +44,6 @@ public class TokenService {
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
 
-        return tokenProvider.generateTokenDto(authentication).getAccessToken();
+        return tokenProvider.generateAccessTokenDto(authentication).getAccessToken();
     }
 }

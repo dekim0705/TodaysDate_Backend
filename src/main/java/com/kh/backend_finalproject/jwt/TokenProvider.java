@@ -73,6 +73,34 @@ public class TokenProvider {
                 .build();
     }
 
+    //리프레쉬 토큰을 확인하고 AccessToken만 재발급 해주는 코드
+    public TokenDto generateAccessTokenDto(Authentication authentication) {
+
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        long now = (new Date()).getTime();
+
+
+        Date tokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+
+        System.out.println(tokenExpiresIn);
+
+        String accessToken = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim(AUTHORITIES_KEY, authorities)
+                .setExpiration(tokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        return TokenDto.builder()
+                .grantType(BEARER_TYPE)
+                .accessToken(accessToken)
+                .tokenExpiresIn(tokenExpiresIn.getTime())
+                .build();
+    }
+
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
 

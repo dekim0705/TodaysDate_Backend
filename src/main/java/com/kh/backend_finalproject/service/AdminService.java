@@ -7,9 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +26,12 @@ public class AdminService {
     private  final AdRepository adRepository;
     private final PostRepository postRepository;
     private final ReportRepository reportRepository;
+    private final AuthService authService;
 
     // 💗 전체 회원 조회
-    public List<UserDto> findAllUserList() {
+    public List<UserDto> findAllUserList(UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
         List<UserTb> users = userRepository.findAll();
         List<UserDto> userDtos = new ArrayList<>();
         for (UserTb user : users) {
@@ -49,25 +54,29 @@ public class AdminService {
     }
 
     // 💗 전체 문의 내역 조회 (문의일 최근순 정렬)
-    public List<ChatbotUserDto> findAllInquiryList() {
+    public List<ChatbotUserDto> findAllInquiryList(UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<ChatbotUserDto> chatbotUserDtos = chatbotRepository.findAllInquiryWithUserNickname();
         return chatbotUserDtos;
     }
 
     // 💗 전체 게시글 내역 조회 (문의일 최근순 정렬)
-    public List<PostUserDto> findAllPostList() {
+    public List<PostUserDto> findAllPostList(UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<PostUserDto> postUserDtos = postRepository.findAllPostsWithUserNickname();
         return postUserDtos;
     }
 
     // 💗 전체 댓글 내역 조회 (문의일 최근순 정렬)
-    public List<ReplyUserDto> findAllReplyList() {
+    public List<ReplyUserDto> findAllReplyList(UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<ReplyUserDto> replyUserDtos = replyRepository.findAllReplyWithUserNickname();
         return replyUserDtos;
     }
 
     // 💗 전체 광고 내역 조회
-    public List<AdDto> findAllAdList() {
+    public List<AdDto> findAllAdList(UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<AdTb> ads = adRepository.findAll();
         List<AdDto> adDtos = new ArrayList<>();
         for (AdTb e : ads) {
@@ -81,7 +90,8 @@ public class AdminService {
     }
 
     // 💗 광고 추가
-    public AdDto createAd(AdDto adDto) {
+    public AdDto createAd(AdDto adDto, UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         AdTb adTb = new AdTb();
         adTb.setName(adDto.getName());
         adTb.setImgUrl(adDto.getImgUrl());
@@ -95,7 +105,8 @@ public class AdminService {
     }
 
     // 💗 전체 신고 내역 조회
-    public List<ReportDto> findAllReportList() {
+    public List<ReportDto> findAllReportList(UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<ReportTb> reports = reportRepository.findAll();
         List<ReportDto> reportDtos = new ArrayList<>();
         for (ReportTb report : reports) {
@@ -110,35 +121,40 @@ public class AdminService {
     }
 
     // 💗다중 회원 삭제
-    public void deleteUsers(List<Long> userIds) {
+    public void deleteUsers(List<Long> userIds, UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         for (Long userId : userIds) {
             userRepository.deleteById(userId);
         }
     }
 
     // 💗다중 게시글 삭제
-    public void deletePosts(List<Long> postIds) {
+    public void deletePosts(List<Long> postIds, UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         for (Long postId : postIds) {
             postRepository.deleteById(postId);
         }
     }
 
     // 💗다중 댓글 삭제
-    public void deleteReplies(List<Long> replyIds) {
+    public void deleteReplies(List<Long> replyIds, UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         for (Long replyId : replyIds) {
             replyRepository.deleteById(replyId);
         }
     }
 
     // 💗다중 광고 삭제
-    public void deleteAds(List<Long> adIds) {
+    public void deleteAds(List<Long> adIds,  UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         for (Long adId : adIds) {
             adRepository.deleteById(adId);
         }
     }
 
     //💗 관리자 - 회원 검색
-    public List<UserDto> findByKeywordUser(String keyword) {
+    public List<UserDto> findByKeywordUser(String keyword, UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<UserTb> user = userRepository.findByKeywordUser(keyword);
         List<UserDto> userDtos = new ArrayList<>();
         for (UserTb e : user) {
@@ -161,7 +177,8 @@ public class AdminService {
     }
 
     //💗 관리자 - 게시글 검색
-    public List<PostUserDto> findByKeywordAdminPost(String keyword) {
+    public List<PostUserDto> findByKeywordAdminPost(String keyword, UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<PostTb> postList = postRepository.findByKeywordAdminPost(keyword);
         List<PostUserDto> postUserDtos = new ArrayList<>();
         for (PostTb e : postList) {
@@ -176,7 +193,8 @@ public class AdminService {
     }
 
     //💗 관리자 - 댓글 검색
-    public List<ReplyUserDto> findByKeywordReply(String keyword) {
+    public List<ReplyUserDto> findByKeywordReply(String keyword, UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<ReplyTb> replyList = replyRepository.findByKeywordReply(keyword);
         List<ReplyUserDto> replyUserDtos = new ArrayList<>();
         for (ReplyTb e : replyList) {

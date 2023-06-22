@@ -7,9 +7,11 @@ import com.kh.backend_finalproject.repository.ChatbotRepository;
 import com.kh.backend_finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 
@@ -20,17 +22,17 @@ import java.time.LocalDateTime;
 public class ChatbotService {
     private final ChatbotRepository chatbotRepository;
     private final UserRepository userRepository;
+    private final AuthService authService;
 
     // 💗챗봇 문의 작성
-    public void createInquiry(ChatbotDto chatbotDto) {
+    public void createInquiry(ChatbotDto chatbotDto, UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         ChatbotTb inquiry = new ChatbotTb();
         inquiry.setInquiryContent(chatbotDto.getInquiryContent());
-        inquiry.setEmail(chatbotDto.getEmail());
+        inquiry.setEmail(authUser.getEmail());
         inquiry.setInquiryDate(LocalDateTime.now());
         inquiry.setInquiryStatus("대기");
-
-        UserTb user = userRepository.findById(chatbotDto.getUserId()).orElse(null);
-        inquiry.setUser(user);
+        inquiry.setUser(authUser);
         chatbotRepository.save(inquiry);
     }
 }

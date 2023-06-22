@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -38,6 +39,8 @@ public class UserService {
     private final ReplyRepository replyRepository;
     private final FolderRepository folderRepository;
     private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
+
 
 
     // 🔐 마이페이지 - 회원 프로필 바 가져오기 (프로필사진, 닉네임, 멤버십 여부, 한 줄 소개, 총 게시글/댓글 수)
@@ -181,31 +184,29 @@ public class UserService {
         }
     }
 
+    // 🔐 마이페이지 - 회원의 북마크 폴더 삭제하기
+    public boolean deleteBookmarkFolder(Long folderId, HttpServletRequest request, UserDetails userDetails) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
 
-    // ✅ 마이페이지 - 회원의 북마크 폴더 삭제하기
-    public boolean deleteBookmarkFolder(Long folderId, Long userId) {
         Optional<FolderTb> folderOptional = folderRepository.findById(folderId);
         if (folderOptional.isPresent()) {
             FolderTb folder = folderOptional.get();
-
-            if (folder.getUser().getId().equals(userId)) {
-                folderRepository.delete(folder);
-                return true;
-            } else {
-                throw new IllegalArgumentException("해당 폴더에 접근 권한이 없습니다.");
-            }
+            folderRepository.delete(folder);
+            return true;
         } else {
             throw new IllegalArgumentException("해당 폴더가 존재하지 않습니다.");
         }
     }
 
-    // ✅ 마이페이지 - 회원의 북마크 폴더 이름 변경하기
-    public boolean updateBookmarkFolderName(Long folderId, String folderName, Long userId) {
+    // 🔐 마이페이지 - 회원의 북마크 폴더 이름 변경하기
+    public boolean updateBookmarkFolderName(Long folderId, String folderName, HttpServletRequest request, UserDetails userDetails) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
         Optional<FolderTb> folderOptional = folderRepository.findById(folderId);
         if (folderOptional.isPresent()) {
             FolderTb folder = folderOptional.get();
 
-            if (folder.getUser().getId().equals(userId)) {
+            if (folder.getUser().getId().equals(authUser.getId())) {
                 folder.setName(folderName);
                 folderRepository.save(folder);
                 return true;
@@ -217,10 +218,11 @@ public class UserService {
         }
     }
 
+    // 🔐 마이페이지 - 회원의 북마크 폴더 가져오기
+    public List<FolderDto> getUserBookmarkFolders(HttpServletRequest request, UserDetails userDetails) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
 
-    // ✅ 마이페이지 - 회원의 북마크 폴더 가져오기
-    public List<FolderDto> getUserBookmarkFolders(String email) {
-        Optional<UserTb> user = userRepository.findByEmail(email);
+        Optional<UserTb> user = userRepository.findById(authUser.getId());
         if (user != null) {
             List<FolderDto> folderDtos = new ArrayList<>();
             for (FolderTb folder : user.get().getFolders()) {
@@ -245,13 +247,15 @@ public class UserService {
         return Collections.emptyList();
     }
 
-    // ✅ 마이페이지 - 회원의 북마크 가져오기
-    public List<BookmarkDto> getBookmarksInFolder(Long folderId, String email) {
+    // 🔐 마이페이지 - 회원의 북마크 가져오기
+    public List<BookmarkDto> getBookmarksInFolder(Long folderId, HttpServletRequest request, UserDetails userDetails) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
         Optional<FolderTb> folderOptional = folderRepository.findById(folderId);
         if (folderOptional.isPresent()) {
             FolderTb folder = folderOptional.get();
             // 폴더 소유자 확인
-            if (folder.getUser().getEmail().equals(email)) {
+            if (folder.getUser().getId().equals(authUser.getId())) {
                 List<BookmarkDto> bookmarkDtos = new ArrayList<>();
                 for (BookmarkTb bookmark : folder.getBookmarks()) {
                     BookmarkDto bookmarkDto = new BookmarkDto();
@@ -271,10 +275,12 @@ public class UserService {
         return Collections.emptyList();
     }
 
-    // ✅ 마이페이지 - 회원정보 수정
-    public boolean updateInformation(Long userId, UserDto userDto) throws IllegalAccessException {
-        UserTb user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalAccessException("해당 회원이 없습니다." + userId));
+    // 🔐 마이페이지 - 회원정보 수정
+    public boolean updateInformation(UserDto userDto, HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
+        UserTb user = userRepository.findById(authUser.getId())
+                .orElseThrow(() -> new IllegalAccessException("해당 회원이 없습니다."));
 
         if (userDto.getPfImg() == null || userDto.getPfImg().isEmpty()
                 || userDto.getNickname() == null || userDto.getNickname().isEmpty()
@@ -292,25 +298,30 @@ public class UserService {
         return true;
     }
 
-    // ✅ 마이페이지 - 비밀번호 변경
-    public boolean updatePwd(Long userId, UserTb userTb) throws IllegalAccessException {
-        UserTb user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다." + userId));
+    // 🔐 마이페이지 - 비밀번호 변경
+    public boolean updatePwd(UserTb userTb, HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
+        UserTb user = userRepository.findById(authUser.getId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다."));
 
         if (userTb.getPwd() == null || userTb.getPwd().isEmpty()) {
             throw new IllegalArgumentException("비밀번호가 없어요..😰");
         }
 
-        user.setPwd(userTb.getPwd());
+        String encodedPassword = passwordEncoder.encode(userTb.getPwd());
+        user.setPwd(encodedPassword);
         UserTb savedUser = userRepository.save(user);
         log.info(savedUser.toString());
 
         return true;
     }
 
-    // ✅ 마이페이지 - 회원 탈퇴
-    public void deleteUser(Long userId) throws IllegalAccessException {
-        UserTb userTb = userRepository.findById(userId)
+    // 🔐 마이페이지 - 회원 탈퇴
+    public void deleteUser(HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
+        UserTb userTb = userRepository.findById(authUser.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다."));
         userRepository.delete(userTb);
     }

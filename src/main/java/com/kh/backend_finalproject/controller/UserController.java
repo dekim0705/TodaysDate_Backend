@@ -41,7 +41,7 @@ public class UserController {
     // 🔐 마이페이지 - 회원의 게시글 삭제하기
     @DeleteMapping(value = "/posts")
     public ResponseEntity<?> deletePosts(@RequestBody List<Long> postIds,
-                                         HttpServletRequest request,
+                                         @AuthenticationPrincipal HttpServletRequest request,
                                          UserDetails userDetails) throws IllegalAccessException {
 
         boolean isDeleted = userService.deletePosts(postIds, request, userDetails);
@@ -62,7 +62,7 @@ public class UserController {
     // 🔐 마이페이지 - 회원의 댓글 삭제하기
     @DeleteMapping(value = "/replies")
     public ResponseEntity<?> deleteReplies(@RequestBody List<Long> replyIds,
-                                           HttpServletRequest request,
+                                           @AuthenticationPrincipal HttpServletRequest request,
                                            UserDetails userDetails) throws IllegalAccessException {
         boolean isDeleted = userService.deleteReplies(replyIds, request, userDetails);
         if (isDeleted) {
@@ -103,22 +103,22 @@ public class UserController {
         else return new ResponseEntity<>("폴더 생성 실패 .. 😰", HttpStatus.BAD_REQUEST);
     }
 
-    // ✅ 마이페이지 - 회원의 북마크 폴더 삭제하기
+    // 🔐 마이페이지 - 회원의 북마크 폴더 삭제하기
     @DeleteMapping(value = "/bookmark-folders/{folderId}")
-    public ResponseEntity<?> deleteBookmarkFolder(@PathVariable Long folderId, @RequestBody FolderDto folderDto) {
-        boolean isFolderDeleted = userService.deleteBookmarkFolder(folderId, folderDto.getUserId());
+    public ResponseEntity<?> deleteBookmarkFolder(@PathVariable Long folderId, @AuthenticationPrincipal UserDetails userDetails,
+                                                  HttpServletRequest request) throws IllegalAccessException {
+
+        boolean isFolderDeleted = userService.deleteBookmarkFolder(folderId, request, userDetails);
         if (isFolderDeleted) return new ResponseEntity<>("폴더 삭제 성공 ❣️", HttpStatus.OK);
         else return new ResponseEntity<>("폴더 삭제 실패 .. 😰", HttpStatus.BAD_REQUEST);
     }
 
-    // ✅ 마이페이지 - 회원의 북마크 폴더 이름 변경하기
+    // 🔐 마이페이지 - 회원의 북마크 폴더 이름 변경하기
     @PutMapping(value = "/bookmark-folders/{folderId}")
-    public ResponseEntity<?> updateBookmarkFolderName(@PathVariable Long folderId, @RequestBody FolderDto folderDto) {
-        boolean isFolderUpdated = userService.updateBookmarkFolderName(
-                folderId,
-                folderDto.getName(),
-                folderDto.getUserId()
-        );
+    public ResponseEntity<?> updateBookmarkFolderName(@PathVariable Long folderId, @RequestBody FolderDto folderDto,
+                                                      @AuthenticationPrincipal UserDetails userDetails,
+                                                      HttpServletRequest request) {
+        boolean isFolderUpdated = userService.updateBookmarkFolderName(folderId, folderDto.getName(), request, userDetails);
         if (isFolderUpdated) {
             return new ResponseEntity<>("폴더 이름 변경 성공 ❣️", HttpStatus.OK);
         } else {
@@ -126,48 +126,53 @@ public class UserController {
         }
     }
 
-    // ✅ 마이페이지 - 회원의 북마크 폴더 가져오기
+    // 🔐 마이페이지 - 회원의 북마크 폴더 가져오기
     @GetMapping(value = "/bookmark-folders")
-    public ResponseEntity<List<FolderDto>> getBookmarkFolders(@RequestParam("email") String email) {
-        List<FolderDto> folderDtos = userService.getUserBookmarkFolders(email);
+    public ResponseEntity<List<FolderDto>> getBookmarkFolders(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+        List<FolderDto> folderDtos = userService.getUserBookmarkFolders(request, userDetails);
         return new ResponseEntity<>(folderDtos, HttpStatus.OK);
     }
 
-    // ✅ 마이페이지 - 회원의 북마크 가져오기
+    // 🔐 마이페이지 - 회원의 북마크 가져오기
     @GetMapping("/bookmark-folders/{folderId}/bookmarks")
-    public ResponseEntity<List<BookmarkDto>> getBookmarksInFolder(@PathVariable("folderId") Long folderId,
-                                                                  @RequestParam("email") String email) {
-        List<BookmarkDto> bookmarks = userService.getBookmarksInFolder(folderId, email);
+    public ResponseEntity<List<BookmarkDto>> getBookmarksInFolder(@PathVariable Long folderId,
+                                                                  @AuthenticationPrincipal UserDetails userDetails,
+                                                                  HttpServletRequest request) {
+        List<BookmarkDto> bookmarks = userService.getBookmarksInFolder(folderId, request, userDetails);
         return new ResponseEntity<>(bookmarks, HttpStatus.OK);
     }
 
-    // ✅ 마이페이지 - 회원정보 수정
+    // 🔐 마이페이지 - 회원정보 수정
     @PutMapping("/information")
-    public ResponseEntity<?> updateUserInformation(@RequestParam Long userId, @RequestBody UserDto userDto) {
+    public ResponseEntity<?> updateUserInformation(@RequestBody UserDto userDto,
+                                                   @AuthenticationPrincipal UserDetails userDetails,
+                                                   HttpServletRequest request) {
         try {
-            boolean isUpdate = userService.updateInformation(userId, userDto);
+            boolean isUpdate = userService.updateInformation(userDto, request, userDetails);
             return new ResponseEntity<>("회원정보 수정 성공! ❣️", HttpStatus.OK);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("회원정보 수정 실패.. 😰", HttpStatus.BAD_REQUEST);
         }
     }
 
-    // ✅ 마이페이지 - 비밀번호 변경
+    // 🔐 마이페이지 - 비밀번호 변경
     @PutMapping("/pwd")
-    public ResponseEntity<?> updateUserPwd(@RequestParam Long userId, @RequestBody UserTb userTb) {
+    public ResponseEntity<?> updateUserPwd(@RequestBody UserTb userTb,
+                                           @AuthenticationPrincipal UserDetails userDetails,
+                                           HttpServletRequest request) {
         try {
-            boolean isUpdate = userService.updatePwd(userId, userTb);
+            boolean isUpdate = userService.updatePwd(userTb, request, userDetails);
             return ResponseEntity.ok("비밀번호 변경 성공! ❣️");
         } catch (IllegalAccessException e) {
             return ResponseEntity.badRequest().body("비밀번호 변경 실패.. 😰" + e.getMessage());
         }
     }
 
-    // ✅ 마이페이지 - 회원 탈퇴
-    @DeleteMapping(value = "/information/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+    // 🔐 마이페이지 - 회원 탈퇴
+    @DeleteMapping(value = "/information")
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
         try {
-            userService.deleteUser(userId);
+            userService.deleteUser(request, userDetails);
             return new ResponseEntity<>("회원 탈퇴 성공! ❣️", HttpStatus.ACCEPTED);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>("회원 탈퇴 실패.. 😰" + e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -9,8 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -21,22 +24,27 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    // ✅ 마이페이지 - 회원 프로필 바 가져오기 (프로필사진, 닉네임, 멤버십 여부, 한 줄 소개, 총 게시글/댓글 수)
+    // 🔐 마이페이지 - 회원 프로필 바 가져오기 (프로필사진, 닉네임, 멤버십 여부, 한 줄 소개, 총 게시글/댓글 수)
     @PostMapping(value = "/profile")
-    public ResponseEntity<List<UserProfileDto>> getUserProfileBar(@RequestParam String email) {
-        List<UserProfileDto> profileDtos = userService.getUserProfileInfo(email);
-            return new ResponseEntity<>(profileDtos, HttpStatus.OK);
+    public ResponseEntity<UserProfileDto> getUserProfileBar(@AuthenticationPrincipal UserDetails userDetails,
+                                                                  HttpServletRequest request) throws IllegalAccessException {
+        UserProfileDto profileDtos = userService.getUserProfileInfo(request, userDetails);
+        return new ResponseEntity<>(profileDtos, HttpStatus.OK);
     }
-    // ✅ 마이페이지 - 회원의 모든 게시글 가져오기
+    // 🔐 마이페이지 - 회원의 모든 게시글 가져오기
     @GetMapping(value = "/posts")
-    public ResponseEntity<List<UserDto>> getAllPosts(@RequestParam("email") String email) {
-        List<UserDto> posts = userService.getAllUserPosts(email);
+    public ResponseEntity<List<UserDto>> getAllPosts(@AuthenticationPrincipal UserDetails userDetails,
+                                                     HttpServletRequest request) {
+        List<UserDto> posts = userService.getAllUserPosts(request, userDetails);
         return new ResponseEntity<>(posts,HttpStatus.OK);
     }
-    // ✅ 마이페이지 - 회원의 게시글 삭제하기
+    // 🔐 마이페이지 - 회원의 게시글 삭제하기
     @DeleteMapping(value = "/posts")
-    public ResponseEntity<?> deletePosts(@RequestBody List<Long> postIds) {
-        boolean isDeleted = userService.deletePosts(postIds);
+    public ResponseEntity<?> deletePosts(@RequestBody List<Long> postIds,
+                                         HttpServletRequest request,
+                                         UserDetails userDetails) throws IllegalAccessException {
+
+        boolean isDeleted = userService.deletePosts(postIds, request, userDetails);
         if (isDeleted) {
             return new ResponseEntity<>("게시글 삭제 성공 ❣️", HttpStatus.OK);
         } else {
@@ -44,16 +52,19 @@ public class UserController {
         }
     }
 
-    // ✅ 마이페이지 - 회원의 모든 댓글 가져오기
+    // 🔐 마이페이지 - 회원의 모든 댓글 가져오기
     @GetMapping(value = "/replies")
-    public ResponseEntity<List<UserDto>> getAllReplies(@RequestParam("email") String email) {
-        List<UserDto> replies = userService.getAllUserReplies(email);
+    public ResponseEntity<List<UserDto>> getAllReplies(@AuthenticationPrincipal UserDetails userDetails,
+                                                       HttpServletRequest request) {
+        List<UserDto> replies = userService.getAllUserReplies(request, userDetails);
         return new ResponseEntity<>(replies,HttpStatus.OK);
     }
-    // ✅ 마이페이지 - 회원의 댓글 삭제하기
+    // 🔐 마이페이지 - 회원의 댓글 삭제하기
     @DeleteMapping(value = "/replies")
-    public ResponseEntity<?> deleteReplies(@RequestBody List<Long> replyIds) {
-        boolean isDeleted = userService.deleteReplies(replyIds);
+    public ResponseEntity<?> deleteReplies(@RequestBody List<Long> replyIds,
+                                           HttpServletRequest request,
+                                           UserDetails userDetails) throws IllegalAccessException {
+        boolean isDeleted = userService.deleteReplies(replyIds, request, userDetails);
         if (isDeleted) {
             return new ResponseEntity<>("댓글 삭제 성공 ❣️", HttpStatus.OK);
         } else {
@@ -61,31 +72,33 @@ public class UserController {
         }
     }
 
-    // ✅ 마이페이지 - 회원의 멤버십 상태 조회
+    // 🔐 마이페이지 - 회원의 멤버십 상태 조회
     @GetMapping("/membership-status")
-    public ResponseEntity<IsMembership> getMembershipStatus(@RequestParam("email") String email) {
-        IsMembership membershipStatus = userService.getUserMembershipStatus(email); {
-            return ResponseEntity.ok(membershipStatus);
+    public ResponseEntity<IsMembership> getMembershipStatus(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+        IsMembership membershipStatus = userService.getUserMembershipStatus(request, userDetails); {
+            return new ResponseEntity<>(membershipStatus, HttpStatus.OK);
         }
     }
-    // ✅ 마이페이지 - 회원의 푸쉬알림 상태 조회
+    // 🔐 마이페이지 - 회원의 푸쉬알림 상태 조회
     @GetMapping("/notification-status")
-    public ResponseEntity<IsPush> getNotificationStatus(@RequestParam("email") String email) {
-        IsPush notificationStatus = userService.getUserNotificationStatus(email); {
-            return ResponseEntity.ok(notificationStatus);
+    public ResponseEntity<IsPush> getNotificationStatus(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+        IsPush notificationStatus = userService.getUserNotificationStatus(request, userDetails); {
+            return new ResponseEntity<>(notificationStatus, HttpStatus.OK);
         }
     }
-    // ✅ 마이페이지 - 회원의 푸쉬알림 상태 변경
+    // 🔐 마이페이지 - 회원의 푸쉬알림 상태 변경
     @PutMapping(value = "/notification-status")
-    public ResponseEntity<IsPush> updateNotificationStatus(@RequestParam("email") String email) {
-            IsPush updateNotificationStatus = userService.updateUserNotificationStatus(email);
+    public ResponseEntity<IsPush> updateNotificationStatus(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+            IsPush updateNotificationStatus = userService.updateUserNotificationStatus(request, userDetails);
             return new ResponseEntity<>(updateNotificationStatus, HttpStatus.OK);
     }
 
-    // ✅ 마이페이지 - 회원의 북마크 폴더 생성하기
+    // 🔐 마이페이지 - 회원의 북마크 폴더 생성하기
     @PostMapping(value="/bookmark-folders")
-    public ResponseEntity<?> createBookmarkFolder(@RequestBody FolderDto folderDto) {
-        boolean isFolderCreated = userService.createBookmarkFolder(folderDto.getUserId(), folderDto.getName());
+    public ResponseEntity<?> createBookmarkFolder(@RequestBody FolderDto folderDto,
+                                                  @AuthenticationPrincipal UserDetails userDetails,
+                                                  HttpServletRequest request) throws IllegalAccessException {
+        boolean isFolderCreated = userService.createBookmarkFolder(folderDto, request, userDetails);
         if (isFolderCreated) return new ResponseEntity<>("폴더 생성 성공 ❣️", HttpStatus.CREATED);
         else return new ResponseEntity<>("폴더 생성 실패 .. 😰", HttpStatus.BAD_REQUEST);
     }

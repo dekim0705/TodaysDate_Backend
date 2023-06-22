@@ -1,4 +1,5 @@
 package com.kh.backend_finalproject.service;
+
 import com.kh.backend_finalproject.constant.IsActive;
 import com.kh.backend_finalproject.constant.IsMembership;
 import com.kh.backend_finalproject.constant.IsPush;
@@ -14,10 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -34,16 +37,31 @@ public class UserService {
     private final PostRepository postRepository;
     private final ReplyRepository replyRepository;
     private final FolderRepository folderRepository;
+    private final AuthService authService;
 
-    // ✅ 마이페이지 - 회원 프로필 바 가져오기 (프로필사진, 닉네임, 멤버십 여부, 한 줄 소개, 총 게시글/댓글 수)
-    public List<UserProfileDto> getUserProfileInfo(String email) {
-        List<UserProfileDto> profileDtos = userRepository.findUserProfileInfo(email);
-        return profileDtos;
+
+    // 🔐 마이페이지 - 회원 프로필 바 가져오기 (프로필사진, 닉네임, 멤버십 여부, 한 줄 소개, 총 게시글/댓글 수)
+    public UserProfileDto getUserProfileInfo(HttpServletRequest request, UserDetails userDetails) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+        Optional<UserTb> user = userRepository.findById(authUser.getId());
+
+        UserProfileDto userProfileDto = new UserProfileDto();
+        userProfileDto.setNickname(user.get().getNickname());
+        userProfileDto.setUserComment(user.get().getUserComment());
+        userProfileDto.setPfImg(user.get().getPfImg());
+        userProfileDto.setIsMembership(user.get().getIsMembership());
+        userProfileDto.setPostCount(user.get().getPosts().size());
+        userProfileDto.setReplyCount(user.get().getReplies().size());
+
+        return userProfileDto;
     }
-    // ✅ 마이페이지 - 회원의 모든 게시글 가져오기 (글 번호, 제목, 본문, 조회수, 작성일, 작성자 닉네임)
-    public List<UserDto> getAllUserPosts(String email) {
-        Optional<UserTb> user = userRepository.findByEmail(email);
-        List<PostTb> posts = user.get().getPosts();;
+
+    // 🔐 마이페이지 - 회원의 모든 게시글 가져오기 (글 번호, 제목, 본문, 조회수, 작성일, 작성자 닉네임)
+    public List<UserDto> getAllUserPosts(HttpServletRequest request, UserDetails userDetails) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+        Optional<UserTb> user = userRepository.findById(authUser.getId());
+        List<PostTb> posts = user.get().getPosts();
+
         List<UserDto> userDtoList = new ArrayList<>();
         for (PostTb post : posts) {
             UserDto userDto = new UserDto();
@@ -57,8 +75,13 @@ public class UserService {
         }
         return userDtoList;
     }
-    // ✅ 마이페이지 - 회원의 게시글 삭제하기
-    public boolean deletePosts(List<Long> postIds) {
+
+    // 🔐 마이페이지 - 회원의 게시글 삭제하기
+    public boolean deletePosts(List<Long> postIds, HttpServletRequest request,
+                               UserDetails userDetails) throws IllegalAccessException {
+
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         for (Long postId : postIds) {
             Optional<PostTb> postOptional = postRepository.findById(postId);
             if (postOptional.isPresent()) {
@@ -71,12 +94,14 @@ public class UserService {
         return true;
     }
 
-    // ✅ 마이페이지 - 회원의 모든 댓글 가져오기 (댓글 번호, 작성자 닉네임, 댓글 본문, 원문 제목, 작성일)
-    public List<UserDto> getAllUserReplies(String email) {
-        Optional<UserTb> user = userRepository.findByEmail(email);
-        List<ReplyTb> replies = user.get().getReplies();
-        List<UserDto> userDtoList = new ArrayList<>();
+    // 🔐 마이페이지 - 회원의 모든 댓글 가져오기 (댓글 번호, 작성자 닉네임, 댓글 본문, 원문 제목, 작성일)
+    public List<UserDto> getAllUserReplies(HttpServletRequest request, UserDetails userDetails) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+        Optional<UserTb> user = userRepository.findById(authUser.getId());
 
+        List<ReplyTb> replies = user.get().getReplies();
+
+        List<UserDto> userDtoList = new ArrayList<>();
         for (ReplyTb reply : replies) {
             UserDto userDto = new UserDto();
             userDto.setReplyNum(reply.getId());
@@ -84,13 +109,17 @@ public class UserService {
             userDto.setContent(reply.getContent());
             userDto.setTitle(reply.getPost().getTitle());
             userDto.setWriteDate(reply.getWriteDate());
-
             userDtoList.add(userDto);
         }
         return userDtoList;
     }
-    // ✅ 마이페이지 - 회원의 댓글 삭제하기
-    public boolean deleteReplies(List<Long> replyIds) {
+
+    // 🔐 마이페이지 - 회원의 댓글 삭제하기
+    public boolean deleteReplies(List<Long> replyIds, HttpServletRequest request,
+                                 UserDetails userDetails) throws IllegalAccessException {
+
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
         for (Long replyId : replyIds) {
             Optional<ReplyTb> replyOptionl = replyRepository.findById(replyId);
             if (replyOptionl.isPresent()) {
@@ -103,47 +132,55 @@ public class UserService {
         return true;
     }
 
-    // ✅ 마이페이지 - 회원의 멤버십 상태 조회
-    public IsMembership getUserMembershipStatus(String email) {
-        Optional<UserTb> user = userRepository.findByEmail(email);
+    // 🔐 마이페이지 - 회원의 멤버십 상태 조회
+    public IsMembership getUserMembershipStatus(HttpServletRequest request, UserDetails userDetails) {
+
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
+        Optional<UserTb> user = userRepository.findById(authUser.getId());
         return user.get().getIsMembership();
     }
-    // ✅ 마이페이지 - 회원의 푸쉬알림 상태 조회
-    public IsPush getUserNotificationStatus(String email) {
-        Optional<UserTb> user = userRepository.findByEmail(email);
+
+    // 🔐 마이페이지 - 회원의 푸쉬알림 상태 조회
+    public IsPush getUserNotificationStatus(HttpServletRequest request, UserDetails userDetails) {
+
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+        Optional<UserTb> user = userRepository.findById(authUser.getId());
         return user.get().getIsPush();
     }
 
-    // ✅ 마이페이지 - 회원의 푸쉬알림 상태 변경
-    public IsPush updateUserNotificationStatus(String email) {
-        Optional<UserTb> user = userRepository.findByEmail(email);
+    // 🔐 마이페이지 - 회원의 푸쉬알림 상태 변경
+    public IsPush updateUserNotificationStatus(HttpServletRequest request, UserDetails userDetails) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+
+        Optional<UserTb> user = userRepository.findById(authUser.getId());
         IsPush currentStatus = user.get().getIsPush();
-        System.out.println("🍒(" + email + ")현재 알림 설정 상태  : " + currentStatus);
+        System.out.println("🍒(" + user + ")현재 알림 설정 상태  : " + currentStatus);
 
         IsPush newStatus = currentStatus.equals(IsPush.PUSH) ? IsPush.NOPUSH : IsPush.PUSH;
         user.get().setIsPush(newStatus);
         userRepository.save(user.get());
-        System.out.println("🍒(" + email + ")변경된 알림 설정 : " + newStatus);
+        System.out.println("🍒(" + user + ")변경된 알림 설정 : " + newStatus);
 
         return newStatus;
     }
 
-    // ✅ 마이페이지 - 회원의 북마크 폴더 생성하기
-    public boolean createBookmarkFolder(Long userId, String folderName) {
+    // 🔐 마이페이지 - 회원의 북마크 폴더 생성하기
+    public boolean createBookmarkFolder(FolderDto folderDto, HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
 
-        UserTb user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다." + userId));
-        if (user != null) {
-            FolderTb folder = new FolderTb();
-            folder.setUser(user);
-            folder.setName(folderName);
+        if (authUser != null) {
+            FolderTb folderTb = new FolderTb();
+            folderTb.setName(folderDto.getName());
+            folderTb.setUser(authUser);
 
-            FolderTb savedFolder = folderRepository.save(folder);
+            FolderTb savedFolder = folderRepository.save(folderTb);
+            return savedFolder != null;
         } else {
             throw new IllegalArgumentException("유효하지 않은 사용자입니다.");
         }
-        return true;
     }
+
 
     // ✅ 마이페이지 - 회원의 북마크 폴더 삭제하기
     public boolean deleteBookmarkFolder(Long folderId, Long userId) {
@@ -237,7 +274,7 @@ public class UserService {
     // ✅ 마이페이지 - 회원정보 수정
     public boolean updateInformation(Long userId, UserDto userDto) throws IllegalAccessException {
         UserTb user = userRepository.findById(userId)
-                        .orElseThrow(() -> new IllegalAccessException("해당 회원이 없습니다." + userId));
+                .orElseThrow(() -> new IllegalAccessException("해당 회원이 없습니다." + userId));
 
         if (userDto.getPfImg() == null || userDto.getPfImg().isEmpty()
                 || userDto.getNickname() == null || userDto.getNickname().isEmpty()
@@ -272,7 +309,7 @@ public class UserService {
     }
 
     // ✅ 마이페이지 - 회원 탈퇴
-    public void deleteUser(Long userId) throws IllegalAccessException{
+    public void deleteUser(Long userId) throws IllegalAccessException {
         UserTb userTb = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다."));
         userRepository.delete(userTb);

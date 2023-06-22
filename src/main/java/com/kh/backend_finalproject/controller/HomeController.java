@@ -22,6 +22,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/home")
+@CrossOrigin(origins = "http://localhost:3000")
 public class HomeController {
     @Autowired
     HomeService homeService;
@@ -57,7 +58,7 @@ public class HomeController {
         return new ResponseEntity<>(postBookmarkDtos, HttpStatus.OK);
     }
     //  🔐회원 프로필 가져오기 (SecurityContext 적용 OK)
-    @PostMapping(value = "/profile")
+    @GetMapping(value = "/profile")
     public ResponseEntity<String> getPfImg(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
         String pfImg = homeService.findPfImgById(request, userDetails);
         if(pfImg != null) return new ResponseEntity<>(pfImg, HttpStatus.OK);

@@ -85,6 +85,7 @@ public class PostService {
 
         int bookmarkCount = postRepository.findBookmarkCountByPostId(postId);
         PostDto postDto = new PostDto();
+        postDto.setPostId(post.getId());
         postDto.setPfImg(post.getUser().getPfImg());
         postDto.setNickname(post.getUser().getNickname());
         postDto.setTitle(post.getTitle());

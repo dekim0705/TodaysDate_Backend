@@ -8,6 +8,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDto {
+    private Long postId;
     private String pfImg;
     private String nickname;
     private String title;

@@ -275,6 +275,20 @@ public class UserService {
         return Collections.emptyList();
     }
 
+    // 🔐 마이페이지 - 회원정보 가져오기
+    public UserDto getUserInfo(HttpServletRequest request, UserDetails userDetails) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+        Optional<UserTb> user = userRepository.findById(authUser.getId());
+        UserDto userdto = new UserDto();
+        userdto.setId(user.get().getId());
+        userdto.setPfImg(user.get().getPfImg());
+        userdto.setNickname(user.get().getNickname());
+        userdto.setEmail(user.get().getEmail());
+        userdto.setUserComment(user.get().getUserComment());
+        userdto.setUserRegion(user.get().getUserRegion());
+        return userdto;
+    }
+
     // 🔐 마이페이지 - 회원정보 수정
     public boolean updateInformation(UserDto userDto, HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
@@ -282,12 +296,10 @@ public class UserService {
         UserTb user = userRepository.findById(authUser.getId())
                 .orElseThrow(() -> new IllegalAccessException("해당 회원이 없습니다."));
 
-        if (userDto.getPfImg() == null || userDto.getPfImg().isEmpty()
-                || userDto.getNickname() == null || userDto.getNickname().isEmpty()
-                || userDto.getUserComment() == null || userDto.getUserComment().isEmpty()
-                || userDto.getUserRegion() == null) {
-            throw new IllegalArgumentException("모든 정보를 입력해 주세요..😰");
-        }
+//        if (userDto.getNickname() == null || userDto.getNickname().isEmpty()
+//                || userDto.getUserComment() == null || userDto.getUserComment().isEmpty()) {
+//            throw new IllegalArgumentException("모든 정보를 입력해 주세요..😰");
+//        }
 
         user.setPfImg(userDto.getPfImg());
         user.setNickname(userDto.getNickname());

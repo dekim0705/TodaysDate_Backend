@@ -41,8 +41,9 @@ public class UserController {
     // 🔐 마이페이지 - 회원의 게시글 삭제하기
     @DeleteMapping(value = "/posts")
     public ResponseEntity<?> deletePosts(@RequestBody List<Long> postIds,
-                                         @AuthenticationPrincipal HttpServletRequest request,
-                                         UserDetails userDetails) throws IllegalAccessException {
+                                         @AuthenticationPrincipal UserDetails userDetails,
+                                         HttpServletRequest request
+                                         ) throws IllegalAccessException {
 
         boolean isDeleted = userService.deletePosts(postIds, request, userDetails);
         if (isDeleted) {
@@ -62,8 +63,9 @@ public class UserController {
     // 🔐 마이페이지 - 회원의 댓글 삭제하기
     @DeleteMapping(value = "/replies")
     public ResponseEntity<?> deleteReplies(@RequestBody List<Long> replyIds,
-                                           @AuthenticationPrincipal HttpServletRequest request,
-                                           UserDetails userDetails) throws IllegalAccessException {
+                                           @AuthenticationPrincipal UserDetails userDetails,
+                                           HttpServletRequest request
+                                           ) throws IllegalAccessException {
         boolean isDeleted = userService.deleteReplies(replyIds, request, userDetails);
         if (isDeleted) {
             return new ResponseEntity<>("댓글 삭제 성공 ❣️", HttpStatus.OK);
@@ -72,7 +74,7 @@ public class UserController {
         }
     }
 
-    // 🔐 마이페이지 - 회원의 멤버십 상태 조회
+    // 🔐 마이페이지 - 회원의 멤버십 상태 조회 ❗️사용 안함
     @GetMapping("/membership-status")
     public ResponseEntity<IsMembership> getMembershipStatus(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
         IsMembership membershipStatus = userService.getUserMembershipStatus(request, userDetails); {
@@ -140,6 +142,14 @@ public class UserController {
                                                                   HttpServletRequest request) {
         List<BookmarkDto> bookmarks = userService.getBookmarksInFolder(folderId, request, userDetails);
         return new ResponseEntity<>(bookmarks, HttpStatus.OK);
+    }
+
+    // 🔐 마이페이지 - 회원정보 가져오기
+    @GetMapping(value = "/information")
+    public ResponseEntity<UserDto> getUserInfo(@AuthenticationPrincipal UserDetails userDetails,
+                                               HttpServletRequest request) {
+        UserDto userDto = userService.getUserInfo(request, userDetails);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     // 🔐 마이페이지 - 회원정보 수정

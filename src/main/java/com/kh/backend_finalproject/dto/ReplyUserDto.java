@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class ReplyUserDto {
     private String nickname;
-    private Long replyNum;
+    private Long id;
     private String content;
     private LocalDateTime writeDate;
     private Long userNum;

@@ -29,7 +29,7 @@ public class ChatbotService {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         ChatbotTb inquiry = new ChatbotTb();
         inquiry.setInquiryContent(chatbotDto.getInquiryContent());
-        inquiry.setEmail(authUser.getEmail());
+        inquiry.setInquiryEmail(chatbotDto.getInquiryEmail());
         inquiry.setInquiryDate(LocalDateTime.now());
         inquiry.setInquiryStatus("대기");
         inquiry.setUser(authUser);

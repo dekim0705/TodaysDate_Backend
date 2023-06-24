@@ -5,6 +5,6 @@ import lombok.Setter;
 @Getter @Setter
 public class AdDto {
     private Long adNum;
-    private String name;
+    private String adName;
     private String imgUrl;
 }

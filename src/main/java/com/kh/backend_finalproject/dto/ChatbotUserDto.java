@@ -10,6 +10,10 @@ public class ChatbotUserDto {
     private Long inquiryNum;
     private String inquiryContent;
     private LocalDateTime inquiryDate;
-    private String email;
+    private String inquiryEmail;
     private String inquiryStatus;
+
+    public ChatbotUserDto() {
+
+    }
 }

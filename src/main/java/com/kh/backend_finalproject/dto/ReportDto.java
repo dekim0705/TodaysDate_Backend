@@ -11,6 +11,7 @@ public class ReportDto {
     private Long reportNum;
     private String content; // 신고 내용
     private String reporter; // 신고자
+    private String reported;
     private LocalDateTime reportDate; //신고 날짜
 
 }

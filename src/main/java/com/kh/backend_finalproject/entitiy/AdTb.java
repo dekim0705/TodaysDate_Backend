@@ -14,7 +14,7 @@ public class AdTb {
     private Long id;
 
     @Column(length = 100)
-    private String name;   // 광고 이름
+    private String adName;   // 광고 이름
 
     @Column(length = 500)
     private String imgUrl; // 광고 이미지

@@ -53,21 +53,38 @@ public class AdminService {
         return userDtos;
     }
 
-    // 💗 전체 문의 내역 조회 (문의일 최근순 정렬)
+    // 💗 전체 문의 내역 조회
+//    public List<ChatbotUserDto> findAllInquiryList(UserDetails userDetails, HttpServletRequest request) {
+//        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+//        List<ChatbotUserDto> chatbotUserDtos = chatbotRepository.findAllInquiryWithUserNickname();
+//        return chatbotUserDtos;
+//    }
+    // 💗 전체 문의 내역 조회
     public List<ChatbotUserDto> findAllInquiryList(UserDetails userDetails, HttpServletRequest request) {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
-        List<ChatbotUserDto> chatbotUserDtos = chatbotRepository.findAllInquiryWithUserNickname();
+        List<ChatbotTb> chatbotTbs = chatbotRepository.findAll();
+        List<ChatbotUserDto> chatbotUserDtos = new ArrayList<>();
+        for (ChatbotTb e : chatbotTbs) {
+            ChatbotUserDto dto = new ChatbotUserDto();
+            dto.setInquiryNum(e.getId());
+            dto.setInquiryContent(e.getInquiryContent());
+            dto.setNickname(e.getUser().getNickname());
+            dto.setInquiryDate(e.getInquiryDate());
+            dto.setInquiryStatus(e.getInquiryStatus());
+            dto.setInquiryEmail(e.getInquiryEmail());
+            chatbotUserDtos.add(dto);
+        }
         return chatbotUserDtos;
     }
 
-    // 💗 전체 게시글 내역 조회 (문의일 최근순 정렬)
+    // 💗 전체 게시글 내역 조회
     public List<PostUserDto> findAllPostList(UserDetails userDetails, HttpServletRequest request) {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<PostUserDto> postUserDtos = postRepository.findAllPostsWithUserNickname();
         return postUserDtos;
     }
 
-    // 💗 전체 댓글 내역 조회 (문의일 최근순 정렬)
+    // 💗 전체 댓글 내역 조회
     public List<ReplyUserDto> findAllReplyList(UserDetails userDetails, HttpServletRequest request) {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<ReplyUserDto> replyUserDtos = replyRepository.findAllReplyWithUserNickname();
@@ -82,7 +99,7 @@ public class AdminService {
         for (AdTb e : ads) {
             AdDto adDto = new AdDto();
             adDto.setAdNum(e.getId());
-            adDto.setName(e.getName());
+            adDto.setAdName(e.getAdName());
             adDto.setImgUrl(e.getImgUrl());
             adDtos.add(adDto);
         }
@@ -93,13 +110,13 @@ public class AdminService {
     public AdDto createAd(AdDto adDto, UserDetails userDetails, HttpServletRequest request) {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         AdTb adTb = new AdTb();
-        adTb.setName(adDto.getName());
+        adTb.setAdName(adDto.getAdName());
         adTb.setImgUrl(adDto.getImgUrl());
         adRepository.save(adTb);
 
         AdDto savedAdDto = new AdDto();
         savedAdDto.setAdNum(adTb.getId());
-        savedAdDto.setName(adTb.getName());
+        savedAdDto.setAdName(adTb.getAdName());
         savedAdDto.setImgUrl(adTb.getImgUrl());
         return savedAdDto;
     }
@@ -199,7 +216,7 @@ public class AdminService {
         List<ReplyUserDto> replyUserDtos = new ArrayList<>();
         for (ReplyTb e : replyList) {
             ReplyUserDto dto = new ReplyUserDto();
-            dto.setReplyNum(e.getId());
+            dto.setId(e.getId());
             dto.setContent(e.getContent());
             dto.setNickname(e.getUser().getNickname());
             dto.setWriteDate(e.getWriteDate());
@@ -208,4 +225,3 @@ public class AdminService {
         return replyUserDtos;
     }
 }
-

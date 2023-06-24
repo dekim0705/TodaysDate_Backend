@@ -19,7 +19,7 @@ public class ChatbotTb {
     private String inquiryContent;            // 문의 내용
 
     @Column(nullable = false, length = 50)
-    private String email;                    // 이메일
+    private String inquiryEmail;                    // 답변받을 이메일
 
     @CreationTimestamp
     @Column(nullable = false)

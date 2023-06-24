@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter @Setter @AllArgsConstructor
 public class ChatbotDto {
     private Long userId;
-    private String email;
+    private String inquiryEmail;
     private String inquiryContent;
 
     public ChatbotDto() {

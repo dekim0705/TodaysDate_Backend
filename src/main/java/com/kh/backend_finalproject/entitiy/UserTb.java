@@ -1,10 +1,7 @@
 package com.kh.backend_finalproject.entitiy;
 
 import com.kh.backend_finalproject.constant.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -17,6 +14,7 @@ import java.util.Optional;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserTb {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

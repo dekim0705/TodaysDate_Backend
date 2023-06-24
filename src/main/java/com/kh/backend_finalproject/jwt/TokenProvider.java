@@ -70,6 +70,7 @@ public class TokenProvider {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .tokenExpiresIn(tokenExpiresIn.getTime())
+                .authority(authorities)
                 .build();
     }
 
@@ -98,6 +99,7 @@ public class TokenProvider {
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .tokenExpiresIn(tokenExpiresIn.getTime())
+                .authority(authorities)
                 .build();
     }
 

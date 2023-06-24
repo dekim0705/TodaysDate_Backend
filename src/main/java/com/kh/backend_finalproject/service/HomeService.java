@@ -4,6 +4,7 @@ import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.PostBookmarkDto;
 import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostUserDto;
+import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.entitiy.*;
 import com.kh.backend_finalproject.jwt.TokenProvider;
 import com.kh.backend_finalproject.repository.*;
@@ -94,6 +95,7 @@ public class HomeService {
                 continue;
             }
             PostUserDto postUserDto = new PostUserDto();
+            postUserDto.setPostId(e.getId());
             postUserDto.setPfImg(e.getUser().getPfImg());
             postUserDto.setNickname(e.getUser().getNickname());
             postUserDto.setWriteDate(e.getWriteDate());
@@ -115,13 +117,17 @@ public class HomeService {
         return postBookmarkDtos;
     }
 
-    // 🔐회원 프로필 가져오기 (SecurityContext 적용 OK)
-    public String findPfImgById(HttpServletRequest request, UserDetails userDetails) {
+    // 🔐회원 정보 가져오기 (SecurityContext 적용 OK)
+    public UserDto findPfImgById(HttpServletRequest request, UserDetails userDetails) {
         // 🔑토큰 검증 및 사용자 정보 추출
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
 
         Optional<UserTb> user = userRepository.findById(authUser.getId());
-        return user.get().getPfImg();
+        UserDto userDto = new UserDto();
+        userDto.setPfImg(user.get().getPfImg());
+        userDto.setIsMembership(user.get().getIsMembership());
+
+        return userDto;
     }
 
     // 🔐북마크 추가 (SecurityContext 적용 OK)

@@ -15,14 +15,14 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<PostTb, Long> {
     // ✅메인 페이지 : 전체 지역 게시글 작성일 최근순 정렬
-    @Query("SELECT new com.kh.backend_finalproject.dto.PostUserDto(u.id, u.pfImg, u.nickname, p.title, p.district, " +
+    @Query("SELECT new com.kh.backend_finalproject.dto.PostUserDto(u.id, p.id, u.pfImg, u.nickname, p.title, p.district, " +
             "p.imgUrl, p.writeDate) " +
             "FROM UserTb u INNER JOIN u.posts p " +
             "ORDER BY p.writeDate DESC")
     List<PostUserDto> findAllPostsWithUserDetails();
 
     // ✅메인 페이지 : 특정 지역 게시글 작성일 최근순 정렬
-    @Query("SELECT new com.kh.backend_finalproject.dto.PostUserDto(u.pfImg, u.nickname, p.title, p.district, " +
+    @Query("SELECT new com.kh.backend_finalproject.dto.PostUserDto(u.id, p.id, u.pfImg, u.nickname, p.title, p.district, " +
             "p.imgUrl, p.writeDate) " +
             "FROM UserTb u INNER JOIN u.posts p " +
             "WHERE p.region = :region " +

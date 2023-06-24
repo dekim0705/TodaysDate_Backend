@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PostUserDto {
     private Long id;
+    private Long postId;
     private String pfImg;
     private String nickname;
     private String title;

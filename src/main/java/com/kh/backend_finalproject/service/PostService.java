@@ -78,6 +78,11 @@ public class PostService {
 
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
+
+        // 조회수 증가
+        post.setViewCount(post.getViewCount() + 1);
+        postRepository.save(post);
+
         int bookmarkCount = postRepository.findBookmarkCountByPostId(postId);
         PostDto postDto = new PostDto();
         postDto.setPfImg(post.getUser().getPfImg());

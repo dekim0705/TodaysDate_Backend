@@ -3,6 +3,7 @@ import com.kh.backend_finalproject.constant.RegionStatus;
 import com.kh.backend_finalproject.dto.PostBookmarkDto;
 import com.kh.backend_finalproject.dto.PostDto;
 import com.kh.backend_finalproject.dto.PostUserDto;
+import com.kh.backend_finalproject.dto.UserDto;
 import com.kh.backend_finalproject.entitiy.AdTb;
 import com.kh.backend_finalproject.service.HomeService;
 import lombok.RequiredArgsConstructor;
@@ -57,11 +58,11 @@ public class HomeController {
         Page<PostBookmarkDto> postBookmarkDtos = homeService.findTop5ByBookmarkCount(request, userDetails);
         return new ResponseEntity<>(postBookmarkDtos, HttpStatus.OK);
     }
-    //  🔐회원 프로필 가져오기 (SecurityContext 적용 OK)
-    @GetMapping(value = "/profile")
-    public ResponseEntity<String> getPfImg(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
-        String pfImg = homeService.findPfImgById(request, userDetails);
-        if(pfImg != null) return new ResponseEntity<>(pfImg, HttpStatus.OK);
+    //  🔐회원 정보 가져오기 (SecurityContext 적용 OK)
+    @GetMapping(value = "/userInfo")
+    public ResponseEntity<UserDto> getPfImg(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+        UserDto userDto = homeService.findPfImgById(request, userDetails);
+        if(userDto != null) return new ResponseEntity<>(userDto, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     // 🔐북마크 추가 (SecurityContext 적용 OK)

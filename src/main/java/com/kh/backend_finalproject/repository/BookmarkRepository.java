@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface BookmarkRepository extends JpaRepository<BookmarkTb, Long> {
     Optional<BookmarkTb> findByFolderAndPost(FolderTb folder, PostTb post);
-
+    Optional<BookmarkTb> findByPostAndUser(PostTb post, UserTb user);
 }

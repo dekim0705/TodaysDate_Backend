@@ -102,4 +102,6 @@ public class UserTb {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ChatbotTb> chatbots = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<BookmarkTb> bookmarks = new ArrayList<>();
 }

@@ -152,6 +152,7 @@ public class HomeService {
 
         BookmarkTb bookmark = new BookmarkTb();
         bookmark.setFolder(folder);
+        bookmark.setUser(user);
         bookmark.setPost(post);
         bookmarkRepository.save(bookmark);
 

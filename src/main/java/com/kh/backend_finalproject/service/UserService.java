@@ -355,6 +355,7 @@ public class UserService {
             UserTb user = userOptional.get();
             if (authKey.equals(user.getAuthKey())) {
                 user.setIsActive(IsActive.ACTIVE);
+                user.setAuthKey("");
                 userRepository.save(user);
                 System.out.println("🍒 이메일 인증 완료: " + email);
             } else {

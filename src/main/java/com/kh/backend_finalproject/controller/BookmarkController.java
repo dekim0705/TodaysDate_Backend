@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -28,9 +29,9 @@ public class BookmarkController {
     private final UserRepository userRepository;
 
     @GetMapping("/{postId}")
-    public ResponseEntity<Boolean> isPostBookmarkedByUser(@PathVariable Long postId, HttpServletRequest request,
-                                                          @AuthenticationPrincipal UserDetails userDetails) {
-        boolean isBookmarked = bookmarkService.isPostBookmarkedByUser(postId, request, userDetails);
-        return new ResponseEntity<>(isBookmarked, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> isPostBookmarkedByUser(@PathVariable Long postId, HttpServletRequest request,
+                                                      @AuthenticationPrincipal UserDetails userDetails) {
+        Map<String, Object> postBookmark = bookmarkService.isPostBookmarkedByUser(postId, request, userDetails);
+        return new ResponseEntity<>(postBookmark, HttpStatus.OK);
     }
 }

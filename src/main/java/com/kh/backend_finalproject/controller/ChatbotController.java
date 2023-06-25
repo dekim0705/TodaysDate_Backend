@@ -1,6 +1,5 @@
 package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.dto.ChatbotDto;
-import com.kh.backend_finalproject.entitiy.UserTb;
 import com.kh.backend_finalproject.service.ChatbotService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/chatbot/")
-public class ChatBotController {
+public class ChatbotController {
     private final ChatbotService chatbotService;
 
     @PostMapping("inquiry")

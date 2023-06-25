@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -54,12 +55,6 @@ public class AdminService {
     }
 
     // 💗 전체 문의 내역 조회
-//    public List<ChatbotUserDto> findAllInquiryList(UserDetails userDetails, HttpServletRequest request) {
-//        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
-//        List<ChatbotUserDto> chatbotUserDtos = chatbotRepository.findAllInquiryWithUserNickname();
-//        return chatbotUserDtos;
-//    }
-    // 💗 전체 문의 내역 조회
     public List<ChatbotUserDto> findAllInquiryList(UserDetails userDetails, HttpServletRequest request) {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         List<ChatbotTb> chatbotTbs = chatbotRepository.findAll();
@@ -76,6 +71,20 @@ public class AdminService {
         }
         return chatbotUserDtos;
     }
+
+    // 💗 문의 상태 업데이트
+    public void updateInquiryStatus(Long inquiryNum, String status, UserDetails userDetails, HttpServletRequest request) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+        Optional<ChatbotTb> chatbot = chatbotRepository.findById(inquiryNum);
+        if (chatbot.isPresent()) {
+            ChatbotTb inquiry = chatbot.get();
+            inquiry.setInquiryStatus(status);
+            chatbotRepository.save(inquiry);
+        } else {
+            throw new RuntimeException("문의를 찾을 수 없습니다.");
+        }
+    }
+
 
     // 💗 전체 게시글 내역 조회
     public List<PostUserDto> findAllPostList(UserDetails userDetails, HttpServletRequest request) {

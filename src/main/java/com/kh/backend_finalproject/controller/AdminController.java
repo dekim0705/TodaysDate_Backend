@@ -124,6 +124,15 @@ public class AdminController {
         List<ReplyUserDto> replies = adminService.findByKeywordReply(keyword, userDetails, request);
         return new ResponseEntity<>(replies, HttpStatus.OK);
     }
+
+    // 💗 관리자 - 문의 상태 변경하기
+    @PutMapping(value = "/inquiry/{inquiryNum}")
+    public ResponseEntity<?> updateInquiryStatus(@PathVariable Long inquiryNum, @RequestParam String status,
+                                                      @AuthenticationPrincipal UserDetails userDetails,
+                                                      HttpServletRequest request) {
+        adminService.updateInquiryStatus(inquiryNum, status, userDetails, request);
+        return new ResponseEntity<>("문의 상태 변경 완료!", HttpStatus.OK);
+    }
 }
 
 

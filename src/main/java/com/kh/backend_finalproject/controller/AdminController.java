@@ -37,7 +37,7 @@ public class AdminController {
         return new ResponseEntity<>(postList,HttpStatus.OK);
     }
 
-    // 💗 전체 댓글 내역 조회 (문의일 최근순 정렬)
+    // 💗 전체 댓글 내역 조회
     @GetMapping("/reply")
     public ResponseEntity<List<ReplyUserDto>> getAllReplies(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
         List<ReplyUserDto> replyList = adminService.findAllReplyList(userDetails,request);

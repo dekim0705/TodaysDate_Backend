@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ChatbotRepository extends JpaRepository<ChatbotTb, Long> {
-
+    List<ChatbotTb> findAllByOrderByInquiryDateDesc();
 }

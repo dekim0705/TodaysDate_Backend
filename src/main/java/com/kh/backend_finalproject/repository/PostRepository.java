@@ -34,7 +34,7 @@ public interface PostRepository extends JpaRepository<PostTb, Long> {
     List<PostTb> findByKeyword(@Param("keyword") String keyword);
 
     // ✅메인 페이지 : 북마크 상위 5개 게시글 내림차순 정렬
-    @Query("SELECT new com.kh.backend_finalproject.dto.PostBookmarkDto(p.title, COUNT(b)) " +
+    @Query("SELECT new com.kh.backend_finalproject.dto.PostBookmarkDto(p.title, COUNT(b), p.id) " +
             "FROM PostTb p JOIN p.bookmarks b " +
             "GROUP BY p " +
             "ORDER BY COUNT(b) DESC")

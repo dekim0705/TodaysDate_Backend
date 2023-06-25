@@ -81,12 +81,9 @@ public class PostController {
     public ResponseEntity<?> createReply(@PathVariable Long postId, @RequestBody ReplyUserDto replyUserDto,
                                          @AuthenticationPrincipal UserDetails userDetails,
                                          HttpServletRequest request) throws IllegalAccessException {
-        try {
-            postService.createReply(postId, replyUserDto, request, userDetails);
-            return new ResponseEntity<>("댓글 작성 성공! ❤️", HttpStatus.CREATED);
-        } catch (IllegalAccessException e) {
-            return new ResponseEntity<>("댓글 작성 실패! ⚠️", HttpStatus.BAD_REQUEST);
-        }
+        boolean isCreate = postService.createReply(postId, replyUserDto, request, userDetails);
+        if (isCreate) return new ResponseEntity<>(true, HttpStatus.OK);
+        else return new ResponseEntity<>("댓글 작성 실패!", HttpStatus.BAD_REQUEST);
     }
 
     // 🔐특정 사용자가 차단한 사용자의 댓글 제외 후 조회 (SecurityContext 적용 OK)

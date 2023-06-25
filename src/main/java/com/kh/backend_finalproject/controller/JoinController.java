@@ -36,7 +36,7 @@ public class JoinController {
     }
 
     // ✅ 회원가입 - 이메일 중복 확인
-    @GetMapping("/dupemail")
+    @PostMapping("/dupemail")
     public ResponseEntity<Boolean> checkDuplicateEmail(@RequestParam String email) {
         boolean isDuplicate = userService.findUserByEmail(email);
         if(isDuplicate) {
@@ -67,7 +67,7 @@ public class JoinController {
             return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             System.out.println("🍒 이메일 인증 실패 : " + e.getMessage());
-            return new ResponseEntity<>(false, HttpStatus.OK);
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         }
     }
 

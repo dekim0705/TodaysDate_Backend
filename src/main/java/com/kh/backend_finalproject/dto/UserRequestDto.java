@@ -1,9 +1,6 @@
 package com.kh.backend_finalproject.dto;
 
-import com.kh.backend_finalproject.constant.Authority;
-import com.kh.backend_finalproject.constant.IsMembership;
-import com.kh.backend_finalproject.constant.IsPush;
-import com.kh.backend_finalproject.constant.RegionStatus;
+import com.kh.backend_finalproject.constant.*;
 import com.kh.backend_finalproject.entitiy.UserTb;
 import lombok.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +16,7 @@ public class UserRequestDto {
     private String nickname;
     private RegionStatus userRegion;
     private String authKey;
+    private IsPush isPush;
 
     public UserTb toUserTb(PasswordEncoder passwordEncoder) {
         return UserTb.builder()
@@ -26,10 +24,11 @@ public class UserRequestDto {
                 .pwd(passwordEncoder.encode(pwd))
                 .nickname(nickname)
                 .userRegion(userRegion)
-                .isPush(IsPush.PUSH)
+                .isPush(isPush)
                 .isMembership(IsMembership.FREE)
                 .authority(Authority.ROLE_USER)
                 .authKey(authKey)
+                .isActive(IsActive.INACTIVE)
                 .build();
     }
     public UsernamePasswordAuthenticationToken toAuthentication() {

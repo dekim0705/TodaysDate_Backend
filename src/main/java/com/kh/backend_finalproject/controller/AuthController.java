@@ -37,9 +37,15 @@ public class AuthController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PostMapping("/password")
-    public ResponseEntity<?> sendMailWithPwdAuthKey(@RequestParam("email") String email) throws Exception {
+    @GetMapping("/password/{email}")
+    public ResponseEntity<?> sendMailWithPwdAuthKey(@PathVariable String email) throws Exception {
         authService.updatePasswordWithAuthKey(email);
         return new ResponseEntity<>("임시 비밀번호 발송 및 업데이트 완료 ❤️", HttpStatus.OK);
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Boolean> isValidEmail(@PathVariable String email) throws Exception {
+        boolean isValid = authService.isValidEmail(email);
+        return new ResponseEntity<>(isValid, HttpStatus.OK);
     }
 }

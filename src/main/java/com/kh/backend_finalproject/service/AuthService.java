@@ -76,7 +76,7 @@ public class AuthService {
                 throw e;
             }
         } else if (loginUser.getAuthority().equals(Authority.ROLE_USER)) {
-            if(loginUser.getIsActive().equals(IsActive.ACTIVE)) {
+            if (loginUser.getIsActive().equals(IsActive.ACTIVE)) {
                 try {
                     Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
                     return tokenProvider.generateTokenDto(authentication);
@@ -111,10 +111,23 @@ public class AuthService {
 
     // 임시 비밀번호 발송 및 회원정보 업데이트
     public void updatePasswordWithAuthKey(String to) throws Exception {
-        String ePw = emailService.sendPasswordAuthKey(to);
+        String tempPw = emailService.sendPasswordAuthKey(to);
         UserTb user = userRepository.findByEmail(to)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
-        user.setPwd(ePw);
+
+        // 임시 비밀번호 암호화하여 저장
+        String encodedPassword = passwordEncoder.encode(tempPw);
+        user.setPwd(encodedPassword);
         userRepository.save(user);
+    }
+
+    // 이메일 유효한지 확인
+    public boolean isValidEmail(String email) throws Exception {
+        UserTb user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
+
+        boolean isValid = user.getEmail().isEmpty() ? false : true;
+
+        return isValid;
     }
 }

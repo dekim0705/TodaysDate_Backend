@@ -38,5 +38,7 @@ public class UserDto {
     private String title;
     private LocalDateTime writeDate;
 
+    private int postCount;
+    private int replyCount;
 
 }

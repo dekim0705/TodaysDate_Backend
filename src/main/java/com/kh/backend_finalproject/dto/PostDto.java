@@ -9,6 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PostDto {
     private Long postId;
+    private Long userId;
     private String pfImg;
     private String nickname;
     private String title;

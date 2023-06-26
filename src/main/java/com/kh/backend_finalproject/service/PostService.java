@@ -198,7 +198,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
 
         List<ReplyUserDto> allReplies = post.getReplies().stream()
-                .map(reply -> new ReplyUserDto(reply.getUser().getNickname(), reply.getContent(),
+                .map(reply -> new ReplyUserDto(reply.getId(), reply.getUser().getNickname(), reply.getContent(),
                         reply.getWriteDate(), reply.getUser().getPfImg(), reply.getUser().getId()))
                 .collect(Collectors.toList());
 

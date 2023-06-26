@@ -26,10 +26,11 @@ public class UserController {
 
     // 🔐 마이페이지 - 회원 프로필 바 가져오기 (프로필사진, 닉네임, 멤버십 여부, 한 줄 소개, 총 게시글/댓글 수)
     @PostMapping(value = "/profile")
-    public ResponseEntity<UserProfileDto> getUserProfileBar(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<UserDto> getUserProfileBar(@AuthenticationPrincipal UserDetails userDetails,
                                                                   HttpServletRequest request) throws IllegalAccessException {
-        UserProfileDto profileDtos = userService.getUserProfileInfo(request, userDetails);
-        return new ResponseEntity<>(profileDtos, HttpStatus.OK);
+        UserDto profileDtos = userService.getUserProfileInfo(request, userDetails);
+        if(profileDtos != null) return new ResponseEntity<>(profileDtos, HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     // 🔐 마이페이지 - 회원의 모든 게시글 가져오기
     @GetMapping(value = "/posts")
@@ -136,7 +137,7 @@ public class UserController {
     }
 
     // 🔐 마이페이지 - 회원의 북마크 가져오기
-    @GetMapping("/bookmark-folders/{folderId}/bookmarks")
+    @GetMapping("/bookmark-folders/{folderId}")
     public ResponseEntity<List<BookmarkDto>> getBookmarksInFolder(@PathVariable Long folderId,
                                                                   @AuthenticationPrincipal UserDetails userDetails,
                                                                   HttpServletRequest request) {

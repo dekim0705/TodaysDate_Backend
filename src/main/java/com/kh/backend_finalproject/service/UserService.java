@@ -44,11 +44,11 @@ public class UserService {
 
 
     // 🔐 마이페이지 - 회원 프로필 바 가져오기 (프로필사진, 닉네임, 멤버십 여부, 한 줄 소개, 총 게시글/댓글 수)
-    public UserProfileDto getUserProfileInfo(HttpServletRequest request, UserDetails userDetails) {
+    public UserDto getUserProfileInfo(HttpServletRequest request, UserDetails userDetails) {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
         Optional<UserTb> user = userRepository.findById(authUser.getId());
 
-        UserProfileDto userProfileDto = new UserProfileDto();
+        UserDto userProfileDto = new UserDto();
         userProfileDto.setNickname(user.get().getNickname());
         userProfileDto.setUserComment(user.get().getUserComment());
         userProfileDto.setPfImg(user.get().getPfImg());
@@ -230,15 +230,16 @@ public class UserService {
                 folderDto.setId(folder.getId());
                 folderDto.setName(folder.getName());
 
-//                List<BookmarkDto> bookmarkDtos = new ArrayList<>();
-//                for (BookmarkTb bookmark : folder.getBookmarks()) {
-//                    BookmarkDto bookmarkDto = new BookmarkDto();
-//                    bookmarkDto.setId(bookmark.getId());
-//                    bookmarkDto.setPostId(bookmark.getPost().getId());
-//
-//                    bookmarkDtos.add(bookmarkDto);
-//                }
-//                folderDto.setBookmarks(bookmarkDtos);
+                List<BookmarkDto> bookmarkDtos = new ArrayList<>();
+                for (BookmarkTb bookmark : folder.getBookmarks()) {
+                    BookmarkDto bookmarkDto = new BookmarkDto();
+                    bookmarkDto.setId(bookmark.getId());
+                    bookmarkDto.setPostId(bookmark.getPost().getId());
+                    bookmarkDto.setImgUrl(bookmark.getPost().getImgUrl());
+
+                    bookmarkDtos.add(bookmarkDto);
+                }
+                folderDto.setBookmarks(bookmarkDtos);
 
                 folderDtos.add(folderDto);
             }

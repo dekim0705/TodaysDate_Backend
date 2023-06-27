@@ -1,11 +1,9 @@
 package com.kh.backend_finalproject.controller;
 import com.kh.backend_finalproject.constant.RegionStatus;
-import com.kh.backend_finalproject.dto.PostBookmarkDto;
-import com.kh.backend_finalproject.dto.PostDto;
-import com.kh.backend_finalproject.dto.PostUserDto;
-import com.kh.backend_finalproject.dto.UserDto;
+import com.kh.backend_finalproject.dto.*;
 import com.kh.backend_finalproject.entitiy.AdTb;
 import com.kh.backend_finalproject.service.HomeService;
+import com.kh.backend_finalproject.service.PushService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +25,9 @@ import java.util.List;
 public class HomeController {
     @Autowired
     HomeService homeService;
+
+    @Autowired
+    PushService pushService;
 
     // 🔐️특정 사용자가 차단한 사용자의 게시글 제외 전체 지역 게시글 작성일 최근순 정렬 (SecurityContext 적용 OK)
     @GetMapping(value = "/posts")
@@ -88,5 +89,11 @@ public class HomeController {
         List<AdTb> ads = homeService.findAllAd(request, userDetails);
         if(ads != null) return new ResponseEntity<>(ads, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    // 🔐해당 사용자의 모든 알림 목록 가져오기 (SecurityContext 적용 OK)
+    @GetMapping(value = "/pushes")
+    public ResponseEntity<List<PushDto>> getAllPushList(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+        List<PushDto> pushes = pushService.fetchAllPushList(request, userDetails);
+        return new ResponseEntity<>(pushes, HttpStatus.OK);
     }
 }

@@ -113,6 +113,7 @@ public class UserService {
             userDto.setContent(reply.getContent());
             userDto.setTitle(reply.getPost().getTitle());
             userDto.setWriteDate(reply.getWriteDate());
+            userDto.setPostNum(reply.getPost().getId());
             userDtoList.add(userDto);
         }
         return userDtoList;

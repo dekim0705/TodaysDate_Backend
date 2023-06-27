@@ -127,6 +127,10 @@ public class HomeService {
         userDto.setPfImg(user.get().getPfImg());
         userDto.setIsMembership(user.get().getIsMembership());
         userDto.setId(user.get().getId());
+        userDto.setNickname(user.get().getNickname());
+        userDto.setUserComment(user.get().getUserComment());
+        userDto.setPostCount(user.get().getPosts().size());
+        userDto.setReplyCount(user.get().getReplies().size());
 
         return userDto;
     }

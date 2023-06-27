@@ -145,6 +145,15 @@ public class UserController {
         return new ResponseEntity<>(bookmarks, HttpStatus.OK);
     }
 
+    // 🔐 마이페이지 - 회원의 북마크 폴더 이름 가져오기
+    @GetMapping("/bookmarks/{folderId}")
+    public ResponseEntity<String> getFolderName(@PathVariable Long folderId,
+                                @AuthenticationPrincipal UserDetails userDetails,
+                                HttpServletRequest request) {
+        String folderName = userService.getFolderName(folderId, request, userDetails);
+        return new ResponseEntity<>(folderName, HttpStatus.OK);
+    }
+
     // 🔐 마이페이지 - 회원정보 가져오기
     @GetMapping(value = "/information")
     public ResponseEntity<UserDto> getUserInfo(@AuthenticationPrincipal UserDetails userDetails,

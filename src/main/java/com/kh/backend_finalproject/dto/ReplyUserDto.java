@@ -12,14 +12,16 @@ public class ReplyUserDto {
     private LocalDateTime writeDate;
     private Long userNum;
     private String pfImg;
+    private String userComment;
 
-    public ReplyUserDto(Long id, String nickname, String content, LocalDateTime writeDate, String pfImg, Long userNum) {
+    public ReplyUserDto(Long id, String nickname, String content, LocalDateTime writeDate, String pfImg, Long userNum, String userComment) {
         this.id = id;
         this.nickname = nickname;
         this.content = content;
         this.writeDate = writeDate;
         this.pfImg = pfImg;
         this.userNum = userNum;
+        this.userComment = userComment;
     }
 
     public ReplyUserDto(String content) {

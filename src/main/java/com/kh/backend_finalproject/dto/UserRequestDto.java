@@ -29,7 +29,7 @@ public class UserRequestDto {
                 .authority(Authority.ROLE_USER)
                 .authKey(authKey)
                 .isActive(IsActive.INACTIVE)
-                .pfImg("https://firebasestorage.googleapis.com/v0/b/todaysdate-final-project.appspot.com/o/profile%2Fdefault.jpg?alt=media")
+                .pfImg("https://firebasestorage.googleapis.com/v0/b/todaysdate-final-project.appspot.com/o/profile%2Fdefaultprofile.jpg?alt=media")
                 .userComment("안녕하세요! 데이트 코스를 찾고 있어요!")
                 .build();
     }

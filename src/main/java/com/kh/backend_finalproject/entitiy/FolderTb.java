@@ -20,6 +20,6 @@ public class FolderTb {
     @JoinColumn(name = "user_id")
     private UserTb user;
 
-    @OneToMany(mappedBy = "folder", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "folder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BookmarkTb> bookmarks;
 }

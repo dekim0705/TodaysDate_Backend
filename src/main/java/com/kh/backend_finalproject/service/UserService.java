@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.Folder;
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
@@ -274,6 +275,14 @@ public class UserService {
             }
         }
         return Collections.emptyList();
+    }
+
+    // 🔐 마이페이지 - 회원의 북마크 폴더 이름 가져오기
+    public String getFolderName(Long folderId, HttpServletRequest request, UserDetails userDetails) {
+        UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
+        Optional<FolderTb> user = folderRepository.findById(folderId);
+        String folderName = user.get().getName();
+        return folderName;
     }
 
     // 🔐 마이페이지 - 회원정보 가져오기

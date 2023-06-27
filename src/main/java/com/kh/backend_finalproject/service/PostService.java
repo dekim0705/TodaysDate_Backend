@@ -200,7 +200,7 @@ public class PostService {
 
         List<ReplyUserDto> allReplies = post.getReplies().stream()
                 .map(reply -> new ReplyUserDto(reply.getId(), reply.getUser().getNickname(), reply.getContent(),
-                        reply.getWriteDate(), reply.getUser().getPfImg(), reply.getUser().getId()))
+                        reply.getWriteDate(), reply.getUser().getPfImg(), reply.getUser().getId(), reply.getUser().getUserComment()))
                 .collect(Collectors.toList());
 
         // 3. 차단한 사용자가 작성한 댓글 제외

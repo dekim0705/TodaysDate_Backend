@@ -126,6 +126,7 @@ public class HomeService {
         UserDto userDto = new UserDto();
         userDto.setPfImg(user.get().getPfImg());
         userDto.setIsMembership(user.get().getIsMembership());
+        userDto.setId(user.get().getId());
 
         return userDto;
     }

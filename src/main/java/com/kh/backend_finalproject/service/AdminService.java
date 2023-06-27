@@ -142,6 +142,8 @@ public class AdminService {
             reportDto.setReportNum(report.getId());
             reportDto.setContent(report.getContent());
             reportDto.setReporter(report.getReporter().getNickname());
+            reportDto.setContent(report.getContent());
+            reportDto.setReported(report.getReported().getNickname());
             reportDto.setReportDate(report.getReportDate());
             reportDtos.add(reportDto);
         }

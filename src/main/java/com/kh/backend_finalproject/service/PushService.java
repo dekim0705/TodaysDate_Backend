@@ -38,6 +38,8 @@ public class PushService {
             pushDto.setSendDate(pushTb.getSendDate());
             pushDto.setUserId(pushTb.getUser().getId());
             pushDto.setPostId(pushTb.getPost().getId());
+            pushDto.setTitle(pushTb.getPost().getTitle());
+            pushDto.setUserRegion(pushTb.getUser().getUserRegion());
             return pushDto;
         }).collect(Collectors.toList());
 

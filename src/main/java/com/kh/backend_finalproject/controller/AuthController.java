@@ -6,7 +6,6 @@ import com.kh.backend_finalproject.dto.token.NewAccessTokenResponseDto;
 import com.kh.backend_finalproject.dto.token.TokenDto;
 import com.kh.backend_finalproject.service.AuthService;
 import com.kh.backend_finalproject.service.EmailService;
-import com.kh.backend_finalproject.service.SseService;
 import com.kh.backend_finalproject.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,12 +20,6 @@ public class AuthController {
     private final AuthService authService;
     private final TokenService tokenService;
     private final EmailService emailService;
-    private final SseService sseService;
-
-    @GetMapping("/sse/{userId}")
-    public SseEmitter connectSse(@PathVariable Long userId) {
-        return sseService.connect(userId);
-    }
 
     @PostMapping("/join")
     public ResponseEntity<UserResponseDto> join(@RequestBody UserRequestDto requestDto) throws Exception {

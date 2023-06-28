@@ -35,9 +35,6 @@ public class PostService {
     private final TokenProvider tokenProvider;
     private final AuthService authService;
 
-    @Autowired
-    private SseService sseService;
-
     // 🔐게시글 작성 (SecurityContext 적용 OK)
     public boolean createPostWithPinAndPush(PostPinDto postPinDto,
                                             HttpServletRequest request, UserDetails userDetails) {
@@ -65,7 +62,6 @@ public class PostService {
                 pushTb.setPost(savePost);
                 pushTb.setSendDate(LocalDateTime.now());
                 pushRepository.save(pushTb);
-                sseService.sendEvent(pushTb);
             }
         }
         return true;

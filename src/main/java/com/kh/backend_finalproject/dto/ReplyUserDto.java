@@ -13,6 +13,8 @@ public class ReplyUserDto {
     private Long userNum;
     private String pfImg;
     private String userComment;
+    private Long postId;
+
 
     public ReplyUserDto(Long id, String nickname, String content, LocalDateTime writeDate, String pfImg, Long userNum, String userComment) {
         this.id = id;

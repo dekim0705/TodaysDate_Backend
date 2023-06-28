@@ -96,4 +96,15 @@ public class HomeController {
         List<PushDto> pushes = pushService.fetchAllPushList(request, userDetails);
         return new ResponseEntity<>(pushes, HttpStatus.OK);
     }
+    // 🔐알림 목록 삭제하기 (SecurityCOntext 적용 OK)
+    @DeleteMapping(value = "/push/{pushId}")
+    public ResponseEntity<?> deletePush(@PathVariable Long pushId, @AuthenticationPrincipal UserDetails userDetails,
+                                        HttpServletRequest request) throws IllegalAccessException {
+        try {
+            pushService.deletePush(pushId, request, userDetails);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (IllegalAccessException e) {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

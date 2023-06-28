@@ -45,4 +45,19 @@ public class PushService {
 
         return pushDtoList;
     }
+
+    // 🔐알림 삭제하기 (SecurityContext 적용 OK)
+    public void deletePush(Long pushId, HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
+        PushTb push = pushRepository.findById(pushId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 알림이 없습니다."));
+
+        if (user.getId().equals(push.getUser().getId())) {
+            pushRepository.delete(push);
+        } else {
+            throw new IllegalArgumentException("요청한 자는 다른 사용자 입니다.");
+        }
+    }
 }

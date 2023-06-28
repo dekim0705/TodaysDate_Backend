@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ReplyRepository extends JpaRepository<ReplyTb, Long> {
     // 💖관리자 페이지: 전체 댓글 조회 (최근순 정렬)
-    @Query("SELECT new com.kh.backend_finalproject.dto.ReplyUserDto(u.nickname, r.id, r.content, r.writeDate, u.id, u.pfImg, u.userComment) " +
+    @Query("SELECT new com.kh.backend_finalproject.dto.ReplyUserDto(u.nickname, r.id, r.content, r.writeDate, u.id, u.pfImg, u.userComment, r.post.id) " +
             "FROM ReplyTb r " +
             "INNER JOIN r.user u " +
             "ORDER BY r.writeDate DESC")

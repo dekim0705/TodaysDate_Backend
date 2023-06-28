@@ -1,15 +1,19 @@
 package com.kh.backend_finalproject.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSocketMessageBroker
+@Import(CorsConfiguration.class)
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
     /* <💡정리>
         1. 사용자 A가 로그인하면 서버에 웹소켓 연결을 생성. 이 연결은 '/ws' 엔드포인트로 이루어짐.
         2. 사용자 A는 서버에게 자신이 구독한 지역을 알려줌. 이는 STOMP 메시지로 이루어지며,
@@ -21,8 +25,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").withSockJS();
+        registry.addEndpoint("/ws")
+                .setAllowedOrigins("http://localhost:3000")
+                .withSockJS();
     }
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/region");

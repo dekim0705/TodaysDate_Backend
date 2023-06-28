@@ -50,7 +50,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/auth/**","/join/**", "/kakao/**").permitAll()
+                .antMatchers("/auth/**","/join/**", "/kakao/**", "/ws/**").permitAll()
                 .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**", "/sign-api/exception").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()
@@ -64,9 +64,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")  // 원하는 도메인으로 변경
+                .allowedOrigins("http://localhost:3000", "ws://localhost:8111")  // 원하는 도메인으로 변경
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
+                .allowedHeaders("Authorization", "Cache-Control", "Content-Type", "Origin", "Upgrade", "Connection")
                 .allowCredentials(true);
     }
 

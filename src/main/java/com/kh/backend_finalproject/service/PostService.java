@@ -12,6 +12,7 @@ import com.kh.backend_finalproject.utils.BlockFilterUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,7 @@ public class PostService {
     private final BlockRepository blockRepository;
     private final TokenProvider tokenProvider;
     private final AuthService authService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     // 🔐게시글 작성 (SecurityContext 적용 OK)
     public boolean createPostWithPinAndPush(PostPinDto postPinDto,
@@ -62,6 +64,11 @@ public class PostService {
                 pushTb.setPost(savePost);
                 pushTb.setSendDate(LocalDateTime.now());
                 pushRepository.save(pushTb);
+
+                // 💡사용자에게 푸시 알림 보내기
+                log.info("🔴Sending push notification to /region/" + savePost.getRegion());
+                messagingTemplate.convertAndSend("/region/" + savePost.getRegion(),
+                        "새 게시글이 등록되었습니다: " + savePost.getTitle());
             }
         }
         return true;

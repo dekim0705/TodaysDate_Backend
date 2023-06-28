@@ -105,7 +105,7 @@ public class AdminService {
     // 💗 전체 광고 내역 조회
     public List<AdDto> findAllAdList(UserDetails userDetails, HttpServletRequest request) {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
-        List<AdTb> ads = adRepository.findAll();
+        List<AdTb> ads = adRepository.findAllByOrderByIdDesc();
         List<AdDto> adDtos = new ArrayList<>();
         for (AdTb e : ads) {
             AdDto adDto = new AdDto();
@@ -135,7 +135,7 @@ public class AdminService {
     // 💗 전체 신고 내역 조회
     public List<ReportDto> findAllReportList(UserDetails userDetails, HttpServletRequest request) {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
-        List<ReportTb> reports = reportRepository.findAll();
+        List<ReportTb> reports = reportRepository.findAllByOrderByIdDesc();
         List<ReportDto> reportDtos = new ArrayList<>();
         for (ReportTb report : reports) {
             ReportDto reportDto = new ReportDto();

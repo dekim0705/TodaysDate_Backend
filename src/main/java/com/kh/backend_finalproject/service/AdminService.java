@@ -57,7 +57,7 @@ public class AdminService {
     // 💗 전체 문의 내역 조회
     public List<ChatbotUserDto> findAllInquiryList(UserDetails userDetails, HttpServletRequest request) {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
-        List<ChatbotTb> chatbotTbs = chatbotRepository.findAllByOrderByInquiryDateDesc(); // 변경된 부분
+        List<ChatbotTb> chatbotTbs = chatbotRepository.findAllByOrderByInquiryDateDesc();
         List<ChatbotUserDto> chatbotUserDtos = new ArrayList<>();
         for (ChatbotTb e : chatbotTbs) {
             ChatbotUserDto dto = new ChatbotUserDto();

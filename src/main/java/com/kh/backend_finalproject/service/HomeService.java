@@ -131,6 +131,7 @@ public class HomeService {
         userDto.setUserComment(user.get().getUserComment());
         userDto.setPostCount(user.get().getPosts().size());
         userDto.setReplyCount(user.get().getReplies().size());
+        userDto.setUserRegion(user.get().getUserRegion());
 
         return userDto;
     }

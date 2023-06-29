@@ -45,4 +45,12 @@ public class ReportController {
         reportService.reportUser(reportRequestDto, request, userDetails);
         return new ResponseEntity<>("신고가 접수되었습니다.🫡", HttpStatus.CREATED);
     }
+
+    // 🔐사용자 차단 해제하기 (SecurityContext 적용 OK)
+    @DeleteMapping("/block/{blockedId}")
+    public ResponseEntity<?> deleteBlockUser(@PathVariable Long blockedId,
+                                             @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+        reportService.deleteBlockUser(blockedId, request, userDetails);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 }

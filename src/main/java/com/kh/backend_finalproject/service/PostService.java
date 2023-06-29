@@ -189,7 +189,7 @@ public class PostService {
         return savedReply != null;
     }
 
-    // 🚫🔐특정 사용자가 차단한 사용자의 댓글 제외 후 조회 (SecurityContext 적용 OK)
+    // 🌴🔐특정 사용자가 차단한 사용자의 댓글 제외 후 조회 (SecurityContext 적용 OK)
     public List<ReplyUserDto> findReply(Long postId, HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
         // 🔑토큰 검증 및 사용자 정보 추출
         UserTb user = authService.validateTokenAndGetUser(request, userDetails);

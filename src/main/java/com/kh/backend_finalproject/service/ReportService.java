@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Service
 @Transactional
@@ -102,5 +103,16 @@ public class ReportService {
         report.setContent(reportRequestDto.getContent());
         report.setReportDate(reportRequestDto.getReportDate());
         reportRepository.save(report);
+    }
+
+    // 🔐사용자 차단 해제하기 (SecurityContext 적용 OK)
+    public void deleteBlockUser(Long blockedId, HttpServletRequest request, UserDetails userDetails) {
+        // 🔑토큰 검증 및 사용자 정보 추출
+        UserTb user = authService.validateTokenAndGetUser(request, userDetails);
+
+        BlockTb block = blockRepository.findByBlockerIdAndBlockedId(user.getId(), blockedId)
+                .orElseThrow(() -> new IllegalArgumentException("차단한 회원이 아닙니다."));
+
+        blockRepository.delete(block);
     }
 }

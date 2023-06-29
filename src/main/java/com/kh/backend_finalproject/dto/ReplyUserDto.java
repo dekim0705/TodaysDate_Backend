@@ -14,7 +14,19 @@ public class ReplyUserDto {
     private String pfImg;
     private String userComment;
     private Long postId;
+    private boolean isBlocked;
 
+    public ReplyUserDto(String nickname, Long id, String content, LocalDateTime writeDate, Long userNum,
+                        String pfImg, String userComment, Long postId) {
+        this.nickname = nickname;
+        this.id = id;
+        this.content = content;
+        this.writeDate = writeDate;
+        this.userNum = userNum;
+        this.pfImg = pfImg;
+        this.userComment = userComment;
+        this.postId = postId;
+    }
 
     public ReplyUserDto(Long id, String nickname, String content, LocalDateTime writeDate, String pfImg, Long userNum, String userComment) {
         this.id = id;

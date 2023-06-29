@@ -119,7 +119,7 @@ public class PostService {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalAccessException("해당 게시글이 없습니다." + postId));
 
-        if(user.getId().equals(post.getUser().getId())) {
+        if (user.getId().equals(post.getUser().getId())) {
             // 핀 초기화 후 다시 추가 ^^..
             pinRepository.deleteAllByPost(post);
             List<PinTb> newPins = postPinDto.getPins().stream()
@@ -159,7 +159,7 @@ public class PostService {
         PostTb post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
 
-        if(user.getId().equals(post.getUser().getId())) {
+        if (user.getId().equals(post.getUser().getId())) {
             postRepository.delete(post);
         } else {
             throw new IllegalArgumentException("요청한 자는 글 작성자가 아닙니다. 삭제 할 수 없습니다.");
@@ -189,7 +189,7 @@ public class PostService {
         return savedReply != null;
     }
 
-    // 🔐특정 사용자가 차단한 사용자의 댓글 제외 후 조회 (SecurityContext 적용 OK)
+    // 🚫🔐특정 사용자가 차단한 사용자의 댓글 제외 후 조회 (SecurityContext 적용 OK)
     public List<ReplyUserDto> findReply(Long postId, HttpServletRequest request, UserDetails userDetails) throws IllegalAccessException {
         // 🔑토큰 검증 및 사용자 정보 추출
         UserTb user = authService.validateTokenAndGetUser(request, userDetails);
@@ -207,11 +207,14 @@ public class PostService {
                 .collect(Collectors.toList());
 
         // 3. 차단한 사용자가 작성한 댓글 제외
-        List<ReplyUserDto> filterReplies = allReplies.stream()
-                .filter(replyUserDto -> !blockedUserIds.contains(replyUserDto.getUserNum()))
-                .collect(Collectors.toList());
-
-        return filterReplies;
+        for (ReplyUserDto reply : allReplies) {
+            if (blockedUserIds.contains(reply.getUserNum())) {
+                reply.setBlocked(true);
+            } else {
+                reply.setBlocked(false);
+            }
+        }
+        return allReplies;
     }
 
     // 🔐댓글 수정 (SecurityContext 적용 OK)
@@ -223,7 +226,7 @@ public class PostService {
         ReplyTb reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new IllegalAccessException("해당 댓글이 없습니다." + replyId));
 
-        if(user.getId().equals(reply.getUser().getId())) {
+        if (user.getId().equals(reply.getUser().getId())) {
             reply.setContent(replyUserDto.getContent());
             replyRepository.save(reply);
 
@@ -241,7 +244,7 @@ public class PostService {
         ReplyTb reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다."));
 
-        if(user.getId().equals(reply.getUser().getId())) {
+        if (user.getId().equals(reply.getUser().getId())) {
             replyRepository.delete(reply);
         } else {
             throw new IllegalArgumentException("요청한 자는 댓글 작성자가 아닙니다. 삭제할 수 없습니다.");

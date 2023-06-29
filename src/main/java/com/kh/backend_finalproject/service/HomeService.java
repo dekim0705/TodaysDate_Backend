@@ -39,7 +39,7 @@ public class HomeService {
     private final TokenProvider tokenProvider;
     private final AuthService authService;
 
-    // 🔐️특정 사용자가 차단한 사용자의 게시글 제외 전체 지역 게시글 작성일 최근순 정렬 (SecurityContext 적용 OK)
+    // 🌴🔐️특정 사용자가 차단한 사용자 여부와 함께 전체 지역 게시글 작성일 최근순 정렬 (SecurityContext 적용 OK)
     public List<PostUserDto> findAllPostsList(HttpServletRequest request, UserDetails userDetails) {
         // 🔑토큰 검증 및 사용자 정보 추출
         UserTb user = authService.validateTokenAndGetUser(request, userDetails);
@@ -50,15 +50,18 @@ public class HomeService {
         // 2. 전체 게시글 가져오기
         List<PostUserDto> allPosts = postRepository.findAllPostsWithUserDetails();
 
-        // 3. 차단한 사용자가 작성한 게시물 제외
-        List<PostUserDto> filterPosts = allPosts.stream()
-                .filter(postUserDto -> !blockedUserIds.contains(postUserDto.getId()))
-                .collect(Collectors.toList());
-
-        return filterPosts;
+        // 3. 차단한 사용자가 작성한 게시물 여부 확인
+        for (PostUserDto post : allPosts) {
+            if (blockedUserIds.contains(post.getId())) {
+                post.setBlocked(true);
+            } else {
+                post.setBlocked(false);
+            }
+        }
+        return allPosts;
     }
 
-    // 🔐특정 사용자가 차단한 사용자의 게시글 제외 특정 지역 게시글 작성일 최근순 정렬 (SecurityContext 적용 OK)
+    // 🌴🔐특정 사용자가 차단한 사용자의 게시글 제외 특정 지역 게시글 작성일 최근순 정렬 (SecurityContext 적용 OK)
     public List<PostUserDto> findRegionPostsList(RegionStatus status, HttpServletRequest request, UserDetails userDetails) {
         // 🔑토큰 검증 및 사용자 정보 추출
         UserTb user = authService.validateTokenAndGetUser(request, userDetails);
@@ -69,15 +72,18 @@ public class HomeService {
         // 2. 특정 지역 게시글 가져오기
         List<PostUserDto> regionPosts = postRepository.findRegionPostsWithUserDetails(status);
 
-        // 3. 차단한 사용자가 작성한 게시물 제외
-        List<PostUserDto> filterPosts = regionPosts.stream()
-                .filter(postUserDto -> !blockedUserIds.contains(postUserDto.getId()))
-                .collect(Collectors.toList());
-
-        return filterPosts;
+        // 3. 차단한 사용자가 작성한 게시물 여부 확인
+        for (PostUserDto post : regionPosts) {
+            if (blockedUserIds.contains(post.getId())) {
+                post.setBlocked(true);
+            } else {
+                post.setBlocked(false);
+            }
+        }
+        return regionPosts;
     }
 
-    // 🔐키워드 검색 (SecurityContext 적용 OK)
+    // 🌴🔐키워드 검색 (SecurityContext 적용 OK)
     public List<PostUserDto> findByKeyword(String keyword, HttpServletRequest request, UserDetails userDetails) {
         // 🔑토큰 검증 및 사용자 정보 추출
         UserTb user = authService.validateTokenAndGetUser(request, userDetails);
@@ -88,12 +94,9 @@ public class HomeService {
         // 2. 키워드로 검색한 게시글 가져오기
         List<PostTb> postList = postRepository.findByKeyword(keyword);
 
-        // 3. 차단한 사용자가 작성한 게시글 제외
+        // 3. 차단한 사용자가 작성한 게시글 제외 및 isBlocked 설정
         List<PostUserDto> postUserDtos = new ArrayList<>();
         for (PostTb e : postList) {
-            if (blockedUserIds.contains(e.getUser().getId())) {
-                continue;
-            }
             PostUserDto postUserDto = new PostUserDto();
             postUserDto.setPostId(e.getId());
             postUserDto.setPfImg(e.getUser().getPfImg());
@@ -102,6 +105,11 @@ public class HomeService {
             postUserDto.setTitle(e.getTitle());
             postUserDto.setDistrict(e.getDistrict());
             postUserDto.setThumbnail(e.getImgUrl());
+            if (blockedUserIds.contains(e.getUser().getId())) {
+                postUserDto.setBlocked(true);
+            } else {
+                postUserDto.setBlocked(false);
+            }
             postUserDtos.add(postUserDto);
         }
         return postUserDtos;

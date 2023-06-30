@@ -67,7 +67,7 @@ public class PostService {
 
                 // 💡사용자에게 푸시 알림 보내기
                 log.info("🔴Sending push notification to /region/" + savePost.getRegion());
-                messagingTemplate.convertAndSend("/region/" + savePost.getRegion(),
+                messagingTemplate.convertAndSend("/region/" + savePost.getRegion() + "/" + subscribedUser.getId(),
                         "새 게시글이 등록되었습니다: " + savePost.getTitle());
             }
         }

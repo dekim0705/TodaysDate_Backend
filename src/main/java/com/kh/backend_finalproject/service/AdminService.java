@@ -98,7 +98,17 @@ public class AdminService {
     // 💗 전체 댓글 내역 조회
     public List<ReplyUserDto> findAllReplyList(UserDetails userDetails, HttpServletRequest request) {
         UserTb authUser = authService.validateTokenAndGetUser(request, userDetails);
-        List<ReplyUserDto> replyUserDtos = replyRepository.findAllReplyWithUserNickname();
+        List<ReplyTb> replies = replyRepository.findAllByOrderByIdDesc();
+        List<ReplyUserDto> replyUserDtos = new ArrayList<>();
+        for (ReplyTb e : replies) {
+            ReplyUserDto dto = new ReplyUserDto();
+            dto.setId(e.getId());
+            dto.setContent(e.getContent());
+            dto.setPostId(e.getPost().getId());
+            dto.setNickname(e.getUser().getNickname());
+            dto.setWriteDate(e.getWriteDate());
+            replyUserDtos.add(dto);
+        }
         return replyUserDtos;
     }
 

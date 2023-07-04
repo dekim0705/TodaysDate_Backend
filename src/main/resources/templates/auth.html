@@ -1,0 +1,16 @@
+<!-- auth.html (인증 완료 화면의 뷰 템플릿 파일) -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Authentication Complete</title>
+</head>
+<body>
+<!-- 이메일 인증 완료 메시지 출력 -->
+<p th:if="${message}" th:text="${message}"></p>
+
+<!-- 로그인 버튼 -->
+<a href="http://localhost:3000/">로그인</a>
+</body>
+</html>

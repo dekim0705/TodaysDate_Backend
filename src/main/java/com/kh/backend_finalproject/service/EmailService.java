@@ -127,4 +127,23 @@ public class EmailService {
         }
         return ePw; // 메일로 보냈던 인증 코드를 서버로 반환
     }
+
+    // 인증 링크 보내기
+    public void sendEmailWithLink(String to, String subject, String content) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            helper.setFrom("오늘의데이트 <devpawcommunity@naver.com>");
+            helper.setTo(to);
+            helper.setSubject(subject);
+
+//            String content = "안녕하세요! 오늘의 데이트 회원가입을 완료하기 위해 아래 링크를 클릭해 주세요 : <br>";
+//            content += "<a href=\"" + link + "\">인증하기</a>";
+            helper.setText(content, true);
+
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 }

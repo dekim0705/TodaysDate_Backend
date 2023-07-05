@@ -43,7 +43,7 @@ public class AuthService {
             throw new RuntimeException("이미 가입되어 있는 사용자 압니다. 🐿️");
         }
 
-        String authKey = emailService.sendSimpleMessage(requestDto.getEmail());
+        String authKey = emailService.createKey();
         requestDto.setAuthKey(authKey);
 
         // 🚧 이메일에 인증 링크 포함하여 전송

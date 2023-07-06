@@ -5,10 +5,26 @@
 <head>
   <meta charset="UTF-8">
   <title>Authentication Incomplete</title>
+  <style>
+        body {
+            margin: 50px;
+            background-color: #FFF8FA;
+        }
+        p {
+            color: #2e2e2e;
+            font-size: 1.4rem;
+        }
+        span {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <!-- 이메일 인증 실패 메시지 출력 -->
 <p th:if="${message}" th:text="${message}"></p>
+<!--<p>이메일 인증에 실패하였습니다 😭</p>-->
+<!--<p>고객센터에 문의해 주세요.</p>-->
+<p>고객센터로 문의해 주세요: <span>devpawcommunity@naver.com</span></p>
 
 </body>
 </html>

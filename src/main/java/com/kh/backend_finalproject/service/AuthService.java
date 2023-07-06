@@ -47,7 +47,7 @@ public class AuthService {
         requestDto.setAuthKey(authKey);
 
         // 🚧 이메일에 인증 링크 포함하여 전송
-        String emailContent = "안녕하세요! 오늘의 데이트 회원가입을 완료하기 위해 아래 링크를 클릭해 주세요: ";
+        String emailContent = "안녕하세요! <br /><br />오늘의 데이트 회원가입을 완료하기 위해 아래 링크를 클릭해 주세요. <br /><br />";
         emailContent += "<a href=\"http://localhost:8111/join/auth?email=" + requestDto.getEmail() + "&authKey=" + requestDto.getAuthKey() + "\">인증하기</a>";
         emailService.sendEmailWithLink(requestDto.getEmail(), "[오늘의 데이트] 회원가입 이메일 인증", emailContent);
 

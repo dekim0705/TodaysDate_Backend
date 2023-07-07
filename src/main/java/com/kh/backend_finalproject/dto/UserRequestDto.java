@@ -23,7 +23,7 @@ public class UserRequestDto {
                 .email(email)
                 .pwd(passwordEncoder.encode(pwd))
                 .nickname(nickname)
-                .userRegion(userRegion)
+                .userRegion(userRegion.NONE)
                 .isPush(isPush)
                 .isMembership(IsMembership.FREE)
                 .authority(Authority.ROLE_USER)

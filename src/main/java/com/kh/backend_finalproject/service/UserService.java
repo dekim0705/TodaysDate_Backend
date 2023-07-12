@@ -75,6 +75,7 @@ public class UserService {
             userDto.setViewCount(post.getViewCount());
             userDto.setWriteDate(post.getWriteDate());
             userDto.setNickname(post.getUser().getNickname());
+            userDto.setReplyCountPerPost(post.getReplies().size());
             userDtoList.add(userDto);
         }
         return userDtoList;

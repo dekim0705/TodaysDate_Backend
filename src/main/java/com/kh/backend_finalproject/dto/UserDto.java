@@ -32,6 +32,7 @@ public class UserDto {
     // 마이페이지 나의 게시글 조회용 필드 추가 (글번호, 제목, 본문, 작성일, 조회수, 닉네임 사용)
     private Long postNum;
     private int viewCount;
+    private int replyCountPerPost;
     // 마이페이지 나의 댓글조회용 필드 추가 (댓글번호, 댓글내용, 본문제목, 작성일, 닉네임 사용)
     private Long replyNum;
     private String content;
